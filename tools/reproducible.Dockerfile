@@ -27,13 +27,10 @@ RUN apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-g
                                                                                               ;
 
 ARG _SPRING_CLANG_VERSION=18.1.8
-ARG _SPRING_LLVM_VERSION=11.1.0
 ARG _SPRING_CMAKE_VERSION=3.27.6
 
 ADD https://github.com/llvm/llvm-project/releases/download/llvmorg-${_SPRING_CLANG_VERSION}/llvm-project-${_SPRING_CLANG_VERSION}.src.tar.xz     \
     https://github.com/llvm/llvm-project/releases/download/llvmorg-${_SPRING_CLANG_VERSION}/llvm-project-${_SPRING_CLANG_VERSION}.src.tar.xz.sig \
-    https://github.com/llvm/llvm-project/releases/download/llvmorg-${_SPRING_LLVM_VERSION}/llvm-project-${_SPRING_LLVM_VERSION}.src.tar.xz       \
-    https://github.com/llvm/llvm-project/releases/download/llvmorg-${_SPRING_LLVM_VERSION}/llvm-project-${_SPRING_LLVM_VERSION}.src.tar.xz.sig   \
     https://github.com/Kitware/CMake/releases/download/v${_SPRING_CMAKE_VERSION}/cmake-${_SPRING_CMAKE_VERSION}.tar.gz                           \
     https://github.com/Kitware/CMake/releases/download/v${_SPRING_CMAKE_VERSION}/cmake-${_SPRING_CMAKE_VERSION}-SHA-256.txt                      \
     https://github.com/Kitware/CMake/releases/download/v${_SPRING_CMAKE_VERSION}/cmake-${_SPRING_CMAKE_VERSION}-SHA-256.txt.asc                  \
@@ -86,17 +83,8 @@ COPY <<-"EOF" /pinnedtoolchain/pinnedtoolchain.cmake
 	set(CMAKE_MODULE_LINKER_FLAGS_INIT "-stdlib=libc++ -nostdlib++")
 
 	set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86_64-unknown-linux-gnu/libc++.a ${CMAKE_CURRENT_LIST_DIR}/lib/x86_64-unknown-linux-gnu/libc++abi.a")
-
-	set(LLVM_ROOT "${CMAKE_CURRENT_LIST_DIR}/pinllvm")
 EOF
 ENV CMAKE_TOOLCHAIN_FILE=/pinnedtoolchain/pinnedtoolchain.cmake
-
-RUN tar xf llvm-project-${_SPRING_LLVM_VERSION}.src.tar.xz && \
-    cmake -S llvm-project-${_SPRING_LLVM_VERSION}.src/llvm -B build-pinllvm -GNinja -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD=host -DLLVM_BUILD_TOOLS=Off \
-                                                                                  -DLLVM_ENABLE_RTTI=On -DLLVM_ENABLE_TERMINFO=Off -DLLVM_ENABLE_PIC=Off \
-                                                                                  -DCMAKE_INSTALL_PREFIX=/pinnedtoolchain/pinllvm && \
-    cmake --build build-pinllvm -t install && \
-    rm -rf build* llvm*
 
 # It's possible to extract the toolchain to the host using this target by something like,
 #  docker build --target export-toolchain -o $HOME/springtoolchain/ -f tools/reproducible.Dockerfile .
