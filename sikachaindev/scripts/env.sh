@@ -34,3 +34,17 @@ fi
 cleos() {
   "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" "$@"
 }
+
+if [[ "${SIKACHAIN_DEV:-}" == "1" ]]; then
+  export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
+  export SIKA_ACCOUNTS_JSON="${ROOT}/accounts.phase3.json"
+else
+  export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-eosio}"
+  export SIKA_ACCOUNTS_JSON="${ROOT}/accounts.json"
+fi
+
+export SIKA_APP_PORT="${SIKA_APP_PORT:-3003}"
+export SIKA_APP_URL="${SIKA_APP_URL:-http://127.0.0.1:${SIKA_APP_PORT}}"
+export SIKA_CHAIN_WEB_PORT="${SIKA_CHAIN_WEB_PORT:-3004}"
+export SIKA_CHAIN_WEB_URL="${SIKA_CHAIN_WEB_URL:-http://127.0.0.1:${SIKA_CHAIN_WEB_PORT}}"
+export SIKA_CHAIN_WEB_DIR="${SIKA_CHAIN_WEB_DIR:-/Users/randallroland/Desktop/Projects/SikaChain}"

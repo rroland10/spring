@@ -47,6 +47,7 @@ const systemAbi = ABI.from(
 )
 
 const chainJson = JSON.parse(readFileSync(join(__dirname, '../chain.json'), 'utf8'))
+const systemAccount = process.env.SIKA_SYSTEM_ACCOUNT || chainJson.systemContract || 'eosio'
 const privateKey = PrivateKey.from(chainJson.privateKey)
 const pubK1 = PublicKey.from(publicKey).toString()
 const client = new APIClient({url: rpc})
@@ -68,7 +69,7 @@ try {
   // account missing — proceed
 }
 
-// eosio cannot pay for RAM after sika.system deploy (buyram transfers SIKA to self).
+// System account cannot pay for RAM after sika.system deploy (buyram transfers SIKA to self).
 // sika.rep rejects SIKA deposits — use sika.guard as fee payer.
 const ramPayer = process.env.RAM_PAYER || 'sika.guard'
 const ramCost = Asset.from('100.0000 SIKA')
@@ -76,11 +77,11 @@ const ramCost = Asset.from('100.0000 SIKA')
 const actions = [
   Action.from(
     {
-      account: 'eosio',
+      account: systemAccount,
       name: 'newaccount',
-      authorization: [{actor: 'eosio', permission: 'active'}],
+      authorization: [{actor: systemAccount, permission: 'active'}],
       data: {
-        creator: 'eosio',
+        creator: systemAccount,
         name: account,
         owner: auth,
         active: auth,
@@ -92,9 +93,9 @@ const actions = [
     {
       account: 'sika.token',
       name: 'transfer',
-      authorization: [{actor: 'eosio', permission: 'active'}],
+      authorization: [{actor: systemAccount, permission: 'active'}],
       data: {
-        from: 'eosio',
+        from: systemAccount,
         to: ramPayer,
         quantity: ramCost,
         memo: `RAM for ${account}`,
@@ -104,7 +105,7 @@ const actions = [
   ),
   Action.from(
     {
-      account: 'eosio',
+      account: systemAccount,
       name: 'buyrambytes',
       authorization: [{actor: ramPayer, permission: 'active'}],
       data: {

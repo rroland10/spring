@@ -1,6 +1,10 @@
 {
   "chainName": "SikaChainDev",
   "url": "http://127.0.0.1:8888",
+  "appUrl": "http://127.0.0.1:3003",
+  "appPort": 3003,
+  "websiteUrl": "http://127.0.0.1:3004",
+  "websitePort": 3004,
   "walletUrl": "http://127.0.0.1:8899",
   "symbol": "SIKA",
   "tokenContract": "sika.token",
@@ -16,7 +20,12 @@
   "springVersion": "v1.3.0-dev-e6a99f68b67abc4d89fe716755b2e1394a4991f7",
   "accounts": {
     "eosio": {
-      "role": "SikaChain System (privileged Spring account)",
+      "role": "SikaChain System (default Spring privileged account)",
+      "publicKey": "PUB_K1_6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5BoDq63",
+      "publicKeyLegacy": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },
+    "sika": {
+      "role": "SikaChain System (Phase 3 — Spring -DSIKACHAIN=ON)",
       "publicKey": "PUB_K1_6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5BoDq63",
       "publicKeyLegacy": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
     },

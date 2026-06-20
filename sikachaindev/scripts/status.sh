@@ -28,9 +28,11 @@ print(f\"  issuer:       {s.get('issuer', 'n/a')}\")
 
   echo "=== Dev keys (from chain.json) ==="
   python3 -c "
-import json
+import json, os
 c = json.load(open('${ROOT}/chain.json'))
-print(f\"  eosio:        {c['accounts']['eosio']['publicKey']}\")
+sys_acct = os.environ.get('SIKA_SYSTEM_ACCOUNT', c.get('systemContract', 'eosio'))
+key = c['accounts'].get(sys_acct, c['accounts'].get('eosio', {}))
+print(f\"  {sys_acct:12} {key.get('publicKey', 'n/a')}\")
 if 'sikadev' in c['accounts']:
     print(f\"  sikadev:      {c['accounts']['sikadev']['publicKey']}\")
 " 2>/dev/null || true
@@ -49,8 +51,8 @@ if 'sikadev' in c['accounts']:
   else
     echo "  sikadev:      (not created — run create-account.sh)"
   fi
-  if "${CLEOS}" --url "${NODE_URL}" get currency balance sika.token eosio SIKA >/dev/null 2>&1; then
-    "${CLEOS}" --url "${NODE_URL}" get currency balance sika.token eosio SIKA 2>/dev/null | sed 's/^/  eosio:        /'
+  if "${CLEOS}" --url "${NODE_URL}" get currency balance sika.token "${SIKA_SYSTEM_ACCOUNT}" SIKA >/dev/null 2>&1; then
+    "${CLEOS}" --url "${NODE_URL}" get currency balance sika.token "${SIKA_SYSTEM_ACCOUNT}" SIKA 2>/dev/null | sed "s/^/  ${SIKA_SYSTEM_ACCOUNT}:        /"
   fi
 else
   echo "  nodeos not reachable at ${NODE_URL}"

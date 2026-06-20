@@ -20,7 +20,7 @@ fi
 echo "Generating bindings → ${OUT_DIR}"
 echo "RPC: ${RPC}"
 
-for account in sika.token eosio sika.rep sika.guard sika.rules sika.issue; do
+for account in sika.token "${SIKA_SYSTEM_ACCOUNT}" sika.rep sika.guard sika.rules sika.issue; do
   if ! "${CLEOS}" --url "${RPC}" get account "${account}" >/dev/null 2>&1; then
     echo "  skip ${account} (not on chain)"
     continue

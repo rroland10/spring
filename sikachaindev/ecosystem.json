@@ -25,7 +25,15 @@
     "sikachainApp": {
       "path": "/Users/randallroland/Desktop/Projects/Sika app",
       "role": "Next.js wallet + marketing (WharfKit SessionKit)",
-      "envFile": ".env.sikachaindev"
+      "envFile": ".env.sikachaindev",
+      "port": 3003
+    },
+    "sikachainWeb": {
+      "path": "/Users/randallroland/Desktop/Projects/SikaChain",
+      "role": "GTM marketing site — genesis program, explorer, apply, admin",
+      "envFile": ".env.example",
+      "port": 3004,
+      "repo": "https://github.com/rroland10/SikaChain"
     },
     "systemContracts": {
       "path": "/Users/randallroland/Desktop/Projects/sikachain sys contract",
@@ -58,6 +66,7 @@
     "layer2": "sika.system @ eosio (privileged) + sika.token / sika.rex / sika.* satellites",
     "layer3": "WharfKit adapter API (relay + tx verification)",
     "layer4": "Sika app (Next.js wallet UI)",
+    "layer5": "SikaChain web (GTM site — genesis, explorer, apply)",
     "indexer": "Hyperion (optional — history falls back to node v1 API without it)"
   }
 }

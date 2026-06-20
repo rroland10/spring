@@ -68,10 +68,10 @@ if curl -sf "${NODE_URL}/v1/chain/get_account" \
       DEV_PW="$(tr -d '\n' < "${ROOT}/wallet/.password")"
       "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" wallet unlock --password "${DEV_PW}" 2>/dev/null || true
     fi
-    if "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" transfer eosio sikadev "10000.0000 SIKA" "SikaChainDev bootstrap" -c sika.token; then
+    if "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" transfer "${SIKA_SYSTEM_ACCOUNT}" sikadev "10000.0000 SIKA" "SikaChainDev bootstrap" -c sika.token; then
       echo "  funded sikadev"
     else
-      echo "  (fund transfer failed — check eosio balance and wallet)"
+      echo "  (fund transfer failed — check ${SIKA_SYSTEM_ACCOUNT} balance and wallet)"
     fi
   fi
 fi

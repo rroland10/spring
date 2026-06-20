@@ -2,9 +2,18 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+source "$(dirname "$0")/env.sh"
 CONFIG_DIR="${ROOT}/config"
 DATA_DIR="${ROOT}/data"
 GENESIS="${CONFIG_DIR}/genesis.json"
+
+if [[ "${SIKACHAIN_DEV:-}" == "1" ]]; then
+  RUNTIME_CONFIG="${DATA_DIR}/runtime-config"
+  mkdir -p "${RUNTIME_CONFIG}"
+  sed "s/^producer-name = .*/producer-name = ${SIKA_SYSTEM_ACCOUNT}/" \
+    "${CONFIG_DIR}/config.ini" > "${RUNTIME_CONFIG}/config.ini"
+  CONFIG_DIR="${RUNTIME_CONFIG}"
+fi
 
 BUILD_BIN="${ROOT}/../build/programs"
 if [[ -z "${NODEOS:-}" ]]; then

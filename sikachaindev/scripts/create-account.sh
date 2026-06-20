@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Create a dev account on SikaChainDev (sika.system @ eosio).
+# Create a dev account on SikaChainDev (sika.system @ privileged system account).
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 <account-name> [public-key]"
-  echo "  Creates account authorized by eosio. Generates a key if public-key omitted."
+  echo "  Creates account authorized by ${SIKA_SYSTEM_ACCOUNT}. Generates a key if public-key omitted."
   exit 1
 fi
 
@@ -37,6 +37,7 @@ if [[ ! -d "${SIKA_APP_DIR}/node_modules/@wharfkit/antelope" ]]; then
 fi
 
 export SIKA_APP_DIR
+export SIKA_SYSTEM_ACCOUNT
 PUB_K1="$(node "${KEY_FORMAT_MJS}" to-pub-k1 "${PUB}")"
 node "${CREATE_MJS}" "${ACCOUNT}" "${PUB_K1}" "${RAM_BYTES}" "${NODE_URL}"
 

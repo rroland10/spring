@@ -34,10 +34,10 @@ check "sikadev account" bash -c "
 "
 set -e
 
-if curl -sf -o /dev/null http://127.0.0.1:3000/ 2>/dev/null; then
-  echo "  ok  Sika app (:3000)"
+if curl -sf -o /dev/null "${SIKA_APP_URL}/" 2>/dev/null; then
+  echo "  ok  Sika app (${SIKA_APP_URL})"
 else
-  echo "  --  Sika app not on :3000 (optional)"
+  echo "  --  Sika app not on ${SIKA_APP_URL} (optional)"
 fi
 
 exit "${FAIL}"

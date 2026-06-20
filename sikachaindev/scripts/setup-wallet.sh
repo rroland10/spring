@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+source "$(dirname "$0")/env.sh"
 BUILD_BIN="${ROOT}/../build/programs"
 if [[ -z "${CLEOS:-}" ]]; then
   if [[ -x "${BUILD_BIN}/cleos/cleos" ]]; then
@@ -54,4 +55,4 @@ fi
 
 echo ""
 echo "Wallet ready. Example:"
-echo "  cleos --url ${NODE_URL} --wallet-url ${WALLET_URL} create account eosio myaccount PUB_K1_..."
+echo "  cleos --url ${NODE_URL} --wallet-url ${WALLET_URL} create account ${SIKA_SYSTEM_ACCOUNT} myaccount PUB_K1_..."

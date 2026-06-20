@@ -4,7 +4,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+source "${SCRIPT_DIR}/env.sh"
 APP_DIR="${SIKA_APP_DIR:-/Users/randallroland/Desktop/Projects/Sika app}"
+WEB_DIR="${SIKA_CHAIN_WEB_DIR:-/Users/randallroland/Desktop/Projects/SikaChain}"
 ADAPTER_DIR="${SIKA_ADAPTER_DIR:-/Users/randallroland/Desktop/Projects/wharfkit adapter}"
 
 bash "${SCRIPT_DIR}/bootstrap-dev.sh"
@@ -16,8 +18,13 @@ else
 fi
 
 if [[ -f "${APP_DIR}/.env.sikachaindev" ]]; then
-  cp "${APP_DIR}/.env.sikachaindev" "${APP_DIR}/.env.local"
-  echo "Synced ${APP_DIR}/.env.local"
+  if [[ "${SIKACHAIN_DEV:-}" == "1" ]] && [[ -f "${APP_DIR}/.env.sikachaindev.phase3" ]]; then
+    cp "${APP_DIR}/.env.sikachaindev.phase3" "${APP_DIR}/.env.local"
+    echo "Synced ${APP_DIR}/.env.local (Phase 3 — system account sika)"
+  else
+    cp "${APP_DIR}/.env.sikachaindev" "${APP_DIR}/.env.local"
+    echo "Synced ${APP_DIR}/.env.local"
+  fi
 fi
 
 if [[ -f "${ADAPTER_DIR}/.env.example" ]] && [[ ! -f "${ADAPTER_DIR}/.env" ]]; then
@@ -25,13 +32,26 @@ if [[ -f "${ADAPTER_DIR}/.env.example" ]] && [[ ! -f "${ADAPTER_DIR}/.env" ]]; t
   echo "Created ${ADAPTER_DIR}/.env"
 fi
 
+if [[ -f "${WEB_DIR}/.env.example" ]] && [[ ! -f "${WEB_DIR}/.env" ]]; then
+  cp "${WEB_DIR}/.env.example" "${WEB_DIR}/.env"
+  echo "Created ${WEB_DIR}/.env"
+fi
+
 echo ""
 bash "${SCRIPT_DIR}/ecosystem-status.sh"
 
 echo ""
-echo "=== Run app ==="
-if curl -sf -o /dev/null -w "" http://127.0.0.1:3000/ 2>/dev/null; then
-  echo "  App already running at http://127.0.0.1:3000"
+echo "=== Run apps ==="
+APP_URL="${SIKA_APP_URL}"
+WEB_URL="${SIKA_CHAIN_WEB_URL}"
+if curl -sf -o /dev/null -w "" "${APP_URL}/" 2>/dev/null; then
+  echo "  Sika App already running at ${APP_URL}"
 else
-  echo "  cd \"${APP_DIR}\" && npm run dev"
+  echo "  Sika App:  ${SCRIPT_DIR}/start-app.sh"
+fi
+if curl -sf -o /dev/null -w "" "${WEB_URL}/" 2>/dev/null; then
+  echo "  SikaChain site already running at ${WEB_URL}"
+else
+  echo "  Website:   ${SCRIPT_DIR}/start-web.sh"
+  echo "  Or:        cd \"${WEB_DIR}\" && npm run dev"
 fi
