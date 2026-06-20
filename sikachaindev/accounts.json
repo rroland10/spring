@@ -1,0 +1,21 @@
+{
+  "description": "SikaChainDev protocol account names — keep in sync with contracts/include/sika.accounts.hpp",
+  "system": "eosio",
+  "systemDisplayName": "SikaChain System",
+  "token": "sika.token",
+  "rex": "sika.rex",
+  "symbol": "SIKA",
+  "satellite": [
+    "sika.rep",
+    "sika.guard",
+    "sika.rules",
+    "sika.issue",
+    "sika.boost",
+    "sika.bppay",
+    "sika.burn",
+    "sika.gold",
+    "sika.cocoa",
+    "sika.cngn",
+    "sika.ckes"
+  ]
+}

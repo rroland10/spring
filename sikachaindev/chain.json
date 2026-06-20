@@ -1,0 +1,36 @@
+{
+  "chainName": "SikaChainDev",
+  "url": "http://127.0.0.1:8888",
+  "walletUrl": "http://127.0.0.1:8899",
+  "symbol": "SIKA",
+  "tokenContract": "sika.token",
+  "rexContract": "sika.rex",
+  "systemContract": "eosio",
+  "systemContractDisplayName": "SikaChain System",
+  "producer": "eosio",
+  "keyFormat": "PUB_K1",
+  "publicKey": "PUB_K1_6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5BoDq63",
+  "publicKeyLegacy": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+  "privateKey": "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3",
+  "chainId": "9b2fde923758593c09517f77ed445a3962a9c938f44405dac43b4ccfebbfa57e",
+  "springVersion": "v1.3.0-dev-e6a99f68b67abc4d89fe716755b2e1394a4991f7",
+  "accounts": {
+    "eosio": {
+      "role": "SikaChain System (privileged Spring account)",
+      "publicKey": "PUB_K1_6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5BoDq63",
+      "publicKeyLegacy": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },
+    "sikadev": {
+      "role": "default dev account for contracts",
+      "publicKey": "PUB_K1_4xLq2xvHoswe3nx452Y7odtkTrrSo26iNQhqHZAHBR833xUzDM",
+      "publicKeyLegacy": "EOS4xLq2xvHoswe3nx452Y7odtkTrrSo26iNQhqHZAHBR833Xxi7a",
+      "privateKey": "5JDEUYsGuepGdEeZa3pCsMAJk5fuAqQkT8XPeww4Y5G2UVkf7iT"
+    }
+  },
+  "wharfkit": {
+    "chain": {
+      "id": "9b2fde923758593c09517f77ed445a3962a9c938f44405dac43b4ccfebbfa57e",
+      "url": "http://127.0.0.1:8888"
+    }
+  }
+}

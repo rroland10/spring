@@ -1,0 +1,63 @@
+{
+  "name": "SikaChainDev",
+  "description": "Local Antelope/Spring dev chain and integration hub for the SikaChain monorepo (Desktop/Projects)",
+  "chain": {
+    "name": "SikaChainDev",
+    "chainId": "9b2fde923758593c09517f77ed445a3962a9c938f44405dac43b4ccfebbfa57e",
+    "rpc": "http://127.0.0.1:8888",
+    "walletUrl": "http://127.0.0.1:8899",
+    "symbol": "SIKA",
+    "tokenContract": "sika.token",
+    "rexContract": "sika.rex",
+    "systemContract": "eosio",
+    "systemContractDisplayName": "SikaChain System"
+  },
+  "projects": {
+    "spring": {
+      "path": "/Users/randallroland/Desktop/Projects/AntelopeOS/spring",
+      "role": "AntelopeOS Spring node (nodeos, cleos, keosd)",
+      "binaries": "build/programs/{nodeos,cleos,keosd}"
+    },
+    "sikachaindev": {
+      "path": "/Users/randallroland/Desktop/Projects/AntelopeOS/spring/sikachaindev",
+      "role": "Single-node dev chain config + scripts"
+    },
+    "sikachainApp": {
+      "path": "/Users/randallroland/Desktop/Projects/Sika app",
+      "role": "Next.js wallet + marketing (WharfKit SessionKit)",
+      "envFile": ".env.sikachaindev"
+    },
+    "systemContracts": {
+      "path": "/Users/randallroland/Desktop/Projects/sikachain sys contract",
+      "role": "C++ system contracts (sika.system, sika.token, sika.rep, …)",
+      "build": "./build.sh",
+      "deployOrder": ["sika.token", "sika.system", "sika.guard", "sika.rep", "sika.rules", "sika.issue"]
+    },
+    "contractTests": {
+      "path": "/Users/randallroland/Desktop/Projects/sika chain testing script",
+      "role": "Spring BOOST.Test suite for contract WASM",
+      "build": "SPRING_BUILD_PATH=../AntelopeOS/spring/build ./build.sh --with-tests (from sys contract dir)"
+    },
+    "testingApi": {
+      "path": "/Users/randallroland/Desktop/Projects/testing API sikachain",
+      "role": "Express API — HttpChainSubmitter + MockChainSubmitter (v1)",
+      "env": { "SIKA_CHAIN_RPC_URLS": "http://127.0.0.1:8888", "PORT": "4000" }
+    },
+    "wharfkitAdapter": {
+      "path": "/Users/randallroland/Desktop/Projects/wharfkit adapter",
+      "role": "Express API — WharfkitChainSubmitter + TransactionInspector (v2, production)",
+      "env": { "SIKA_CHAIN_RPC_URLS": "http://127.0.0.1:8888", "PORT": "4000" }
+    },
+    "logo": {
+      "path": "/Users/randallroland/Desktop/Projects/SikaChain logo",
+      "role": "Brand assets (SVG, favicon, app icon)"
+    }
+  },
+  "stack": {
+    "layer1": "Spring nodeos (SikaChainDev)",
+    "layer2": "sika.system @ eosio (privileged) + sika.token / sika.rex / sika.* satellites",
+    "layer3": "WharfKit adapter API (relay + tx verification)",
+    "layer4": "Sika app (Next.js wallet UI)",
+    "indexer": "Hyperion (optional — history falls back to node v1 API without it)"
+  }
+}
