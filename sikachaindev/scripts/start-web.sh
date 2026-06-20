@@ -25,6 +25,9 @@ fi
 
 if curl -sf "${NODE_URL}/v1/chain/get_info" >/dev/null 2>&1; then
   echo "Chain RPC ok at ${NODE_URL}"
+  if [[ -f "${WEB_DIR}/scripts/sync-chain-config.mjs" ]]; then
+    node "${WEB_DIR}/scripts/sync-chain-config.mjs" 2>/dev/null || true
+  fi
 else
   echo "warning: chain not reachable at ${NODE_URL}"
   echo "  start in another terminal: ${SCRIPT_DIR}/start-all.sh"
