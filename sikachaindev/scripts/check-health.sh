@@ -40,4 +40,10 @@ else
   echo "  --  Sika app not on ${SIKA_APP_URL} (optional)"
 fi
 
+if curl -sf -o /dev/null "${SIKA_CHAIN_WEB_URL}/" 2>/dev/null; then
+  echo "  ok  SikaChain site (${SIKA_CHAIN_WEB_URL})"
+else
+  echo "  --  SikaChain site not on ${SIKA_CHAIN_WEB_URL} (optional)"
+fi
+
 exit "${FAIL}"
