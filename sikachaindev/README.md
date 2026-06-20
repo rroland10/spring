@@ -23,7 +23,7 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev`, regenerates W
 | `run-contract-tests.sh` | 40 Spring BOOST tests |
 | `start-app.sh` | Start Sika App wallet UI (:3003) |
 | `start-web.sh` | Start SikaChain GTM site (:3004) |
-| `check-health.sh` | RPC + SIKA + `sikadev` probe (exit code) |
+| `check-health.sh` | RPC + SIKA + `sikadev` + optional app/site (exit code) |
 | `build-system-contracts.sh` | Build `eosio.boot` for feature activation |
 
 ## Prerequisites
@@ -60,6 +60,8 @@ bash scripts/start-web.sh
 ```
 
 Repo: [github.com/rroland10/SikaChain](https://github.com/rroland10/SikaChain). Sync chain constants: `npm run sync:chain` in that project after editing `chain.json` here.
+
+After starting chain, site, and app: `cd` to the SikaChain repo and run `npm run verify:stack` (all five endpoints).
 
 ## Tests
 
