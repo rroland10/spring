@@ -68,7 +68,7 @@ if [[ "${SKIP_BP:-0}" != "1" ]]; then
     bash "${SCRIPT_DIR}/bootstrap-21bp.sh"
   else
     export PRODUCERS_JSON="${PRODUCERS_JSON:-${ROOT}/config/producers-6.json}"
-    bash "${SCRIPT_DIR}/bootstrap-6bp.sh"
+    SKIP_SCHEDULE="${SKIP_SCHEDULE:-0}" bash "${SCRIPT_DIR}/bootstrap-6bp.sh"
   fi
 fi
 

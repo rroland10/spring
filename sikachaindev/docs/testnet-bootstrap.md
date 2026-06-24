@@ -71,8 +71,10 @@ RESET=1 RPC_HOST_PORT=18890 bash scripts/bootstrap-docker-testnet.sh
 This script:
 
 1. Starts GHCR `sikachain-dev-sika-v4` nodeos as genesis `sika`
-2. Runs `bootstrap-testnet.sh` (contracts + 6 BPs)
-3. Switches the container producer to `sikabpa` so blocks keep advancing after schedule activation
+2. Runs `bootstrap-testnet.sh` (contracts + 6 BPs registered/voted)
+3. Keeps producing as **`sika`** (`SKIP_SCHEDULE=1`) — single-node Savanna cannot advance LIB with a multi-BP active schedule
+
+For real 6-BP rotation, use `start-6bp-cluster.sh` or multinode Fly hosts after full schedule activation (`SKIP_SCHEDULE=0`).
 
 Verify:
 

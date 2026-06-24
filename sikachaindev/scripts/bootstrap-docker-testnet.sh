@@ -92,48 +92,14 @@ bash "${SCRIPT_DIR}/cleos.sh" wallet import --private-key "${GENESIS_PVT}" 2>/de
 
 echo ""
 echo "--- bootstrap-testnet ---"
+SKIP_SCHEDULE="${SKIP_SCHEDULE:-1}" \
 PRODUCERS_JSON="${PRODUCERS_JSON:-${PRODUCERS}}" NODE_URL="${NODE_URL}" \
   SIKA_SYSTEM_PRIVATE_KEY="${SIKA_SYSTEM_PRIVATE_KEY:-}" \
   bash "${SCRIPT_DIR}/bootstrap-testnet.sh"
 
 echo ""
-echo "--- Switch docker producer to sikabpa (active schedule) ---"
-read -r BP_NAME BP_PUB BP_PVT < <(python3 - <<'PY' "${PRODUCERS}"
-import json, sys
-p = json.load(open(sys.argv[1]))["producers"][0]
-print(p["name"], p["pub"], p["pvt"])
-PY
-)
-BP_PUB_K1="$(node "${SCRIPT_DIR}/lib/key-format.mjs" to-pub-k1 "${BP_PUB}")"
-P2P_PORT="$(grep P2P_HOST_PORT "${DEPLOY}/.env.bootstrap" | cut -d= -f2)"
-cat > "${DEPLOY}/.env.bootstrap" <<EOF
-SIKA_NODEOS_IMAGE=ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v4
-SIKA_GENESIS_HOST=${GENESIS}
-RPC_HOST_PORT=${RPC_PORT}
-P2P_HOST_PORT=${P2P_PORT}
-SHIP_HOST_PORT=$(grep SHIP_HOST_PORT "${DEPLOY}/.env.bootstrap" | cut -d= -f2)
-PRODUCER_NAME=${BP_NAME}
-SIGNATURE_PROVIDER=${BP_PUB_K1}=KEY:${BP_PVT}
-P2P_ADVERTISE=127.0.0.1:${P2P_PORT}
-P2P_PEERS=
-CORS_ORIGIN=*
-AGENT_NAME=sikachain-testnet-${BP_NAME}
-EOF
-cd "${DEPLOY}"
-docker compose --env-file .env.bootstrap up -d --force-recreate
-for _ in $(seq 1 60); do
-  if curl -sf "${NODE_URL}/v1/chain/get_info" >/dev/null 2>&1; then
-    prod="$(curl -sf "${NODE_URL}/v1/chain/get_info" | python3 -c "import sys,json; print(json.load(sys.stdin)['head_block_producer'])")"
-    head="$(curl -sf "${NODE_URL}/v1/chain/get_info" | python3 -c "import sys,json; print(json.load(sys.stdin)['head_block_num'])")"
-    if [[ "${prod}" == "${BP_NAME}" && "${head}" -gt 10 ]]; then
-      echo "  ok  producing as ${BP_NAME}  head=${head}"
-      break
-    fi
-  fi
-  sleep 2
-done
-
-echo ""
 echo "=== bootstrap-docker-testnet complete ==="
-echo "  chain_id=$(curl -sf ${NODE_URL}/v1/chain/get_info | python3 -c 'import sys,json; print(json.load(sys.stdin)[\"chain_id\"])')"
+echo "  chain_id=$(curl -sf "${NODE_URL}/v1/chain/get_info" | python3 -c 'import json,sys; print(json.load(sys.stdin)["chain_id"])')"
 echo "  RPC: ${NODE_URL}"
+echo "  Producer: sika (single-node; BPs registered but schedule not activated)"
+echo "  Multinode rotation: bash scripts/start-6bp-cluster.sh after copying chain data"

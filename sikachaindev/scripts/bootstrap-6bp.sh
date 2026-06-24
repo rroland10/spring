@@ -13,6 +13,11 @@ export BP_CLUSTER_SIZE=6
 # Reuse 21-BP bootstrap (create/stake/register) but limit to producers-6.json.
 bash "${SCRIPT_DIR}/bootstrap-21bp.sh"
 
-echo ""
-echo "Activating producer schedule (requires upgraded sika.system)..."
-BP_CLUSTER_SIZE=6 ENSURE_WAIT=1 bash "${SCRIPT_DIR}/ensure-producer-schedule.sh"
+if [[ "${SKIP_SCHEDULE:-0}" != "1" ]]; then
+  echo ""
+  echo "Activating producer schedule (requires upgraded sika.system)..."
+  BP_CLUSTER_SIZE=6 ENSURE_WAIT=1 bash "${SCRIPT_DIR}/ensure-producer-schedule.sh"
+else
+  echo ""
+  echo "  (skip) producer schedule activation — use for single-node docker (Savanna LIB needs multinode)"
+fi
