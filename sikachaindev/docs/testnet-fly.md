@@ -16,7 +16,26 @@ sikachaindev/deploy/testnet/
 
 ## 1. Build nodeos (Linux amd64)
 
-The Docker image **copies** `build/programs/nodeos/nodeos` — it does not compile Spring inside the container (too slow for iterative deploys).
+### Option A — GitHub Actions (recommended)
+
+Push a tag or run workflow manually:
+
+```bash
+git tag sikachain-dev-sika-v3 && git push fork sikachain-dev-sika-v3
+# or: Actions → "SikaChain testnet nodeos image" → Run workflow
+```
+
+Image: `ghcr.io/rroland10/sikachain-nodeos:<tag>` (also `:latest`).
+
+Pull in `docker-compose.yml` or Fly:
+
+```yaml
+image: ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v2
+```
+
+### Option B — Local / CI build
+
+The Docker image **copies** `build/programs/nodeos/nodeos` — it does not compile Spring inside the container.
 
 On **Linux** or CI:
 

@@ -1,6 +1,9 @@
 # Fly.io — SikaChain testnet block producer (example)
 # Copy to fly.toml and customize before `fly deploy`.
 #
+# Prebuilt image (after GHA tag push):
+#   image = "ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v2"
+# Or build from Dockerfile on deploy (slower):
 #   fly apps create sikachain-testnet-bp1
 #   fly volumes create sikachain_data --region iad --size 50
 #   fly secrets set SIGNATURE_PROVIDER='PUB_K1_xxx=KEY:5K...'

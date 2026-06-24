@@ -99,12 +99,14 @@ After contracts + votes on a single node:
 
 ## Phase 5 — Hyperion
 
-1. `bash scripts/start-hyperion-deps.sh` (ES, Mongo, Redis, RabbitMQ).
-2. Configure SHIP → `ws://bp1-internal:8080` in Hyperion `connections.json`.
-3. Expose `https://hyperion.testnet.sikachain.gh`.
-4. Confirm: `HYPERION_URL=... bash scripts/check-hyperion.sh`
+See **[testnet-hyperion.md](testnet-hyperion.md)** for full steps.
 
-See [hyperion-dev.md](hyperion-dev.md).
+```bash
+TESTNET_CHAIN_ID=... \
+  TESTNET_RPC_URL=https://rpc.testnet.sikachain.gh \
+  TESTNET_SHIP_URL=ws://bp1.testnet.sikachain.gh:8080 \
+  bash scripts/setup-hyperion-testnet.sh
+```
 
 ## Phase 6 — Client publish
 

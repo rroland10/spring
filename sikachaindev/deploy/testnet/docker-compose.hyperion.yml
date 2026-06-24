@@ -1,0 +1,63 @@
+# Hyperion stack for SikaChain testnet (indexer + backing services).
+# Configure first: bash scripts/setup-hyperion-testnet.sh
+#
+# Env (required before compose):
+#   TESTNET_CHAIN_ID, TESTNET_RPC_URL, TESTNET_SHIP_URL
+
+include:
+  - path: ../../hyperion/docker-compose.yml
+
+services:
+  hyperion-indexer:
+    platform: linux/amd64
+    build:
+      context: ../../hyperion
+      dockerfile: Dockerfile.hyperion-dev
+    working_dir: /hyperion
+    command: >
+      node --max-old-space-size=4096
+      ./build/indexer/launcher.js
+    environment:
+      CONFIG_JSON: /hyperion/config/chains/sikachaintestnet.config.json
+      CHAIN_NAME: sikachaintestnet
+    volumes:
+      - ../../hyperion/hyperion-history-api/config:/hyperion/config:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+
+  hyperion-api:
+    platform: linux/amd64
+    build:
+      context: ../../hyperion
+      dockerfile: Dockerfile.hyperion-dev
+    working_dir: /hyperion
+    command: >
+      node --max-old-space-size=2048
+      ./build/api/server.js
+    environment:
+      CONFIG_JSON: /hyperion/config/chains/sikachaintestnet.config.json
+      CHAIN_NAME: sikachaintestnet
+    ports:
+      - "${HYPERION_PORT:-7001}:7001"
+    volumes:
+      - ../../hyperion/hyperion-history-api/config:/hyperion/config:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped

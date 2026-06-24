@@ -66,6 +66,7 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `bootstrap-testnet.sh` | Deploy contracts + BPs on fresh testnet genesis (not dev chain id) |
 | `export-testnet-env.mjs` | Generate wallet production env from `TESTNET_*` vars |
 | `deploy/testnet/` | Docker + Fly.io nodeos templates — [docs/testnet-fly.md](docs/testnet-fly.md) |
+| `setup-hyperion-testnet.sh` | Hyperion for hosted testnet — [docs/testnet-hyperion.md](docs/testnet-hyperion.md) |
 | `smoke-wallet.sh` | Wallet UI RPC probes for `sikadev` (balances, stake, REX, NFTs) |
 | `wait-for-rpc.sh` | Block until nodeos RPC is up (default 360s; replay-safe) |
 | `stop-ecosystem.sh` | Stop chain + Node apps (`--hyperion` to stop indexer containers) |
