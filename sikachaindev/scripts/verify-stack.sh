@@ -68,5 +68,10 @@ elif [[ "${VERIFY_MULTINODE:-0}" == "1" ]]; then
   echo "  SKIP (multinode cluster not running)"
 fi
 
+if [[ "${LAUNCH_READY:-0}" == "1" ]]; then
+  echo ""
+  bash "${SCRIPT_DIR}/check-launch-ready.sh"
+fi
+
 echo ""
 echo "=== verify-stack complete — all checks passed ==="

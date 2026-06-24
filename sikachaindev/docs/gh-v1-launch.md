@@ -102,11 +102,35 @@ VERIFY_UI=1 VERIFY_DEV=1 bash scripts/verify-stack.sh
 
 ## 4. Chain prerequisites (mainnet / testnet)
 
+- [ ] Spring nodeos built with `SIKACHAIN=ON` (privileged account **`sika`**, not `eosio`)
+- [ ] `sika.system` + satellites deployed on **`sika`**
 - [ ] `sika.msig` deployed and **privileged**
 - [ ] `sika.token` with **SIKA** + **CGHS**
 - [ ] Hyperion v2 indexing SHIP from block producers
 - [ ] RPC CORS allows wallet origin (or use same-origin API proxy)
 - [ ] Savanna finality enabled (Spring with IF mode)
+- [ ] Publish custom chain JSON for Anchor (see `anchor-chain.json` template — set `testnet: false`, production RPC URLs)
+
+## 4b. Hosting the wallet app (Vercel / Fly / similar)
+
+1. Copy `Sika app/.env.production.gh-v1.example` into the host's environment UI.
+2. Replace placeholders:
+   - `NEXT_PUBLIC_CHAIN_ID` — production chain ID
+   - `NEXT_PUBLIC_CHAIN_READ_RPC_URLS` — HTTPS RPC (comma-separated for failover)
+   - `NEXT_PUBLIC_EXPLORER_HYPERION_URL` — production Hyperion v2 base URL
+   - `NEXT_PUBLIC_BASE_URL` — deployed wallet origin (e.g. `https://app.sikachain.gh`)
+3. Build command: `npm run build` (Next.js 14)
+4. **Never** set `NEXT_PUBLIC_DEV_WALLET=1` or mock keys in production.
+5. Optional: `NEXT_PUBLIC_WEB_AUTHENTICATOR_URL` for browser sign-in without Anchor mobile.
+
+Pre-deploy gate (from dev machine against testnet RPC):
+
+```bash
+# Point at testnet RPC while validating templates
+NODE_URL=https://rpc.testnet.sikachain.gh bash scripts/check-launch-ready.sh
+```
+
+Post-deploy: run section 5 smoke against the live URL.
 
 ## 5. Post-deploy smoke (production)
 
