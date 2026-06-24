@@ -1,9 +1,13 @@
-# Local / VPS testnet BP — replace env before `docker compose up`.
-# Mount a real genesis.json with your testnet initial_key (not the example placeholder).
+# Local / VPS testnet BP — copy .env.example → .env and fill secrets.
+#
+# Pull prebuilt image:
+#   bash sikachaindev/deploy/testnet/pull-image.sh
+#   docker compose --env-file .env up -d
 
 services:
   nodeos:
-    image: sikachain-nodeos:testnet
+    image: ${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v2}
+    pull_policy: always
     build:
       context: ../../..
       dockerfile: sikachaindev/deploy/testnet/Dockerfile.nodeos
@@ -14,16 +18,15 @@ services:
       - "9876:9876"
       - "8080:8080"
     environment:
-      PRODUCER_NAME: sikabpa
-      # PUB_K1_xxx=KEY:5K...
-      SIGNATURE_PROVIDER: "REPLACE_PUB=KEY:REPLACE_PVT"
-      P2P_ADVERTISE: "127.0.0.1:9876"
-      P2P_PEERS: ""
-      CORS_ORIGIN: "*"
-      AGENT_NAME: sikachain-testnet-bp1
+      PRODUCER_NAME: ${PRODUCER_NAME:-sikabpa}
+      SIGNATURE_PROVIDER: ${SIGNATURE_PROVIDER:?set SIGNATURE_PROVIDER in .env}
+      P2P_ADVERTISE: ${P2P_ADVERTISE:-127.0.0.1:9876}
+      P2P_PEERS: ${P2P_PEERS:-}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      AGENT_NAME: ${AGENT_NAME:-sikachain-testnet-bp1}
     volumes:
       - sikachain_data:/var/lib/sikachain/data
-      # Override genesis for real testnet:
+      # Real testnet genesis (required — example placeholder will not start chain):
       # - ./genesis.json:/etc/sikachain/genesis.json:ro
 
 volumes:

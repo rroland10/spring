@@ -27,10 +27,17 @@ git tag sikachain-dev-sika-v3 && git push fork sikachain-dev-sika-v3
 
 Image: `ghcr.io/rroland10/sikachain-nodeos:<tag>` (also `:latest`).
 
-Pull in `docker-compose.yml` or Fly:
+```bash
+bash sikachaindev/deploy/testnet/pull-image.sh
+cd sikachaindev/deploy/testnet && cp .env.example .env
+# edit .env + mount genesis.json
+docker compose --env-file .env up -d --no-build
+```
 
-```yaml
-image: ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v2
+Fly `fly.toml` image line:
+
+```toml
+# image = "ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v2"
 ```
 
 ### Option B — Local / CI build

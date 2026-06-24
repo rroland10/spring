@@ -109,6 +109,10 @@ NODE_URL=https://rpc.testnet.sikachain.gh \
   EXPECT_CHAIN_ID=<your-chain-id> \
   HYPERION_URL=https://hyperion.testnet.sikachain.gh \
   bash scripts/verify-testnet.sh
+
+# Templates + remote chain + optional hosted app/site
+VERIFY_WALLET_URL=https://app.sikachain.gh \
+  bash scripts/verify-predeploy-remote.sh
 ```
 
 Publish Anchor import JSON after URLs are known:
