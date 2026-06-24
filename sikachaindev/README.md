@@ -11,6 +11,7 @@ bash scripts/start-all.sh              # nodeos + keosd
 bash scripts/setup-wallet.sh           # import sika + dev keys
 bash scripts/cleos.sh get info         # wrapper (auto-unlock)
 bash scripts/test-cleos.sh              # full cleos feature matrix
+bash scripts/test-app-cleos-full.sh     # all app features (vote+REX+MSIG+NFT+RAM+vesting opt)
 VERIFY_REX=1 bash scripts/test-cleos.sh
 bash scripts/create-account-cleos.sh myacct
 ```
@@ -59,6 +60,7 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `check-launch-ready.sh` | Offline + live sika/gh-v1 readiness (`LIVE=1` adds Playwright; `FULL=1` adds wallet-live) |
 | `cleos.sh` | cleos wrapper — auto-unlock keosd, RPC/wallet defaults (see **docs/cleos-dev.md**) |
 | `test-cleos.sh` | Feature matrix via cleos (transfers, tables, msig; `VERIFY_REX=1`) |
+| `test-app-cleos-full.sh` | Full app parity via cleos (vote deposit, REX, business MSIG, NFT; `VERIFY_TIER2=1`) |
 | `create-account-cleos.sh` | New account via `cleos system newaccount` + buyrambytes |
 | `setup-wallet.sh` | Create/unlock default keosd wallet; import dev/BP keys |
 | `export-anchor-chain.mjs` | Regenerate `anchor-chain.json` + `anchor-chain.testnet.example.json` from `chain.json` |
