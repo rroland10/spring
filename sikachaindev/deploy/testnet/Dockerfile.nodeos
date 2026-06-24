@@ -1,0 +1,48 @@
+# SikaChain testnet nodeos — runtime image (linux/amd64 binaries required).
+#
+# Build Spring on Linux first (or use CI), then from repo root:
+#   docker build -f sikachaindev/deploy/testnet/Dockerfile.nodeos \
+#     --platform linux/amd64 \
+#     -t sikachain-nodeos:testnet .
+#
+# Or: bash sikachaindev/deploy/testnet/build-image.sh
+#
+# Run locally:
+#   docker compose -f sikachaindev/deploy/testnet/docker-compose.yml up
+
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    gettext-base \
+    libboost-system1.74.0 \
+    libboost-thread1.74.0 \
+    libboost-filesystem1.74.0 \
+    libboost-iostreams1.74.0 \
+    libboost-program-options1.74.0 \
+    libssl3 \
+    libcurl4 \
+    libgmp10 \
+    libusb-1.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY build/programs/nodeos/nodeos /usr/local/bin/nodeos
+COPY sikachaindev/config/testnet/genesis.example.json /etc/sikachain/genesis.json
+COPY sikachaindev/deploy/testnet/nodeos-producer.docker.ini /etc/sikachain/nodeos-producer.docker.ini
+COPY sikachaindev/deploy/testnet/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENV SIKA_DATA_DIR=/var/lib/sikachain/data
+ENV SIKA_CONFIG_DIR=/var/lib/sikachain/config
+ENV SIKA_GENESIS_JSON=/etc/sikachain/genesis.json
+ENV NODEOS_CONFIG_TEMPLATE=/etc/sikachain/nodeos-producer.docker.ini
+
+VOLUME /var/lib/sikachain/data
+EXPOSE 8888 9876 8080
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
+  CMD curl -sf http://127.0.0.1:8888/v1/chain/get_info >/dev/null || exit 1
+
+ENTRYPOINT ["/entrypoint.sh"]

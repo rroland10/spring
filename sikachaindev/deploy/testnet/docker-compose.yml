@@ -1,0 +1,30 @@
+# Local / VPS testnet BP — replace env before `docker compose up`.
+# Mount a real genesis.json with your testnet initial_key (not the example placeholder).
+
+services:
+  nodeos:
+    image: sikachain-nodeos:testnet
+    build:
+      context: ../../..
+      dockerfile: sikachaindev/deploy/testnet/Dockerfile.nodeos
+    platform: linux/amd64
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+      - "9876:9876"
+      - "8080:8080"
+    environment:
+      PRODUCER_NAME: sikabpa
+      # PUB_K1_xxx=KEY:5K...
+      SIGNATURE_PROVIDER: "REPLACE_PUB=KEY:REPLACE_PVT"
+      P2P_ADVERTISE: "127.0.0.1:9876"
+      P2P_PEERS: ""
+      CORS_ORIGIN: "*"
+      AGENT_NAME: sikachain-testnet-bp1
+    volumes:
+      - sikachain_data:/var/lib/sikachain/data
+      # Override genesis for real testnet:
+      # - ./genesis.json:/etc/sikachain/genesis.json:ro
+
+volumes:
+  sikachain_data:

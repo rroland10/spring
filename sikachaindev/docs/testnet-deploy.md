@@ -2,7 +2,8 @@
 
 Ghana v1 wallet launch needs a **public testnet** (or mainnet) with the same protocol shape as SikaChainDev: privileged account **`sika`**, `sika.*` contracts, Savanna finality, SHIP → Hyperion, HTTPS RPC.
 
-**Step-by-step bootstrap:** [testnet-bootstrap.md](testnet-bootstrap.md)
+**Step-by-step bootstrap:** [testnet-bootstrap.md](testnet-bootstrap.md)  
+**Docker / Fly.io:** [testnet-fly.md](testnet-fly.md)
 
 This doc maps dev scripts to production steps. It does not provision cloud infra — use your host (Fly, AWS, bare metal, etc.).
 

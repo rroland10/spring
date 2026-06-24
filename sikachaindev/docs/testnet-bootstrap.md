@@ -47,7 +47,9 @@ Spring with `SIKACHAIN=ON` creates privileged account **`sika`** at genesis (not
 
 ## Phase 2 — Producer config
 
-1. Copy `config/testnet/nodeos-producer.example.ini` → each BP `config.ini`.
+**Container / Fly:** see [testnet-fly.md](testnet-fly.md) (`deploy/testnet/Dockerfile.nodeos`, `fly.toml.example`).
+
+1. Copy `config/testnet/nodeos-producer.example.ini` → each BP `config.ini` (bare metal).
 2. Set `producer-name`, `signature-provider`, P2P public endpoints, peer list.
 3. Enable `state_history_plugin` on at least one node (SHIP for Hyperion).
 4. Terminate TLS with `config/testnet/nginx-rpc.example.conf` (or Caddy/Fly/ALB).
