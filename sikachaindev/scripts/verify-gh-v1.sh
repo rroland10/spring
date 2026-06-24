@@ -27,6 +27,17 @@ if ! grep -q '^NEXT_PUBLIC_WALLET_ROLLOUT=gh-v1' "${GH_V1_ENV}"; then
 fi
 echo "  env template .env.sikachaindev.gh-v1          ok"
 
+PROD_EXAMPLE="${APP_DIR}/.env.production.gh-v1.example"
+if [[ ! -f "${PROD_EXAMPLE}" ]]; then
+  echo "FAIL: missing ${PROD_EXAMPLE}" >&2
+  exit 1
+fi
+if grep -q '^NEXT_PUBLIC_DEV_WALLET=1' "${PROD_EXAMPLE}"; then
+  echo "FAIL: production example must not enable DEV_WALLET" >&2
+  exit 1
+fi
+echo "  env template .env.production.gh-v1.example    ok"
+
 bash "${SCRIPT_DIR}/test-wallet-gh-v1.sh"
 echo "  test-wallet-gh-v1.sh                          ok"
 

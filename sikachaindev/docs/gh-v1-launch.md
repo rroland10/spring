@@ -66,6 +66,9 @@ See `Sika app/docs/UI.md` and `src/app/_constants/walletRollout.ts`.
 With SikaChainDev running and app on `:3003`:
 
 ```bash
+bash scripts/check-launch-ready.sh        # templates + phase 3 (if RPC up)
+LIVE=1 bash scripts/check-launch-ready.sh # + gh-v1 Playwright
+
 # Full live wallet gate (20 tests: UI + on-chain send + MSIG + business import)
 bash scripts/test-wallet-live.sh
 
