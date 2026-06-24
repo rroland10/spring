@@ -72,6 +72,11 @@ const msigAbi = ABI.from(JSON.parse(readFileSync(msigAbiPath, "utf8")));
 const chainJson = JSON.parse(readFileSync(join(__dirname, "../chain.json"), "utf8"));
 
 function resolvePrivateKey(account) {
+  const systemAccount =
+    process.env.SIKA_SYSTEM_ACCOUNT || chainJson.systemContract || "sika";
+  if (account === systemAccount && process.env.SIKA_SYSTEM_PRIVATE_KEY) {
+    return PrivateKey.from(process.env.SIKA_SYSTEM_PRIVATE_KEY);
+  }
   const fromAccount = chainJson.accounts?.[account]?.privateKey;
   if (fromAccount) {
     return PrivateKey.from(fromAccount);

@@ -9,7 +9,26 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 source "${SCRIPT_DIR}/env.sh"
+
+DEV_CHAIN_ID="9b2fde923758593c09517f77ed445a3962a9c938f44405dac43b4ccfebbfa57e"
+if [[ -z "${SIKA_SYSTEM_PRIVATE_KEY:-}" ]]; then
+  chain_id="$(curl -sf "${NODE_URL}/v1/chain/get_info" 2>/dev/null | python3 -c "import json,sys; print(json.load(sys.stdin).get('chain_id',''))" 2>/dev/null || true)"
+  if [[ -n "${chain_id}" && "${chain_id}" != "${DEV_CHAIN_ID}" && -f "${ROOT}/config/testnet/generated/README.txt" ]]; then
+    SIKA_SYSTEM_PRIVATE_KEY="$(grep '^Genesis private:' "${ROOT}/config/testnet/generated/README.txt" | awk '{print $3}')"
+    export SIKA_SYSTEM_PRIVATE_KEY
+  fi
+fi
+if [[ -n "${SIKA_SYSTEM_PRIVATE_KEY:-}" ]]; then
+  cleos wallet open 2>/dev/null || true
+  if [[ -f "${ROOT}/wallet/.password" ]]; then
+    "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" wallet unlock \
+      --password "$(tr -d '\n' < "${ROOT}/wallet/.password")" 2>/dev/null || true
+  fi
+  "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" wallet import \
+    --private-key "${SIKA_SYSTEM_PRIVATE_KEY}" 2>/dev/null || true
+fi
 
 SYS="${SIKA_SYSTEM_ACCOUNT:-sika}"
 TOKEN="${SIKA_TOKEN_ACCOUNT:-sika.token}"
