@@ -2655,9 +2655,10 @@ namespace detail {
 chain::symbol read_only::extract_core_symbol()const {
    symbol core_symbol(0);
 
-   // The following code makes assumptions about the contract deployed on eosio account (i.e. the system contract) and how it stores its data.
+   // The following code makes assumptions about the contract deployed on the system account and how it stores its data.
    const auto& d = db.db();
-   const auto* t_id = d.find<chain::table_id_object, chain::by_code_scope_table>(boost::make_tuple( "eosio"_n, "eosio"_n, "rammarket"_n ));
+   const auto* t_id = d.find<chain::table_id_object, chain::by_code_scope_table>(
+      boost::make_tuple( config::system_account_name, config::system_account_name, "rammarket"_n ) );
    if( t_id != nullptr ) {
       const auto &idx = d.get_index<key_value_index, by_scope_primary>();
       auto it = idx.find(boost::make_tuple( t_id->id, eosio::chain::string_to_symbol_c(4,"RAMCORE") ));

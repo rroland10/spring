@@ -26,5 +26,6 @@ namespace sikachain::testing {
       MAKE_READ_WASM_ABI(guard, sika.guard)
       MAKE_READ_WASM_ABI(rules, sika.rules)
       MAKE_READ_WASM_ABI(issue, sika.issue)
+      MAKE_READ_WASM_ABI(treas, sika.treas)
    };
 } // namespace sikachain::testing

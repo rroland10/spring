@@ -1085,7 +1085,7 @@ action_name apply_context::get_sender() const {
 }
 
 bool apply_context::is_eos_vm_oc_whitelisted() const {
-   return receiver.prefix() == config::system_account_name || // "eosio"_n
+   return receiver.prefix() == config::system_account_name || // "sika"_n
           control.is_eos_vm_oc_whitelisted(receiver);
 }
 

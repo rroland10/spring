@@ -1379,15 +1379,15 @@ struct controller_impl {
    set_apply_handler( account_name(#receiver), account_name(#contract), action_name(#action), \
                       &BOOST_PP_CAT(apply_, BOOST_PP_CAT(contract, BOOST_PP_CAT(_,action) ) ) )
 
-   SET_APP_HANDLER( eosio, eosio, newaccount );
-   SET_APP_HANDLER( eosio, eosio, setcode );
-   SET_APP_HANDLER( eosio, eosio, setabi );
-   SET_APP_HANDLER( eosio, eosio, updateauth );
-   SET_APP_HANDLER( eosio, eosio, deleteauth );
-   SET_APP_HANDLER( eosio, eosio, linkauth );
-   SET_APP_HANDLER( eosio, eosio, unlinkauth );
-
-   SET_APP_HANDLER( eosio, eosio, canceldelay );
+   // Native handlers must bind to config::system_account_name (sika).
+   set_apply_handler( config::system_account_name, config::system_account_name, "newaccount"_n, &apply_eosio_newaccount );
+   set_apply_handler( config::system_account_name, config::system_account_name, "setcode"_n, &apply_eosio_setcode );
+   set_apply_handler( config::system_account_name, config::system_account_name, "setabi"_n, &apply_eosio_setabi );
+   set_apply_handler( config::system_account_name, config::system_account_name, "updateauth"_n, &apply_eosio_updateauth );
+   set_apply_handler( config::system_account_name, config::system_account_name, "deleteauth"_n, &apply_eosio_deleteauth );
+   set_apply_handler( config::system_account_name, config::system_account_name, "linkauth"_n, &apply_eosio_linkauth );
+   set_apply_handler( config::system_account_name, config::system_account_name, "unlinkauth"_n, &apply_eosio_unlinkauth );
+   set_apply_handler( config::system_account_name, config::system_account_name, "canceldelay"_n, &apply_eosio_canceldelay );
    }
 
    void open_fork_db() {

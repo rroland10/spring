@@ -27,6 +27,7 @@ set(SIKA_TEST_SOURCES
    ${SIKA_TESTS_DIR}/test_sika_rex.cpp
    ${SIKA_TESTS_DIR}/test_sika_rules.cpp
    ${SIKA_TESTS_DIR}/test_sika_issue.cpp
+   ${SIKA_TESTS_DIR}/test_sika_treas.cpp
 )
 
 add_executable(sika_unit_tests ${SIKA_TEST_SOURCES})
