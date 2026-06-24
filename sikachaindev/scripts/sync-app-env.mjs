@@ -114,6 +114,52 @@ writeFileSync(
 );
 console.log("Wrote", ghV1Path);
 
+const prodGhV1Path = join(APP_DIR, ".env.production.gh-v1.example");
+writeFileSync(
+  prodGhV1Path,
+  `# Ghana v1 production / testnet — copy to hosting provider env (Vercel, Fly, etc.)
+# Do NOT commit real secrets. Replace placeholders before deploy.
+# Generate fresh dev templates: bash spring/sikachaindev/scripts/sync-dev-env.sh
+
+NEXT_PUBLIC_APP_NAME=Sika App
+NEXT_PUBLIC_MARKET=gh
+NEXT_PUBLIC_WALLET_ROLLOUT=gh-v1
+NEXT_PUBLIC_BASE_URL=https://app.sikachain.gh
+
+NEXT_PUBLIC_CHAIN_READ_RPC_URLS=https://rpc.testnet.sikachain.gh
+NEXT_PUBLIC_CHAIN_ID=REPLACE_WITH_CHAIN_ID
+NEXT_PUBLIC_CHAIN_NAME=SikaChain
+
+NEXT_PUBLIC_CONTRACT_ACCOUNT=sika
+NEXT_PUBLIC_TABLE_ACCOUNT=sika
+NEXT_PUBLIC_SYSTEM_CONTRACT_DISPLAY_NAME=SikaChain System
+NEXT_PUBLIC_TOKEN_CONTRACT=sika.token
+NEXT_PUBLIC_REX_CONTRACT=sika.rex
+NEXT_PUBLIC_MSIG_CONTRACT=sika.msig
+NEXT_PUBLIC_ATOMICASSETS_CONTRACT=atomicassets
+NEXT_PUBLIC_TOKEN_SYMBOL=SIKA
+NEXT_PUBLIC_TOKEN_PRECISION=4
+NEXT_PUBLIC_BP_AVAILABLE_CHAIN=sikachain
+NEXT_PUBLIC_STABLECOIN_CONTRACT=sika.token
+NEXT_PUBLIC_STABLECOIN_SYMBOL=CGHS
+NEXT_PUBLIC_STABLECOIN_PRECISION=4
+
+NEXT_PUBLIC_WEBSITE_URL=https://sikachain.com
+NEXT_PUBLIC_WEBSITE_LOCALE=en
+NEXT_PUBLIC_EXPLORER_HYPERION_URL=https://hyperion.testnet.sikachain.gh
+
+# Sign-in: Anchor (default) and/or hosted web authenticator
+# NEXT_PUBLIC_WEB_AUTHENTICATOR_URL=https://auth.sikachain.gh
+
+# Never set on production:
+# NEXT_PUBLIC_DEV_WALLET=1
+# NEXT_PUBLIC_E2E_MOCK_ACTOR=...
+# NEXT_PUBLIC_E2E_MOCK_PRIVATE_KEY=...
+`,
+  "utf8",
+);
+console.log("Wrote", prodGhV1Path);
+
 if (process.argv.includes("--local")) {
   const src =
     process.env.SIKACHAIN_DEV === "1" && existsSync(phase3Path)

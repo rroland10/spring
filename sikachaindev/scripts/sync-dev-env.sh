@@ -6,6 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 node "${SCRIPT_DIR}/sync-app-env.mjs" --local "$@"
 node "${SCRIPT_DIR}/sync-adapter-env.mjs"
+node "${SCRIPT_DIR}/export-anchor-chain.mjs"
 
 WEB_DIR="${SIKA_CHAIN_WEB_DIR:-/Users/randallroland/Desktop/Projects/SikaChain}"
 if [[ -f "${WEB_DIR}/scripts/sync-chain-config.mjs" ]]; then

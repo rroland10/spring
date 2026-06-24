@@ -12,5 +12,5 @@
   "producer": "sika",
   "logo": "https://sikachain.com/images/sikachain.svg",
   "appName": "Sika",
-  "notes": "Import in Anchor: Settings → Blockchains → Add → paste chain ID and RPC. Use sikadev account for local testing (see chain.json)."
+  "notes": "Import in Anchor: Settings → Blockchains → Add. Privileged system account is sika (not eosio)."
 }
