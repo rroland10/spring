@@ -48,7 +48,9 @@ const systemAbi = ABI.from(
 
 const chainJson = JSON.parse(readFileSync(join(__dirname, '../chain.json'), 'utf8'))
 const systemAccount = process.env.SIKA_SYSTEM_ACCOUNT || chainJson.systemContract || 'sika'
-const privateKey = PrivateKey.from(chainJson.privateKey)
+const systemPrivateKey =
+  process.env.SIKA_SYSTEM_PRIVATE_KEY || chainJson.privateKey
+const privateKey = PrivateKey.from(systemPrivateKey)
 const pubK1 = PublicKey.from(publicKey).toString()
 const client = new APIClient({url: rpc})
 
@@ -126,8 +128,14 @@ const tx = Transaction.from({
 })
 
 const digest = tx.signingDigest(info.chain_id)
-const sig = privateKey.signDigest(digest)
-const signed = SignedTransaction.from({...tx, signatures: [sig]})
+const signatures = [privateKey.signDigest(digest)]
+if (ramPayer !== systemAccount) {
+  const ramPayerKey = PrivateKey.from(
+    process.env.RAM_PAYER_PRIVATE_KEY || chainJson.privateKey,
+  )
+  signatures.push(ramPayerKey.signDigest(digest))
+}
+const signed = SignedTransaction.from({...tx, signatures})
 
 const result = await client.v1.chain.send_transaction(signed)
 console.log(`Created ${account} (${ramBytes} bytes RAM)`)

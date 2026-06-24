@@ -1,7 +1,7 @@
 {
-  "name": "SikaChain Testnet",
-  "chainId": "REPLACE_WITH_CHAIN_ID",
-  "nodeUrl": "https://rpc.testnet.sikachain.gh",
+  "name": "SikaChain Testnet (local docker)",
+  "chainId": "7efd1395013e48a5884e22836be40f97a1ae7aee735af86d63108c9dc681d143",
+  "nodeUrl": "http://127.0.0.1:18890",
   "symbol": "SIKA",
   "keyPrefix": "PUB_K1",
   "testnet": true,
@@ -9,7 +9,7 @@
   "tokenContract": "sika.token",
   "tokenSymbol": "SIKA",
   "stablecoinSymbol": "CGHS",
-  "producer": "sika",
+  "producer": "sikabpa",
   "logo": "https://sikachain.com/images/sikachain.svg",
   "appName": "Sika",
   "notes": "Testnet Anchor import. Privileged system account is sika (not eosio). Replace chainId and nodeUrl before publishing."

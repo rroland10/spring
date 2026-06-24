@@ -42,6 +42,11 @@ if [[ "${chain_id}" == "${DEV_CHAIN_ID}" && "${ALLOW_DEV_CHAIN:-0}" != "1" ]]; t
   exit 1
 fi
 
+if [[ -z "${SIKA_SYSTEM_PRIVATE_KEY:-}" && -f "${ROOT}/config/testnet/generated/README.txt" ]]; then
+  SIKA_SYSTEM_PRIVATE_KEY="$(grep '^Genesis private:' "${ROOT}/config/testnet/generated/README.txt" | awk '{print $3}')"
+  export SIKA_SYSTEM_PRIVATE_KEY
+fi
+
 export SIKACHAIN_DEV=1
 export SIKA_SYSTEM_ACCOUNT=sika
 

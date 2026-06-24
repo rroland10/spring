@@ -67,6 +67,7 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `verify-testnet.sh` | Remote smoke: `sika` + `sika.token` + Hyperion (`NODE_URL`, `EXPECT_CHAIN_ID`) |
 | `verify-predeploy-remote.sh` | Templates + `verify-testnet` + optional hosted app/site URLs |
 | `bootstrap-testnet.sh` | Deploy contracts + BPs on fresh testnet genesis (not dev chain id) |
+| `bootstrap-docker-testnet.sh` | One-shot docker testnet on `:18890` (gen keys → contracts → 6 BPs → `sikabpa`) |
 | `export-testnet-env.mjs` | Generate wallet production env from `TESTNET_*` vars |
 | `deploy/testnet/` | Docker + Fly.io nodeos templates — [docs/testnet-fly.md](docs/testnet-fly.md) |
 | `setup-hyperion-testnet.sh` | Hyperion for hosted testnet — [docs/testnet-hyperion.md](docs/testnet-hyperion.md) |

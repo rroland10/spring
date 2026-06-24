@@ -8,13 +8,13 @@ Step-by-step guide to stand up a **new** public testnet (not a copy of SikaChain
 
 | Item | Source |
 |------|--------|
-| nodeos / cleos / keosd | [rroland10/spring](https://github.com/rroland10/spring) tag **`sikachain-dev-sika-v3`** |
+| nodeos / cleos / keosd | [rroland10/spring](https://github.com/rroland10/spring) tag **`sikachain-dev-sika-v4`** |
 | System contracts | `sikachain sys contract` — `SIKACHAIN=1 ./build.sh` |
 | eosio.boot | `bash scripts/build-system-contracts.sh` or Spring `unittests/contracts/eosio.boot/` |
 
 ```bash
 git clone https://github.com/rroland10/spring.git
-cd spring && git checkout sikachain-dev-sika-v3
+cd spring && git checkout sikachain-dev-sika-v4
 bash sikachaindev/scripts/build-sikachain-spring.sh
 ```
 
@@ -58,6 +58,29 @@ curl -s https://rpc.testnet.sikachain.gh/v1/chain/get_info | jq -r .chain_id
 ```
 
 Spring with `SIKACHAIN=ON` creates privileged account **`sika`** at genesis (not `eosio`).
+
+## Phase 1b — Local Docker dry-run (optional)
+
+One-shot bootstrap on a fresh docker volume (uses port **18890** by default so dev `:8888` stays free):
+
+```bash
+bash scripts/gen-testnet-keys.sh
+RESET=1 RPC_HOST_PORT=18890 bash scripts/bootstrap-docker-testnet.sh
+```
+
+This script:
+
+1. Starts GHCR `sikachain-dev-sika-v4` nodeos as genesis `sika`
+2. Runs `bootstrap-testnet.sh` (contracts + 6 BPs)
+3. Switches the container producer to `sikabpa` so blocks keep advancing after schedule activation
+
+Verify:
+
+```bash
+NODE_URL=http://127.0.0.1:18890 EXPECT_CHAIN_ID=<from-get_info> bash scripts/verify-testnet.sh
+```
+
+**Docker notes:** v4 image bakes `enable-stale-production`, `wasm-runtime=eos-vm`, unlimited `max-transaction-time`, and higher genesis CPU limits (`genesis.example.json`) so `sika.system` WASM deploy succeeds under amd64 emulation.
 
 ## Phase 2 — Producer config
 

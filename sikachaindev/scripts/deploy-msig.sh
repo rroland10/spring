@@ -117,7 +117,7 @@ retry cleos_cmd set account permission \
 SIKA_RULES="${SIKA_RULES_ACCOUNT:-sika.rules}"
 echo "=== Mark ${MSIG_ACCOUNT} privileged (setpriv) ==="
 push_action_or_skip "${MSIG_ACCOUNT} setpriv" \
-  cleos_cmd push action "${SIKA_SYSTEM}" setpriv "[\"${MSIG_ACCOUNT}\",1]" -p "${SIKA_RULES}@active"
+  cleos_cmd push action "${SIKA_SYSTEM}" setpriv "[\"${MSIG_ACCOUNT}\",1]" -p "${SIKA_RULES}@active" -f
 
 if [[ "${VERIFY_MSIG:-1}" == "1" ]]; then
   bash "${SCRIPT_DIR}/verify-msig.sh" || echo "  (verify-msig failed — see verify-msig.sh)"

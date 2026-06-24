@@ -3,10 +3,10 @@
 #
 # Usage:
 #   bash sikachaindev/deploy/testnet/pull-image.sh
-#   SIKA_NODEOS_IMAGE=ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v3 bash ...
+#   SIKA_NODEOS_IMAGE=ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v4 bash ...
 set -euo pipefail
 
-IMAGE="${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v3}"
+IMAGE="${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v4}"
 
 echo "Pulling ${IMAGE}..."
 if ! docker pull --platform linux/amd64 "${IMAGE}"; then

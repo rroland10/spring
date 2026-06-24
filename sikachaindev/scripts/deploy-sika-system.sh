@@ -16,7 +16,7 @@ CONTRACTS_DIR="${SIKA_CONTRACTS_DIR:-/Users/randallroland/Desktop/Projects/sikac
 BUILD_DIR="${CONTRACTS_DIR}/build/contracts"
 CORE_CONTRACTS_DIR="${CORE_CONTRACTS_DIR:-${ROOT}/../.system-contracts/contracts/build}"
 EOSIO_BOOT_FALLBACK="${ROOT}/../unittests/contracts/eosio.boot"
-HTTP_PORT=8888
+HTTP_PORT="${HTTP_PORT:-$(python3 -c "import os,urllib.parse; u=os.environ.get('NODE_URL','http://127.0.0.1:8888'); print(urllib.parse.urlparse(u).port or 8888)")}"
 PUB="$(python3 -c "import json; print(json.load(open('${ROOT}/chain.json'))['publicKey'])")"
 
 SIKA_SYSTEM="${SIKA_SYSTEM_ACCOUNT:-sika}"
@@ -48,10 +48,10 @@ wait_for_account() {
 
 wait_for_node() {
   local n=0
-  until curl -sf "http://127.0.0.1:${HTTP_PORT}/v1/chain/get_info" >/dev/null 2>&1; do
+  until curl -sf "${NODE_URL}/v1/chain/get_info" >/dev/null 2>&1; do
     n=$((n + 1))
     if [[ $n -ge 60 ]]; then
-      echo "error: nodeos not responding on port ${HTTP_PORT}"
+      echo "error: nodeos not responding at ${NODE_URL}"
       exit 1
     fi
     sleep 1
@@ -107,6 +107,42 @@ cleos_cmd() {
 cleos_tx() {
   "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" \
     "$@" --return-failure-trace false --use-old-rpc
+}
+
+producer_pause() {
+  curl -sf -X POST "${NODE_URL}/v1/producer/pause" \
+    -H 'Content-Type: application/json' -d '{}' >/dev/null 2>&1 || true
+}
+
+producer_resume() {
+  curl -sf -X POST "${NODE_URL}/v1/producer/resume" \
+    -H 'Content-Type: application/json' -d '{}' >/dev/null 2>&1 || true
+}
+
+# Large WASM publishes can spike CPU; pause block production during set contract on slow/docker nodes.
+set_contract_paused() {
+  local acct="$1"
+  local dir="$2"
+  producer_pause
+  sleep 1
+  wait_for_node
+  if cleos_tx set contract "${acct}" "${dir}/" -x 3600; then
+    producer_resume
+    return 0
+  fi
+  producer_resume
+  return 1
+}
+
+retry_set_contract() {
+  local acct="$1"
+  local dir="$2"
+  local n=0
+  until set_contract_paused "${acct}" "${dir}" || [[ $((n+=1)) -ge 8 ]]; do
+    echo "  retry set contract ${acct} (${n}/8) — waiting for node..."
+    sleep 15
+    wait_for_node
+  done
 }
 
 ensure_settlement_account() {
@@ -319,7 +355,7 @@ fi
 echo "Activating protocol features (PREACTIVATE + Savanna)..."
 PREACTIVATE_DIGEST="0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"
 wait_for_node
-RESP=$(curl -s -X POST "http://127.0.0.1:${HTTP_PORT}/v1/producer/schedule_protocol_feature_activations" \
+RESP=$(curl -s -X POST "${NODE_URL}/v1/producer/schedule_protocol_feature_activations" \
   -H "Content-Type: application/json" \
   -d "{\"protocol_features_to_activate\":[\"${PREACTIVATE_DIGEST}\"]}" || true)
 if echo "${RESP}" | grep -q '"result":"ok"'; then
@@ -363,8 +399,13 @@ for f in "${FEATURES[@]}"; do
 done
 sleep 1
 
+# Deploy sika.system immediately after protocol activation (eosio.boot onblock fails once boot is done).
+echo "Deploying sika.system → ${SIKA_SYSTEM}..."
+retry_set_contract "${SIKA_SYSTEM}" "${BUILD_DIR}/sika.system"
+sleep 2
+
 echo "Deploying sika.token → ${SIKA_TOKEN}..."
-retry cleos_tx set contract "${SIKA_TOKEN}" "${BUILD_DIR}/sika.token/" -x 3600
+retry_set_contract "${SIKA_TOKEN}" "${BUILD_DIR}/sika.token"
 sleep 1
 
 if sika_token_created; then
@@ -387,10 +428,6 @@ else
   echo "Creating CUSD reference unit (max 10B, issuer ${SIKA_USD_ISSUER})..."
   retry cleos_tx push action "${SIKA_TOKEN}" create "[\"${SIKA_USD_ISSUER}\",\"10000000000.0000 CUSD\"]" -p "${SIKA_TOKEN}@active" -x 3600
 fi
-
-echo "Deploying sika.system → ${SIKA_SYSTEM}..."
-retry cleos_tx set contract "${SIKA_SYSTEM}" "${BUILD_DIR}/sika.system/" -x 3600
-sleep 2
 
 if token_already_deployed; then
   echo "  genesis SIKA already issued — skipping init/issue"
