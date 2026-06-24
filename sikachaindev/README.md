@@ -44,6 +44,7 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `test-wallet-gh-v1.sh` | Ghana v1 rollout surface (isolated :3099, `gh-v1` gating) |
 | `verify-gh-v1.sh` | Env template + gh-v1 Playwright gate |
 | `check-launch-ready.sh` | Offline + live sika/gh-v1 readiness (`LIVE=1` adds Playwright; `FULL=1` adds wallet-live) |
+| `verify-predeploy.sh` | Pre-deploy gate: launch-ready + GTM stack URLs (`GH_V1=1` / `FULL=1` for Playwright) |
 | `preview-gh-v1.sh` | Sync env + copy `.env.sikachaindev.gh-v1` → Sika app for local gh-v1 preview |
 | `export-anchor-chain.mjs` | Regenerate `anchor-chain.json` + `anchor-chain.testnet.example.json` from `chain.json` |
 | `smoke-wallet.sh` | Wallet UI RPC probes for `sikadev` (balances, stake, REX, NFTs) |
@@ -132,7 +133,11 @@ Accra-first wallet surface (`NEXT_PUBLIC_WALLET_ROLLOUT=gh-v1`). See **[docs/gh-
 
 ```bash
 bash scripts/check-launch-ready.sh        # templates + on-chain phase 3 (if RPC up)
-LIVE=1 bash scripts/check-launch-ready.sh # + verify-gh-v1 Playwright
+bash scripts/verify-predeploy.sh        # launch-ready + site/app/Hyperion URLs
+GH_V1=1 bash scripts/verify-predeploy.sh # + gh-v1 Playwright
+FULL=1 bash scripts/verify-predeploy.sh  # + full wallet-live (slow)
+
+LIVE=1 bash scripts/check-launch-ready.sh # + verify-gh-v1 Playwright only
 FULL=1 bash scripts/check-launch-ready.sh # + full wallet-live gate (slow)
 
 bash scripts/verify-gh-v1.sh              # env template + Playwright gh-v1 gate
