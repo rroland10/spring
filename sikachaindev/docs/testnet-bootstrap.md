@@ -20,16 +20,30 @@ bash sikachaindev/scripts/build-sikachain-spring.sh
 
 ## Phase 1 — Keys and genesis
 
-1. Generate a **new** genesis keypair (store offline):
+**Automated (recommended):**
+
+```bash
+bash scripts/gen-testnet-keys.sh
+# or: BP_COUNT=21 bash scripts/gen-testnet-keys.sh
+```
+
+Writes gitignored `config/testnet/generated/` — `genesis.json`, `producers-<N>.json`, `README.txt` (genesis private key). **Never commit** that directory.
+
+**Manual alternative:**
 
 ```bash
 cleos create key --to-console
-# Note PUB_K1 → initial_key in genesis
+# Copy config/testnet/genesis.example.json → set initial_key + initial_timestamp
 ```
 
-2. Copy `config/testnet/genesis.example.json` → host path (e.g. `/var/lib/sikachain/genesis.json`).
-3. Set `initial_key` to the new public key and `initial_timestamp` to launch UTC.
-4. Start **one** nodeos with empty data dir:
+Mount genesis at run time (compose example):
+
+```bash
+# deploy/testnet/docker-compose.yml — uncomment:
+# - ../../config/testnet/generated/genesis.json:/etc/sikachain/genesis.json:ro
+```
+
+Start **one** nodeos with empty data dir (or use Docker — [testnet-fly.md](testnet-fly.md)):
 
 ```bash
 nodeos --genesis-json /var/lib/sikachain/genesis.json \
@@ -37,7 +51,7 @@ nodeos --genesis-json /var/lib/sikachain/genesis.json \
   --config-dir /var/lib/sikachain/config
 ```
 
-5. Record **chain ID** (needed for wallet + Anchor):
+Record **chain ID** (needed for wallet + Anchor):
 
 ```bash
 curl -s https://rpc.testnet.sikachain.gh/v1/chain/get_info | jq -r .chain_id
@@ -75,12 +89,10 @@ This runs the same path as dev:
 2. `bootstrap-6bp.sh` or `BP_COUNT=21` — register/vote producers
 3. `verify-testnet.sh` — RPC smoke
 
-**Generate new BP keys** for testnet; do not publish `config/producers-6.json` dev keys:
+**Generate new BP keys** for testnet; do not publish `config/producers-6.json` dev keys. Use output from `gen-testnet-keys.sh`:
 
 ```bash
-cleos create key --to-console   # repeat per BP
-# Build config/producers-testnet-6.json with name, pub, pvt
-PRODUCERS_JSON=config/producers-testnet-6.json bash scripts/bootstrap-testnet.sh
+PRODUCERS_JSON=config/testnet/generated/producers-6.json bash scripts/bootstrap-testnet.sh
 ```
 
 Local dry-run against SikaChainDev (same scripts, dev chain id):

@@ -27,6 +27,13 @@ git tag sikachain-dev-sika-v3 && git push fork sikachain-dev-sika-v3
 
 Image: `ghcr.io/rroland10/sikachain-nodeos:<tag>` (also `:latest`).
 
+**GHCR access:** new packages are **private** by default. Either:
+
+1. **Public testnet image** — GitHub → Packages → `sikachain-nodeos` → Package settings → Change visibility → Public, or
+2. **Private pull** — `echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin` (PAT needs `read:packages`).
+
+`docker pull` returning `denied` usually means the GHA build is still running or the package is private.
+
 ```bash
 bash sikachaindev/deploy/testnet/pull-image.sh
 cd sikachaindev/deploy/testnet && cp .env.example .env
@@ -56,9 +63,18 @@ On **macOS**: build in a Linux VM/GitHub Actions, or use `docker buildx` with a 
 
 ## 2. Genesis
 
-1. Generate keys: `cleos create key --to-console`
-2. Edit `config/testnet/genesis.example.json` → set `initial_key`, `initial_timestamp`
-3. Mount at run time: `-v ./genesis.json:/etc/sikachain/genesis.json:ro`
+```bash
+bash sikachaindev/scripts/gen-testnet-keys.sh
+```
+
+Mounts `config/testnet/generated/genesis.json` at run time:
+
+```yaml
+# docker-compose.yml volumes:
+- ../../config/testnet/generated/genesis.json:/etc/sikachain/genesis.json:ro
+```
+
+Set `SIGNATURE_PROVIDER` in `.env` to **sikabpa**'s key from `generated/producers-6.json` for BP1.
 
 ## 3. Docker Compose (VPS / local)
 
