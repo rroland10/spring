@@ -14,9 +14,9 @@ services:
     platform: linux/amd64
     restart: unless-stopped
     ports:
-      - "8888:8888"
-      - "9876:9876"
-      - "8080:8080"
+      - "${RPC_HOST_PORT:-8888}:8888"
+      - "${P2P_HOST_PORT:-9876}:9876"
+      - "${SHIP_HOST_PORT:-8080}:8080"
     environment:
       PRODUCER_NAME: ${PRODUCER_NAME:-sikabpa}
       SIGNATURE_PROVIDER: ${SIGNATURE_PROVIDER:?set SIGNATURE_PROVIDER in .env}
@@ -26,8 +26,10 @@ services:
       AGENT_NAME: ${AGENT_NAME:-sikachain-testnet-bp1}
     volumes:
       - sikachain_data:/var/lib/sikachain/data
-      # Real testnet genesis (required — example placeholder will not start chain):
-      # - ./genesis.json:/etc/sikachain/genesis.json:ro
+      - ./nodeos-producer.docker.ini:/etc/sikachain/nodeos-producer.docker.ini:ro
+      - ./entrypoint.sh:/entrypoint.sh:ro
+      # Real testnet genesis (required on first start — use up.sh or set SIKA_GENESIS_HOST):
+      - ${SIKA_GENESIS_HOST:?set SIKA_GENESIS_HOST to host path of genesis.json}:/etc/sikachain/genesis.json:ro
 
 volumes:
   sikachain_data:

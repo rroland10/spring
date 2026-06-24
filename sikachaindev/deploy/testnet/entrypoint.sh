@@ -9,6 +9,15 @@ TEMPLATE="${NODEOS_CONFIG_TEMPLATE:-/etc/sikachain/nodeos-producer.docker.ini}"
 
 mkdir -p "${DATA_DIR}" "${CONFIG_DIR}"
 
+BLOCKS_LOG="${DATA_DIR}/blocks/blocks.log"
+if [[ -f "${BLOCKS_LOG}" ]]; then
+  blksize="$(wc -c < "${BLOCKS_LOG}" | tr -d ' ')"
+  if [[ "${blksize}" -lt 64 ]]; then
+    echo "note: removing invalid blocks.log (${blksize} bytes) from failed start"
+    rm -rf "${DATA_DIR}/blocks" "${DATA_DIR}/state"
+  fi
+fi
+
 : "${PRODUCER_NAME:?set PRODUCER_NAME}"
 : "${SIGNATURE_PROVIDER:?set SIGNATURE_PROVIDER (PUB=KEY:PVT)}"
 : "${P2P_ADVERTISE:?set P2P_ADVERTISE (host:port advertised to peers)}"
@@ -35,8 +44,15 @@ envsubst < "${TEMPLATE}" > "${CONFIG_DIR}/config.ini"
 ARGS=(
   --config-dir "${CONFIG_DIR}"
   --data-dir "${DATA_DIR}"
-  --genesis-json "${GENESIS}"
 )
+
+if [[ ! -f "${DATA_DIR}/blocks/blocks.log" ]]; then
+  if [[ ! -f "${GENESIS}" ]]; then
+    echo "error: first start requires genesis JSON at ${GENESIS} (mount a real genesis file)" >&2
+    exit 1
+  fi
+  ARGS+=(--genesis-json "${GENESIS}")
+fi
 
 if [[ -f "${DATA_DIR}/blocks/blocks.log" ]] && [[ ! -f "${DATA_DIR}/.clean_shutdown" ]]; then
   echo "note: unclean shutdown — replaying blockchain"

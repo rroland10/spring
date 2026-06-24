@@ -36,9 +36,9 @@ Image: `ghcr.io/rroland10/sikachain-nodeos:<tag>` (also `:latest`).
 
 ```bash
 bash sikachaindev/deploy/testnet/pull-image.sh
-cd sikachaindev/deploy/testnet && cp .env.example .env
-# edit .env + mount genesis.json
-docker compose --env-file .env up -d --no-build
+bash sikachaindev/scripts/gen-testnet-keys.sh
+# Local dry-run when dev chain uses :8888:
+RPC_HOST_PORT=18890 bash sikachaindev/deploy/testnet/up.sh
 ```
 
 Fly `fly.toml` image line:

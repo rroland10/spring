@@ -19,5 +19,7 @@ fi
 
 echo ""
 echo "Run from deploy/testnet/:"
-echo "  cp .env.example .env   # edit SIGNATURE_PROVIDER + genesis mount"
+echo "  bash up.sh   # gen keys + auto .env + compose up"
+echo "  # or manually:"
+echo "  cp .env.example .env   # edit SIGNATURE_PROVIDER + SIKA_GENESIS_HOST"
 echo "  docker compose --env-file .env up -d --no-build"
