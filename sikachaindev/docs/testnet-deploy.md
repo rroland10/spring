@@ -2,6 +2,8 @@
 
 Ghana v1 wallet launch needs a **public testnet** (or mainnet) with the same protocol shape as SikaChainDev: privileged account **`sika`**, `sika.*` contracts, Savanna finality, SHIP → Hyperion, HTTPS RPC.
 
+**Step-by-step bootstrap:** [testnet-bootstrap.md](testnet-bootstrap.md)
+
 This doc maps dev scripts to production steps. It does not provision cloud infra — use your host (Fly, AWS, bare metal, etc.).
 
 ## 1. Build artifacts
@@ -113,6 +115,17 @@ TESTNET_CHAIN_ID=<chain-id> \
   TESTNET_RPC_URL=https://rpc.testnet.sikachain.gh \
   TESTNET_HYPERION_URL=https://hyperion.testnet.sikachain.gh \
   node scripts/export-anchor-chain.mjs --testnet-example
+
+TESTNET_CHAIN_ID=<chain-id> \
+  TESTNET_RPC_URL=https://rpc.testnet.sikachain.gh \
+  TESTNET_HYPERION_URL=https://hyperion.testnet.sikachain.gh \
+  node scripts/export-testnet-env.mjs   # wallet hosting env
+```
+
+Contract + BP bootstrap on fresh genesis:
+
+```bash
+bash scripts/bootstrap-testnet.sh   # see docs/testnet-bootstrap.md
 ```
 
 Legacy one-liner (templates only):

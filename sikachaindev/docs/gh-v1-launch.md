@@ -2,7 +2,7 @@
 
 Accra-first **Sika App** rollout: cGHS-first daily wallet + business MSIG, with pro tools hidden from hubs (direct URLs still work).
 
-Testnet / production node setup: **[docs/testnet-deploy.md](testnet-deploy.md)**.
+Testnet / production node setup: **[docs/testnet-deploy.md](testnet-deploy.md)** · **[docs/testnet-bootstrap.md](testnet-bootstrap.md)** (step-by-step).
 
 ## 1. Environment (production build)
 
