@@ -110,6 +110,15 @@ run "fxquotes oracle" bash -c "
     | python3 -c \"import json,sys; json.load(sys.stdin)\"
 "
 
+echo ""
+echo "--- Vote proxy (regproxy + voteproducer proxy) ---"
+if PROXY_ACCOUNT=sikauser1 VOTER_ACCOUNT=sikauser2 bash "${SCRIPT_DIR}/verify-proxy.sh"; then
+  echo "  verify-proxy                                    ok"
+else
+  echo "  verify-proxy                                    FAIL"
+  FAIL=1
+fi
+
 if [[ "${VERIFY_TIER2:-0}" == "1" ]]; then
   echo ""
   echo "--- Tier-2 vesting ---"

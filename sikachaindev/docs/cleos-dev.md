@@ -88,6 +88,13 @@ bash scripts/cleos.sh push action sika deposit '["sikadev","10.0000 SIKA"]' -p s
 bash scripts/cleos.sh system voteproducer prods sikadev sikabpa sikabpb sikabpc \
   -p sikadev@active -r 1h
 
+# Vote proxy (Tools → Proxy in app)
+bash scripts/cleos.sh push action sika regproxy '["sikauser1",true]' -p sikauser1@active
+bash scripts/cleos.sh push action sika delegatebw \
+  '["sikauser2","sikauser2","10.0000 SIKA","10.0000 SIKA",false]' -p sikauser2@active
+bash scripts/cleos.sh system voteproducer proxy sikauser2 sikauser1 -p sikauser2@active
+bash scripts/verify-proxy.sh
+
 # Producer schedule
 bash scripts/cleos.sh system listproducers -l 21
 
@@ -102,6 +109,7 @@ Spring **`cleos multisig`** hardcodes `eosio.msig`. On SikaChain use **`cleos pu
 ```bash
 bash scripts/verify-msig.sh              # sika proposer
 bash scripts/verify-msig-business.sh    # sikadev proposer
+bash scripts/verify-proxy.sh            # regproxy + voteproducer proxy
 bash scripts/msig-propose-transfer.mjs   # propose via Node (cleos approve/exec)
 ```
 
