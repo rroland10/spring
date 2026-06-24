@@ -1,0 +1,16 @@
+{
+  "name": "SikaChain Testnet",
+  "chainId": "REPLACE_WITH_CHAIN_ID",
+  "nodeUrl": "https://rpc.testnet.sikachain.gh",
+  "symbol": "SIKA",
+  "keyPrefix": "PUB_K1",
+  "testnet": true,
+  "systemContract": "sika",
+  "tokenContract": "sika.token",
+  "tokenSymbol": "SIKA",
+  "stablecoinSymbol": "CGHS",
+  "producer": "sika",
+  "logo": "https://sikachain.com/images/sikachain.svg",
+  "appName": "Sika",
+  "notes": "Testnet Anchor import. Privileged system account is sika (not eosio). Replace chainId and nodeUrl before publishing."
+}

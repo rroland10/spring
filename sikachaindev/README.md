@@ -45,7 +45,7 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `verify-gh-v1.sh` | Env template + gh-v1 Playwright gate |
 | `check-launch-ready.sh` | Offline + live sika/gh-v1 readiness (`LIVE=1` adds Playwright; `FULL=1` adds wallet-live) |
 | `preview-gh-v1.sh` | Sync env + copy `.env.sikachaindev.gh-v1` → Sika app for local gh-v1 preview |
-| `export-anchor-chain.mjs` | Regenerate `anchor-chain.json` from `chain.json` (Anchor custom chain import) |
+| `export-anchor-chain.mjs` | Regenerate `anchor-chain.json` + `anchor-chain.testnet.example.json` from `chain.json` |
 | `smoke-wallet.sh` | Wallet UI RPC probes for `sikadev` (balances, stake, REX, NFTs) |
 | `wait-for-rpc.sh` | Block until nodeos RPC is up (default 360s; replay-safe) |
 | `stop-ecosystem.sh` | Stop chain + Node apps (`--hyperion` to stop indexer containers) |

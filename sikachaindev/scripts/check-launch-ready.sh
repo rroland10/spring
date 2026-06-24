@@ -54,6 +54,15 @@ c = json.load(open(sys.argv[1]))
 sys.exit(0 if c.get("systemContract") == "sika" else 1)
 PY
 
+TESTNET_ANCHOR="${ROOT}/anchor-chain.testnet.example.json"
+if [[ -f "${TESTNET_ANCHOR}" ]]; then
+  check "testnet anchor example systemContract=sika" python3 - <<'PY' "${TESTNET_ANCHOR}"
+import json, sys
+c = json.load(open(sys.argv[1]))
+sys.exit(0 if c.get("systemContract") == "sika" and "REPLACE" in c.get("chainId", "") else 1)
+PY
+fi
+
 echo ""
 echo "--- App / adapter env templates ---"
 bash "${SCRIPT_DIR}/sync-dev-env.sh" >/dev/null 2>&1 || true
