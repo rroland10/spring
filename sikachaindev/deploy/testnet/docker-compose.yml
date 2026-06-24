@@ -6,7 +6,7 @@
 
 services:
   nodeos:
-    image: ${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v2}
+    image: ${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v3}
     pull_policy: always
     build:
       context: ../../..
@@ -26,8 +26,6 @@ services:
       AGENT_NAME: ${AGENT_NAME:-sikachain-testnet-bp1}
     volumes:
       - sikachain_data:/var/lib/sikachain/data
-      - ./nodeos-producer.docker.ini:/etc/sikachain/nodeos-producer.docker.ini:ro
-      - ./entrypoint.sh:/entrypoint.sh:ro
       # Real testnet genesis (required on first start — use up.sh or set SIKA_GENESIS_HOST):
       - ${SIKA_GENESIS_HOST:?set SIKA_GENESIS_HOST to host path of genesis.json}:/etc/sikachain/genesis.json:ro
 

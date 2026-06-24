@@ -8,13 +8,13 @@ Step-by-step guide to stand up a **new** public testnet (not a copy of SikaChain
 
 | Item | Source |
 |------|--------|
-| nodeos / cleos / keosd | [rroland10/spring](https://github.com/rroland10/spring) tag **`sikachain-dev-sika-v2`** |
+| nodeos / cleos / keosd | [rroland10/spring](https://github.com/rroland10/spring) tag **`sikachain-dev-sika-v3`** |
 | System contracts | `sikachain sys contract` — `SIKACHAIN=1 ./build.sh` |
 | eosio.boot | `bash scripts/build-system-contracts.sh` or Spring `unittests/contracts/eosio.boot/` |
 
 ```bash
 git clone https://github.com/rroland10/spring.git
-cd spring && git checkout sikachain-dev-sika-v2
+cd spring && git checkout sikachain-dev-sika-v3
 bash sikachaindev/scripts/build-sikachain-spring.sh
 ```
 
