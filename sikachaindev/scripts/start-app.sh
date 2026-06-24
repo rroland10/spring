@@ -20,9 +20,16 @@ fi
 
 bash "${SCRIPT_DIR}/sync-dev-env.sh" 2>/dev/null || true
 
-ENV_SRC="${APP_DIR}/.env.sikachaindev"
-if [[ "${SIKACHAIN_DEV:-}" == "1" ]] && [[ -f "${APP_DIR}/.env.sikachaindev.phase3" ]]; then
+if [[ "${TESTNET_LOCAL:-0}" == "1" ]]; then
+  ENV_SRC="${APP_DIR}/.env.testnet-local"
+  if [[ ! -f "${ENV_SRC}" ]]; then
+    APPLY=1 RPC_HOST_PORT="${RPC_HOST_PORT:-18890}" bash "${SCRIPT_DIR}/sync-testnet-app-env.sh"
+    ENV_SRC="${APP_DIR}/.env.testnet-local"
+  fi
+elif [[ "${SIKACHAIN_DEV:-}" == "1" ]] && [[ -f "${APP_DIR}/.env.sikachaindev.phase3" ]]; then
   ENV_SRC="${APP_DIR}/.env.sikachaindev.phase3"
+else
+  ENV_SRC="${APP_DIR}/.env.sikachaindev"
 fi
 
 if [[ -f "${ENV_SRC}" ]]; then

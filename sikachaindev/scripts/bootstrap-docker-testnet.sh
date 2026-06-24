@@ -93,9 +93,15 @@ bash "${SCRIPT_DIR}/cleos.sh" wallet import --private-key "${GENESIS_PVT}" 2>/de
 echo ""
 echo "--- bootstrap-testnet ---"
 SKIP_SCHEDULE="${SKIP_SCHEDULE:-1}" \
+SKIP_BP_VOTE="${SKIP_BP_VOTE:-1}" \
 PRODUCERS_JSON="${PRODUCERS_JSON:-${PRODUCERS}}" NODE_URL="${NODE_URL}" \
   SIKA_SYSTEM_PRIVATE_KEY="${SIKA_SYSTEM_PRIVATE_KEY:-}" \
   bash "${SCRIPT_DIR}/bootstrap-testnet.sh"
+
+echo ""
+echo "--- dev accounts ---"
+export SKIP_BP_VOTE=1
+bash "${SCRIPT_DIR}/create-dev-accounts.sh"
 
 echo ""
 echo "=== bootstrap-docker-testnet complete ==="
@@ -103,3 +109,4 @@ echo "  chain_id=$(curl -sf "${NODE_URL}/v1/chain/get_info" | python3 -c 'import
 echo "  RPC: ${NODE_URL}"
 echo "  Producer: sika (single-node; BPs registered but schedule not activated)"
 echo "  Multinode rotation: bash scripts/start-6bp-cluster.sh after copying chain data"
+echo "  Hyperion (optional): bash scripts/setup-hyperion-testnet-local.sh  # :7002"

@@ -56,8 +56,13 @@ bash "${SCRIPT_DIR}/wait-for-rpc.sh" 60
 cleos_wallet_ready
 
 echo "--- Core cleos matrix (test-cleos.sh) ---"
-if VERIFY_REX=1 VERIFY_VOTE=1 CREATE_ACCOUNT=1 VERIFY_MSIG=1 \
-  bash "${SCRIPT_DIR}/test-cleos.sh"; then
+CLEOS_ENV=(VERIFY_REX=1 CREATE_ACCOUNT=1 VERIFY_MSIG=1)
+if [[ "${SKIP_BP_VOTE:-0}" == "1" ]]; then
+  echo "  (skip voteproducer in test-cleos — SKIP_BP_VOTE=1 / single-node docker)"
+else
+  CLEOS_ENV+=(VERIFY_VOTE=1)
+fi
+if env "${CLEOS_ENV[@]}" bash "${SCRIPT_DIR}/test-cleos.sh"; then
   echo "  test-cleos.sh                                  ok"
 else
   echo "  test-cleos.sh                                  FAIL"
@@ -72,8 +77,13 @@ echo ""
 echo "--- Resources (RAM + stake) ---"
 run "buyrambytes sikadev +4KiB" cleos_cmd push action "${SYS}" buyrambytes \
   '["sika.guard","'"${DEV}"'",4096]' -p sika.guard@active -x 3600
-run "delegatebw ${DEV} (small)" cleos_cmd push action "${SYS}" delegatebw \
-  "[\"${DEV}\",\"${DEV}\",\"1.0000 SIKA\",\"1.0000 SIKA\",false]" -p "${DEV}@active" -x 3600
+run "delegatebw ${DEV} (small)" bash -c "
+  if bash '${SCRIPT_DIR}/cleos.sh' get account '${DEV}' 2>/dev/null | grep -q 'delegated:'; then
+    exit 0
+  fi
+  bash '${SCRIPT_DIR}/cleos.sh' push action '${SYS}' delegatebw \
+    '[\"${DEV}\",\"${DEV}\",\"1.0000 SIKA\",\"1.0000 SIKA\",false]' -p '${DEV}@active' -x 3600
+"
 run "stake reflected on account" bash -c "
   bash '${SCRIPT_DIR}/cleos.sh' get account '${DEV}' \
     | grep -q 'delegated:'

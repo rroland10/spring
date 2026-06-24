@@ -55,7 +55,7 @@ print(d['ram_quota'], d['ram_usage'])
         -p "${SIKA_SYSTEM}@active" >/dev/null
     fi
     retry cleos_cmd push action "${SIKA_SYSTEM}" buyrambytes \
-      "[\"sika.guard\",\"${acct}\",${need_buy}]" -p sika.guard@active
+      "[\"sika.guard\",\"${acct}\",${need_buy}]" -p sika.guard@active -x 3600
   fi
 }
 
@@ -115,13 +115,13 @@ if ! curl -sf "${NODE_URL}/v1/chain/get_account" -d "{\"account_name\":\"${AA_AC
 fi
 
 ensure_contract_ram "${AA_ACCOUNT}" 2500000
-retry cleos_cmd set contract "${AA_ACCOUNT}" "${DEPLOY_DIR}/"
+retry cleos_cmd set contract "${AA_ACCOUNT}" "${DEPLOY_DIR}/" -x 3600
 
 retry cleos_cmd set account permission \
-  "${AA_ACCOUNT}" active --add-code -p "${AA_ACCOUNT}@active"
+  "${AA_ACCOUNT}" active --add-code -p "${AA_ACCOUNT}@active" -x 3600
 
 echo "=== Initialize AtomicAssets ==="
-retry cleos_cmd push action "${AA_ACCOUNT}" init '[]' -p "${AA_ACCOUNT}@active"
+retry cleos_cmd push action "${AA_ACCOUNT}" init '[]' -p "${AA_ACCOUNT}@active" -x 3600
 
 if [[ "${VERIFY_ATOMICASSETS:-1}" == "1" ]]; then
   bash "${SCRIPT_DIR}/verify-atomicassets.sh" || echo "  (verify-atomicassets failed)"

@@ -182,7 +182,9 @@ PY
 )
 
 echo ""
-if [[ -n "${VOTER}" ]]; then
+if [[ "${SKIP_BP_VOTE:-0}" == "1" ]]; then
+  echo "  (skip) voteproducer — single-node docker (avoid Savanna schedule activation)"
+elif [[ -n "${VOTER}" ]]; then
   echo "Voting ${VOTER} for all 21 producers..."
   retry cleos_cmd system voteproducer prods "${VOTER}" "${PRODUCER_NAMES[@]}" -p "${VOTER}@active"
 else

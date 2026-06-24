@@ -118,8 +118,11 @@ From ops machine with genesis `sika` key:
 
 ```bash
 export NODE_URL=https://<your-rpc>
-bash scripts/bootstrap-testnet.sh
+# Single BP (Fly / docker): do not activate multi-BP schedule — Savanna LIB stalls
+SKIP_SCHEDULE=1 SKIP_BP_VOTE=1 bash scripts/bootstrap-testnet.sh
 ```
+
+Multinode (6 BPs with static P2P): `SKIP_BP_VOTE=0 SKIP_SCHEDULE=0` and `start-6bp-cluster.sh` pattern on VPS.
 
 Publish clients:
 

@@ -1,6 +1,6 @@
 {
-  "name": "SikaChain Testnet (local docker)",
-  "chainId": "7efd1395013e48a5884e22836be40f97a1ae7aee735af86d63108c9dc681d143",
+  "name": "SikaChain Testnet",
+  "chainId": "REPLACE_WITH_CHAIN_ID",
   "nodeUrl": "http://127.0.0.1:18890",
   "symbol": "SIKA",
   "keyPrefix": "PUB_K1",

@@ -72,7 +72,7 @@ fund_account() {
     echo "  funding ${acct} with ${SIKA_FUND}..."
     unlock_wallet
     "${CLEOS_BIN}" "${CLEOS_ARGS[@]}" transfer "${SIKA_SYSTEM_ACCOUNT}" "${acct}" "${SIKA_FUND}" \
-      "SikaChainDev dev fund" -c "${SIKA_TOKEN_ACCOUNT}"
+      "SikaChainDev dev fund" -c "${SIKA_TOKEN_ACCOUNT}" -x 3600
   fi
 
   cghs_bal="$(token_balance "${acct}" CGHS)"
@@ -82,7 +82,7 @@ fund_account() {
     echo "  issuing ${CGHS_FUND} CGHS to ${acct}..."
     unlock_wallet
     "${CLEOS_BIN}" "${CLEOS_ARGS[@]}" push action "${SIKA_TOKEN_ACCOUNT}" issue \
-      "[\"${acct}\",\"${CGHS_FUND}\",\"SikaChainDev dev fund\"]" -p sika.issue@active
+      "[\"${acct}\",\"${CGHS_FUND}\",\"SikaChainDev dev fund\"]" -p sika.issue@active -x 3600
   fi
 }
 

@@ -48,6 +48,7 @@ if (!existsSync(refPath)) {
 
 const dockerMode =
   process.argv.includes("--docker") || process.env.HYPERION_DOCKER === "1";
+const mergeMode = process.argv.includes("--merge");
 
 mkdirSync(CHAINS_DIR, { recursive: true });
 
@@ -142,7 +143,17 @@ chainConfig.settings.parser = "3.2";
 chainConfig.indexer.live_reader = true;
 chainConfig.indexer.abi_scan_mode = false;
 
-writeFileSync(join(CONFIG_DIR, "connections.json"), JSON.stringify(connections, null, 2), "utf8");
+const connectionsPath = join(CONFIG_DIR, "connections.json");
+let connectionsOut = connections;
+if (mergeMode && existsSync(connectionsPath)) {
+  const merged = JSON.parse(readFileSync(connectionsPath, "utf8"));
+  merged.chains = merged.chains ?? {};
+  merged.chains[CHAIN_SHORT] = connections.chains[CHAIN_SHORT];
+  connectionsOut = merged;
+  console.log("Merged chain into existing", connectionsPath);
+}
+
+writeFileSync(connectionsPath, JSON.stringify(connectionsOut, null, 2), "utf8");
 const chainConfigPath = join(CHAINS_DIR, `${CHAIN_SHORT}.config.json`);
 writeFileSync(chainConfigPath, JSON.stringify(chainConfig, null, 2), "utf8");
 
@@ -154,7 +165,7 @@ writeFileSync(
   "utf8",
 );
 
-console.log("Wrote", join(CONFIG_DIR, "connections.json"));
+console.log("Wrote", connectionsPath);
 console.log("Wrote", chainConfigPath);
 console.log("Wrote", join(generated, "connections.testnet.json"));
 console.log("");

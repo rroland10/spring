@@ -16,7 +16,8 @@ primary_region = "iad"
   dockerfile = "sikachaindev/deploy/testnet/Dockerfile.nodeos"
 
 [env]
-  PRODUCER_NAME = "sikabpa"
+  # Fresh chain: produce as genesis `sika` until bootstrap; then sikabpa for multinode.
+  PRODUCER_NAME = "sika"
   P2P_ADVERTISE = "sikachain-testnet-bp1.fly.dev:9876"
   P2P_PEERS = ""
   CORS_ORIGIN = "https://app.sikachain.gh"

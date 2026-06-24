@@ -63,6 +63,22 @@ echo ""
 
 bash "${SCRIPT_DIR}/wait-for-rpc.sh" 60
 
+DEV_CHAIN_ID="$(python3 -c "import json; print(json.load(open('${ROOT}/chain.json')).get('chainId',''))" 2>/dev/null || true)"
+LIVE_CHAIN_ID="$(curl -sf "${NODE_URL}/v1/chain/get_info" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("chain_id",""))' 2>/dev/null || true)"
+TESTNET_MODE=0
+TESTNET_HYPERION="${TESTNET_HYPERION_URL:-http://127.0.0.1:7002}"
+if [[ -n "${DEV_CHAIN_ID}" && -n "${LIVE_CHAIN_ID}" && "${DEV_CHAIN_ID}" != "${LIVE_CHAIN_ID}" ]]; then
+  TESTNET_MODE=1
+  if curl -sf "${TESTNET_HYPERION}/v2/health" >/dev/null 2>&1; then
+    HYPERION="${TESTNET_HYPERION}"
+    echo "  note: docker testnet — Hyperion ${HYPERION} (skip slow /explore/chain SSR)"
+  else
+    HYPERION=""
+    echo "  note: docker testnet — no Hyperion at ${TESTNET_HYPERION} (run setup-hyperion-testnet-local.sh)"
+  fi
+fi
+echo ""
+
 echo "--- Chain & tokens ---"
 run "nodeos RPC" curl -sf "${NODE_URL}/v1/chain/get_info"
 run "nodeos RPC CORS" bash -c "
@@ -160,13 +176,28 @@ if [[ -n "${HYPERION}" ]]; then
 else
   echo ""
   echo "--- Hyperion ---"
-  echo "  --  not configured in chain.json"
+  if [[ "${TESTNET_MODE}" == "1" ]]; then
+    echo "  --  not running (bash scripts/setup-hyperion-testnet-local.sh)"
+  else
+    echo "  --  not configured in chain.json"
+  fi
 fi
 
 echo ""
 echo "--- Sika app pages (${APP_URL}) ---"
 warm_app_pages
-for path in "/" "/app/home" "/app/vote" "/app/earn" "/app/business" "/app/explore" "/app/explore/search" "/app/send" "/app/activity" "/app/notifications" "/app/tools" "/app/tools/ram" "/app/tools/rent" "/app/tools/allocate" "/app/tools/proxy" "/app/explore/chain" "/app/explore/topholders" "/app/explore/rex" "/app/explore/account/sikauser1"; do
+APP_PATHS=(
+  "/" "/app/home" "/app/vote" "/app/earn" "/app/business" "/app/explore" "/app/explore/search"
+  "/app/send" "/app/activity" "/app/notifications" "/app/tools" "/app/tools/ram" "/app/tools/rent"
+  "/app/tools/allocate" "/app/tools/proxy" "/app/explore/topholders" "/app/explore/rex"
+  "/app/explore/account/sikauser1"
+)
+if [[ "${TESTNET_MODE}" != "1" ]]; then
+  APP_PATHS+=("/app/explore/chain")
+else
+  echo "  GET /app/explore/chain                 -- (skip: slow SSR on docker testnet RPC)"
+fi
+for path in "${APP_PATHS[@]}"; do
   run "GET ${path}" curl_page "${APP_URL}${path}"
 done
 run "GET /account (legacy)" curl_page "${APP_URL}/account"
@@ -177,6 +208,8 @@ if [[ -n "${HYPERION}" ]]; then
     curl -sfL -m 15 '${APP_URL}/api/hyperion/v2/history/get_actions?account=${DEV}&limit=1' \
       | python3 -c \"import json,sys; d=json.load(sys.stdin); sys.exit(0 if d.get('actions') is not None else 1)\"
   "
+elif [[ "${TESTNET_MODE}" == "1" ]]; then
+  echo "  Hyperion proxy API                       -- (skip: run setup-hyperion-testnet-local.sh + sync-testnet-app-env)"
 fi
 
 echo ""

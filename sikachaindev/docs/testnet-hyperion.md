@@ -9,7 +9,19 @@ Wallet **Activity** and explorer history need Hyperion v2 indexing SHIP from a b
 | nodeos | `state_history_plugin`, ports **8888** (RPC) + **8080** (SHIP) reachable from indexer host |
 | Docker | Linux amd64 host (or cloud VM) — same as dev Hyperion |
 
-## Quick setup
+## Local docker testnet (same machine as SikaChainDev)
+
+When nodeos runs in Docker on `:18890` with SHIP on `:18090`:
+
+```bash
+bash scripts/setup-hyperion-testnet-local.sh
+```
+
+- Reuses dev backing services (ES/Rabbit/Mongo on network `hyperion`)
+- Testnet API: `http://127.0.0.1:7002` (dev Hyperion stays on `:7001`)
+- Wire app: `APPLY=1 RPC_HOST_PORT=18890 bash scripts/sync-testnet-app-env.sh`
+
+## Quick setup (hosted / VPS)
 
 ```bash
 # After testnet nodeos is live

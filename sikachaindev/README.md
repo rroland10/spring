@@ -65,12 +65,15 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `setup-wallet.sh` | Create/unlock default keosd wallet; import dev/BP keys |
 | `export-anchor-chain.mjs` | Regenerate `anchor-chain.json` + `anchor-chain.testnet.example.json` from `chain.json` |
 | `verify-testnet.sh` | Remote smoke: `sika` + `sika.token` + Hyperion (`NODE_URL`, `EXPECT_CHAIN_ID`) |
+| `verify-testnet-stack.sh` | Full local docker gate (verify + cleos + features + client export) |
 | `verify-predeploy-remote.sh` | Templates + `verify-testnet` + optional hosted app/site URLs |
 | `bootstrap-testnet.sh` | Deploy contracts + BPs on fresh testnet genesis (not dev chain id) |
-| `bootstrap-docker-testnet.sh` | One-shot docker testnet on `:18890` (gen keys → contracts → 6 BPs → `sikabpa`) |
+| `bootstrap-docker-testnet.sh` | One-shot docker testnet on `:18890` (contracts + BPs, producer `sika`) |
 | `export-testnet-env.mjs` | Generate wallet production env from `TESTNET_*` vars |
+| `export-testnet-client-config.sh` | Anchor JSON + app env from live testnet RPC |
 | `deploy/testnet/` | Docker + Fly.io nodeos templates — [docs/testnet-fly.md](docs/testnet-fly.md) |
 | `setup-hyperion-testnet.sh` | Hyperion for hosted testnet — [docs/testnet-hyperion.md](docs/testnet-hyperion.md) |
+| `setup-hyperion-testnet-local.sh` | Hyperion for local docker testnet (API `:7002`) |
 | `smoke-wallet.sh` | Wallet UI RPC probes for `sikadev` (balances, stake, REX, NFTs) |
 | `wait-for-rpc.sh` | Block until nodeos RPC is up (default 360s; replay-safe) |
 | `stop-ecosystem.sh` | Stop chain + Node apps (`--hyperion` to stop indexer containers) |

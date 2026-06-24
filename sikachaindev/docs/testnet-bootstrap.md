@@ -71,10 +71,33 @@ RESET=1 RPC_HOST_PORT=18890 bash scripts/bootstrap-docker-testnet.sh
 This script:
 
 1. Starts GHCR `sikachain-dev-sika-v4` nodeos as genesis `sika`
-2. Runs `bootstrap-testnet.sh` (contracts + 6 BPs registered/voted)
-3. Keeps producing as **`sika`** (`SKIP_SCHEDULE=1`) — single-node Savanna cannot advance LIB with a multi-BP active schedule
+2. Runs `bootstrap-testnet.sh` (contracts + 6 BPs registered, **no votes**)
+3. Keeps producing as **`sika`** — votes would activate a multi-BP Savanna schedule and stall a single container
 
-For real 6-BP rotation, use `start-6bp-cluster.sh` or multinode Fly hosts after full schedule activation (`SKIP_SCHEDULE=0`).
+For schedule activation + rotation: `SKIP_BP_VOTE=0 SKIP_SCHEDULE=0` and multinode (`start-6bp-cluster.sh`).
+
+**Wire Sika app to local docker testnet:**
+
+```bash
+APPLY=1 RPC_HOST_PORT=18890 bash scripts/sync-testnet-app-env.sh
+TESTNET_LOCAL=1 RPC_HOST_PORT=18890 bash scripts/start-app.sh
+SKIP_BP_VOTE=1 NODE_URL=http://127.0.0.1:18890 WALLET_UI=1 bash scripts/test-features.sh
+```
+
+**Full local predeploy gate:**
+
+```bash
+bash scripts/verify-testnet-stack.sh          # all checks + client export
+# QUICK=1 skips cleos matrix (~2 min faster)
+```
+
+**Local Hyperion (activity / history on docker testnet):**
+
+```bash
+bash scripts/setup-hyperion-testnet-local.sh   # API :7002, SHIP from :18090
+APPLY=1 RPC_HOST_PORT=18890 bash scripts/sync-testnet-app-env.sh
+TESTNET_LOCAL=1 bash scripts/start-app.sh
+```
 
 Verify:
 
