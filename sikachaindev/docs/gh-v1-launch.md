@@ -2,6 +2,8 @@
 
 Accra-first **Sika App** rollout: cGHS-first daily wallet + business MSIG, with pro tools hidden from hubs (direct URLs still work).
 
+Testnet / production node setup: **[docs/testnet-deploy.md](testnet-deploy.md)**.
+
 ## 1. Environment (production build)
 
 Set in the hosting provider / CI build env (never commit secrets):
@@ -154,3 +156,4 @@ Set `NEXT_PUBLIC_WALLET_ROLLOUT=full` (or unset) and redeploy to restore full hu
 - `Sika app/docs/UI.md` — rollout flag and route map
 - `Sika app/README.md` — sign-in options and E2E commands
 - `docs/hyperion-dev.md` — local history indexer setup
+- `docs/testnet-deploy.md` — testnet / production node + Hyperion + client config outline

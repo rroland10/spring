@@ -45,6 +45,8 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `verify-gh-v1.sh` | Env template + gh-v1 Playwright gate |
 | `check-launch-ready.sh` | Offline + live sika/gh-v1 readiness (`LIVE=1` adds Playwright; `FULL=1` adds wallet-live) |
 | `verify-predeploy.sh` | Pre-deploy gate: launch-ready + GTM stack URLs (`GH_V1=1` / `FULL=1` for Playwright) |
+
+See **[docs/testnet-deploy.md](docs/testnet-deploy.md)** for testnet / production node outline.
 | `preview-gh-v1.sh` | Sync env + copy `.env.sikachaindev.gh-v1` → Sika app for local gh-v1 preview |
 | `export-anchor-chain.mjs` | Regenerate `anchor-chain.json` + `anchor-chain.testnet.example.json` from `chain.json` |
 | `smoke-wallet.sh` | Wallet UI RPC probes for `sikadev` (balances, stake, REX, NFTs) |
