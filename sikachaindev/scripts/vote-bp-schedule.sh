@@ -34,6 +34,10 @@ retry() { local n=0; until "$@" || [[ $((n+=1)) -ge 8 ]]; do sleep 1; done }
 
 unlock_wallet
 
+wallet_has_key() {
+  cleos_cmd wallet keys 2>/dev/null | grep -q "${1}"
+}
+
 SCHEDULE=()
 while IFS= read -r n; do
   SCHEDULE+=("${n}")
@@ -56,9 +60,22 @@ PY
 
 echo "=== vote-bp-schedule (${#SCHEDULE[@]} producers) ==="
 echo "  schedule: ${SCHEDULE[*]}"
+echo "  voters:   ${#VOTERS[@]} from $(basename "${VOTERS_JSON}")"
 echo ""
 
 for voter in "${VOTERS[@]}"; do
+  pub="$(python3 - <<'PY' "${VOTERS_JSON}" "${voter}"
+import json, sys
+for p in json.load(open(sys.argv[1]))["producers"]:
+    if p["name"] == sys.argv[2]:
+        print(p.get("pub", ""))
+        break
+PY
+)"
+  if [[ -n "${pub}" ]] && ! wallet_has_key "${pub}"; then
+    echo "  skip ${voter} (no key in wallet)"
+    continue
+  fi
   echo "  voting ${voter} → ${SCHEDULE[*]}"
   retry cleos_cmd -r 1h system voteproducer prods "${voter}" "${SCHEDULE[@]}" -p "${voter}@active"
 done

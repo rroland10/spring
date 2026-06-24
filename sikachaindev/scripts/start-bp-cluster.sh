@@ -68,7 +68,8 @@ fi
 
 if [[ "${BP_SKIP_VOTE:-0}" != "1" && "${BP_RECONFIG_ONLY:-0}" != "1" ]]; then
   echo "Aligning votes to ${NUM} producers..."
-  BP_CLUSTER_SIZE="${NUM}" PRODUCERS_JSON="${PRODUCERS_JSON}" bash "${SCRIPT_DIR}/vote-bp-schedule.sh"
+  BP_CLUSTER_SIZE="${NUM}" PRODUCERS_JSON="${PRODUCERS_JSON}" VOTERS_JSON="${PRODUCERS_JSON}" \
+    bash "${SCRIPT_DIR}/vote-bp-schedule.sh"
   BP_CLUSTER_SIZE="${NUM}" PRODUCERS_JSON="${PRODUCERS_JSON}" ENSURE_WAIT=0 bash "${SCRIPT_DIR}/ensure-producer-schedule.sh"
 fi
 
