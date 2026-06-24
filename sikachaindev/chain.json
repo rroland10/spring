@@ -5,13 +5,16 @@
   "appPort": 3003,
   "websiteUrl": "http://127.0.0.1:3004",
   "websitePort": 3004,
+  "hyperionUrl": "http://127.0.0.1:7001",
+  "atomicassetsContract": "atomicassets",
   "walletUrl": "http://127.0.0.1:8899",
   "symbol": "SIKA",
   "tokenContract": "sika.token",
   "rexContract": "sika.rex",
-  "systemContract": "eosio",
+  "msigContract": "sika.msig",
+  "systemContract": "sika",
   "systemContractDisplayName": "SikaChain System",
-  "producer": "eosio",
+  "producer": "sika",
   "keyFormat": "PUB_K1",
   "publicKey": "PUB_K1_6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5BoDq63",
   "publicKeyLegacy": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
@@ -25,7 +28,7 @@
       "publicKeyLegacy": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
     },
     "sika": {
-      "role": "SikaChain System (Phase 3 — Spring -DSIKACHAIN=ON)",
+      "role": "SikaChain System (Phase 3 \u2014 Spring -DSIKACHAIN=ON)",
       "publicKey": "PUB_K1_6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5BoDq63",
       "publicKeyLegacy": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
     },
@@ -34,12 +37,32 @@
       "publicKey": "PUB_K1_4xLq2xvHoswe3nx452Y7odtkTrrSo26iNQhqHZAHBR833xUzDM",
       "publicKeyLegacy": "EOS4xLq2xvHoswe3nx452Y7odtkTrrSo26iNQhqHZAHBR833Xxi7a",
       "privateKey": "5JDEUYsGuepGdEeZa3pCsMAJk5fuAqQkT8XPeww4Y5G2UVkf7iT"
+    },
+    "sikauser1": {
+      "role": "peer dev wallet for send/receive tests",
+      "publicKey": "PUB_K1_8MkCa2jtNRFVMUsayVEB8bCbTjyncPPzm5eU6nuxaHnCvgb9Md",
+      "publicKeyLegacy": "EOS8MkCa2jtNRFVMUsayVEB8bCbTjyncPPzm5eU6nuxaHnCvJqc8d",
+      "privateKey": "5Kir7jST4416E89FYYTPG8km1qu2MnA8B4ywdS2sUaHN93udHB2"
+    },
+    "sikauser2": {
+      "role": "peer dev wallet for send/receive tests",
+      "publicKey": "PUB_K1_7tuutwpe1yU7Nn5iyw7piwciVf3QNTHKpnqhQAyQjMRkG7nZ8V",
+      "publicKeyLegacy": "EOS7tuutwpe1yU7Nn5iyw7piwciVf3QNTHKpnqhQAyQjMRkD9tEn8",
+      "privateKey": "5KGxPAUPxWPCFtddbUavfbApBLhst3YhM1e2PodXRFpS4jXXDfZ"
+    },
+    "sikamsig1": {
+      "role": "2-of-3 linked active permission for business import E2E (owner key = sikadev)",
+      "publicKey": "PUB_K1_4xLq2xvHoswe3nx452Y7odtkTrrSo26iNQhqHZAHBR833xUzDM",
+      "publicKeyLegacy": "EOS4xLq2xvHoswe3nx452Y7odtkTrrSo26iNQhqHZAHBR833Xxi7a",
+      "ownerKeyAccount": "sikadev"
     }
   },
   "wharfkit": {
+    "appName": "Sika",
     "chain": {
       "id": "9b2fde923758593c09517f77ed445a3962a9c938f44405dac43b4ccfebbfa57e",
-      "url": "http://127.0.0.1:8888"
+      "url": "http://127.0.0.1:8888",
+      "name": "SikaChainDev"
     }
   }
 }

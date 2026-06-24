@@ -43,14 +43,90 @@ if ! "${CLEOS}" "${CLEOS_ARGS[@]}" wallet keys | grep -Eq "EOS6MRyAjQq8ud7hVNYcf
   "${CLEOS}" "${CLEOS_ARGS[@]}" wallet import --private-key "${DEV_PRIVATE_KEY}"
 fi
 
-SIKADEV_PRIVATE_KEY="$(python3 -c "import json; print(json.load(open('${ROOT}/chain.json'))['accounts']['sikadev']['privateKey'])" 2>/dev/null || true)"
-SIKADEV_PUBLIC_KEY="$(python3 -c "import json; print(json.load(open('${ROOT}/chain.json'))['accounts']['sikadev']['publicKey'])" 2>/dev/null || true)"
-if [[ -n "${SIKADEV_PRIVATE_KEY}" ]]; then
-  SIKADEV_LEGACY="$(python3 -c "import json; print(json.load(open('${ROOT}/chain.json'))['accounts']['sikadev'].get('publicKeyLegacy',''))" 2>/dev/null || true)"
-  if ! "${CLEOS}" "${CLEOS_ARGS[@]}" wallet keys | grep -Eq "${SIKADEV_PUBLIC_KEY#PUB_K1_}|${SIKADEV_LEGACY}|${SIKADEV_PUBLIC_KEY}"; then
-    echo "Importing sikadev dev key..."
-    "${CLEOS}" "${CLEOS_ARGS[@]}" wallet import --private-key "${SIKADEV_PRIVATE_KEY}"
-  fi
+export ROOT NODE_URL WALLET_URL
+export CLEOS_BIN="${CLEOS}"
+
+python3 <<'PY'
+import json, os, subprocess
+
+root = os.environ["ROOT"]
+cleos = os.environ["CLEOS_BIN"]
+node_url = os.environ["NODE_URL"]
+wallet_url = os.environ["WALLET_URL"]
+c = json.load(open(os.path.join(root, "chain.json")))
+skip = {"eosio", "sika", c.get("systemContract", "sika")}
+
+keys_out = subprocess.run(
+    [cleos, "--url", node_url, "--wallet-url", wallet_url, "wallet", "keys"],
+    capture_output=True,
+    text=True,
+).stdout
+
+for name, acct in sorted(c.get("accounts", {}).items()):
+    pvt = acct.get("privateKey")
+    pub = acct.get("publicKey", "")
+    legacy = acct.get("publicKeyLegacy", "")
+    if not pvt or name in skip:
+        continue
+    markers = [m for m in (pub, legacy, pub.replace("PUB_K1_", "")) if m]
+    if any(m in keys_out for m in markers):
+        continue
+    print(f"Importing {name} dev key...")
+    subprocess.run(
+        [
+            cleos,
+            "--url",
+            node_url,
+            "--wallet-url",
+            wallet_url,
+            "wallet",
+            "import",
+            "--private-key",
+            pvt,
+        ],
+        check=True,
+    )
+PY
+
+PRODUCERS_6="${ROOT}/config/producers-6.json"
+if [[ -f "${PRODUCERS_6}" ]]; then
+  python3 <<'PY'
+import json, os, subprocess
+
+root = os.environ["ROOT"]
+cleos = os.environ["CLEOS_BIN"]
+node_url = os.environ["NODE_URL"]
+wallet_url = os.environ["WALLET_URL"]
+path = os.path.join(root, "config", "producers-6.json")
+keys_out = subprocess.run(
+    [cleos, "--url", node_url, "--wallet-url", wallet_url, "wallet", "keys"],
+    capture_output=True,
+    text=True,
+).stdout
+for p in json.load(open(path)).get("producers", []):
+    pvt = p.get("pvt")
+    pub = p.get("pub", "")
+    name = p.get("name", "")
+    if not pvt:
+        continue
+    if pub and pub in keys_out:
+        continue
+    print(f"Importing {name} producer key...")
+    subprocess.run(
+        [
+            cleos,
+            "--url",
+            node_url,
+            "--wallet-url",
+            wallet_url,
+            "wallet",
+            "import",
+            "--private-key",
+            pvt,
+        ],
+        check=False,
+    )
+PY
 fi
 
 echo ""

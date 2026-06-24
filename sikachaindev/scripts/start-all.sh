@@ -15,14 +15,11 @@ start_keosd() {
     echo "keosd already running at ${WALLET_URL}"
     return
   fi
-  nohup "${KEOSD}" \
+  KEOSD_PID="$(bash "${SCRIPT_DIR}/daemonize.sh" "${DATA_DIR}/keosd.log" "${KEOSD}" \
     --wallet-dir "${WALLET_DIR}" \
     --http-server-address 127.0.0.1:8899 \
-    --unlock-timeout 9999999 \
-    >> "${DATA_DIR}/keosd.log" 2>&1 &
-  KEOSD_PID=$!
-  disown -h "${KEOSD_PID}" 2>/dev/null || disown "${KEOSD_PID}" 2>/dev/null || true
-  echo $! > "${DATA_DIR}/keosd.pid"
+    --unlock-timeout 9999999)"
+  echo "${KEOSD_PID}" > "${DATA_DIR}/keosd.pid"
   for _ in $(seq 1 20); do
     curl -sf "${WALLET_URL}/v1/wallet/list_wallets" >/dev/null 2>&1 && break
     sleep 0.5

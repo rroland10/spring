@@ -11,19 +11,25 @@ ADAPTER_DIR="${SIKA_ADAPTER_DIR:-/Users/randallroland/Desktop/Projects/wharfkit 
 
 bash "${SCRIPT_DIR}/bootstrap-dev.sh"
 
+bash "${SCRIPT_DIR}/sync-dev-env.sh" 2>/dev/null || echo "warning: sync-dev-env.sh failed"
+
 if curl -sf "${NODE_URL:-http://127.0.0.1:8888}/v1/chain/get_info" >/dev/null 2>&1; then
   bash "${SCRIPT_DIR}/generate-bindings.sh"
 else
   echo "warning: nodeos not reachable — skipped generate-bindings.sh"
 fi
 
+if [[ "${SKIP_WALLET_READY:-0}" != "1" ]]; then
+  bash "${SCRIPT_DIR}/wallet-ready.sh" 2>/dev/null || echo "warning: wallet-ready incomplete — run bash scripts/wallet-ready.sh after Hyperion is up"
+fi
+
 if [[ -f "${APP_DIR}/.env.sikachaindev" ]]; then
   if [[ "${SIKACHAIN_DEV:-}" == "1" ]] && [[ -f "${APP_DIR}/.env.sikachaindev.phase3" ]]; then
     cp "${APP_DIR}/.env.sikachaindev.phase3" "${APP_DIR}/.env.local"
-    echo "Synced ${APP_DIR}/.env.local (Phase 3 — system account sika)"
+    echo "Synced ${APP_DIR}/.env.local (system account ${SIKA_SYSTEM_ACCOUNT})"
   else
     cp "${APP_DIR}/.env.sikachaindev" "${APP_DIR}/.env.local"
-    echo "Synced ${APP_DIR}/.env.local"
+    echo "Synced ${APP_DIR}/.env.local (system account ${SIKA_SYSTEM_ACCOUNT})"
   fi
 fi
 

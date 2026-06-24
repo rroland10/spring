@@ -1,3 +1,9 @@
 data/
 wallet/
 *.log
+logs/
+.msig-build/
+.atomicassets-src/
+.atomicassets-build/
+hyperion/hyperion-history-api/
+hyperion/generated/

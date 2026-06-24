@@ -1,0 +1,60 @@
+# Hyperion indexer + API for SikaChainDev (Docker — required on macOS arm64).
+# Backing services: docker-compose.yml (start-hyperion-deps.sh)
+# Chain + SHIP: host nodeos (host.docker.internal:8888 / :8080)
+
+services:
+  hyperion-indexer:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.hyperion-dev
+    container_name: sikachaindev-hyperion-indexer
+    working_dir: /hyperion
+    command: >
+      node --max-old-space-size=4096
+      ./build/indexer/launcher.js
+    environment:
+      CONFIG_JSON: /hyperion/config/chains/sikachaindev.config.json
+      CHAIN_NAME: sikachaindev
+    volumes:
+      - ./hyperion-history-api/config:/hyperion/config:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+
+  hyperion-api:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.hyperion-dev
+    container_name: sikachaindev-hyperion-api
+    working_dir: /hyperion
+    command: >
+      node --max-old-space-size=2048
+      ./build/api/server.js
+    environment:
+      CONFIG_JSON: /hyperion/config/chains/sikachaindev.config.json
+      CHAIN_NAME: sikachaindev
+    ports:
+      - "7001:7001"
+    volumes:
+      - ./hyperion-history-api/config:/hyperion/config:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped

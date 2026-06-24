@@ -18,6 +18,8 @@ if [[ ! -f "${APP_DIR}/package.json" ]]; then
   exit 1
 fi
 
+bash "${SCRIPT_DIR}/sync-dev-env.sh" 2>/dev/null || true
+
 ENV_SRC="${APP_DIR}/.env.sikachaindev"
 if [[ "${SIKACHAIN_DEV:-}" == "1" ]] && [[ -f "${APP_DIR}/.env.sikachaindev.phase3" ]]; then
   ENV_SRC="${APP_DIR}/.env.sikachaindev.phase3"

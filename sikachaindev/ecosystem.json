@@ -9,8 +9,11 @@
     "symbol": "SIKA",
     "tokenContract": "sika.token",
     "rexContract": "sika.rex",
-    "systemContract": "eosio",
-    "systemContractDisplayName": "SikaChain System"
+    "msigContract": "sika.msig",
+    "systemContract": "sika",
+    "systemContractDisplayName": "SikaChain System",
+    "producer": "sika",
+    "hyperionUrl": "http://127.0.0.1:7001"
   },
   "projects": {
     "spring": {
@@ -39,7 +42,7 @@
       "path": "/Users/randallroland/Desktop/Projects/sikachain sys contract",
       "role": "C++ system contracts (sika.system, sika.token, sika.rep, …)",
       "build": "./build.sh",
-      "deployOrder": ["sika.token", "sika.system", "sika.guard", "sika.rep", "sika.rules", "sika.issue"]
+      "deployOrder": ["sika.token", "sika.system", "sika.guard", "sika.rep", "sika.rules", "sika.issue", "sika.treas", "sika.msig"]
     },
     "contractTests": {
       "path": "/Users/randallroland/Desktop/Projects/sika chain testing script",
@@ -63,7 +66,7 @@
   },
   "stack": {
     "layer1": "Spring nodeos (SikaChainDev)",
-    "layer2": "sika.system @ eosio (privileged) + sika.token / sika.rex / sika.* satellites",
+    "layer2": "sika.system @ sika (privileged, -DSIKACHAIN=ON) + sika.token / sika.rex / sika.msig / sika.* satellites",
     "layer3": "WharfKit adapter API (relay + tx verification)",
     "layer4": "Sika app (Next.js wallet UI)",
     "layer5": "SikaChain web (GTM site — genesis, explorer, apply)",

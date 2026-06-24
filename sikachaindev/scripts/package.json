@@ -1,0 +1,9 @@
+{
+  "name": "sikachaindev-scripts",
+  "private": true,
+  "type": "module",
+  "optionalDependencies": {
+    "bullmq": "^5.34.0",
+    "ioredis": "^5.4.2"
+  }
+}

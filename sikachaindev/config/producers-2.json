@@ -1,0 +1,7 @@
+{
+  "description": "2 SikaChainDev block producers (sikabpa–sikabpb) for lightweight multinode rotation testing.",
+  "producers": [
+    {"name": "sikabpa", "pvt": "5KLGj1HGRWbk5xNmoKfrcrQHXvcVJBPdAckoiJgFftXSJjLPp7b", "pub": "EOS8imf2TDq6FKtLZ8mvXPWcd6EF2rQwo8zKdLNzsbU9EiMSt9Lwz"},
+    {"name": "sikabpb", "pvt": "5K6qk1KaCYYWX86UhAfUsbMwhGPUqrqHrZEQDjs9ekP5j6LgHUu", "pub": "EOS7Ef4kuyTbXbtSPP5Bgethvo6pbitpuEz2RMWhXb8LXxEgcR7MC"}
+  ]
+}

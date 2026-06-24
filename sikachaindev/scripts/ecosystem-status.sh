@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "$(dirname "$0")/env.sh"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/env.sh"
 
 ECOSYSTEM="${ROOT}/ecosystem.json"
 
@@ -30,11 +31,15 @@ PY
 
 echo ""
 echo "=== Next steps ==="
+echo "  Smoke:      scripts/smoke-phase3.sh  |  scripts/smoke-wallet.sh"
+echo "  Ecosystem:  scripts/launch-ecosystem.sh [--verify]  |  scripts/stop-ecosystem.sh"
+echo "  Interactive: scripts/start-ecosystem.sh [--quick] [--verify]"
 echo "  All-in-one: scripts/dev-ready.sh"
 echo "  Chain:      scripts/bootstrap-dev.sh  |  scripts/stop-all.sh"
 echo "  Upgrade:    scripts/upgrade-contracts.sh (WASM only)"
 echo "  App:        ${SCRIPT_DIR}/start-app.sh  →  ${SIKA_APP_URL}"
 echo "  Website:    ${SCRIPT_DIR}/start-web.sh  →  ${SIKA_CHAIN_WEB_URL}"
-echo "  Verify:     cd \"${SIKA_CHAIN_WEB_DIR}\" && npm run verify:stack"
+echo "  Verify:     scripts/quick-verify.sh  |  scripts/verify-stack.sh"
+echo "  Msig:       scripts/deploy-msig.sh  |  scripts/verify-msig.sh"
 echo "  Tests:      scripts/run-contract-tests.sh"
 echo "  Deploy:     scripts/deploy-sika-system.sh (fresh reset only)"

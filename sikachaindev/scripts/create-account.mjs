@@ -47,7 +47,7 @@ const systemAbi = ABI.from(
 )
 
 const chainJson = JSON.parse(readFileSync(join(__dirname, '../chain.json'), 'utf8'))
-const systemAccount = process.env.SIKA_SYSTEM_ACCOUNT || chainJson.systemContract || 'eosio'
+const systemAccount = process.env.SIKA_SYSTEM_ACCOUNT || chainJson.systemContract || 'sika'
 const privateKey = PrivateKey.from(chainJson.privateKey)
 const pubK1 = PublicKey.from(publicKey).toString()
 const client = new APIClient({url: rpc})
