@@ -35,6 +35,25 @@ cleos() {
   "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" "$@"
 }
 
+# Unlock default keosd wallet (password in wallet/.password).
+cleos_unlock() {
+  cleos wallet open >/dev/null 2>&1 || true
+  local pw_file="${ROOT}/wallet/.password"
+  if [[ -f "${pw_file}" ]]; then
+    cleos wallet unlock --password "$(tr -d '\n' < "${pw_file}")" >/dev/null 2>&1 || true
+  fi
+}
+
+# Ensure keosd is up and dev keys are imported.
+cleos_wallet_ready() {
+  if ! curl -sf "${WALLET_URL}/v1/wallet/list_wallets" >/dev/null 2>&1; then
+    echo "error: keosd not reachable at ${WALLET_URL} — run bash scripts/start-keosd.sh" >&2
+    return 1
+  fi
+  bash "${ENV_SH_DIR}/setup-wallet.sh" >/dev/null
+  cleos_unlock
+}
+
 # Privileged system account — matches config.hpp (sika / sika.null / sika.prods).
 export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
 export SIKACHAIN_DEV="${SIKACHAIN_DEV:-1}"

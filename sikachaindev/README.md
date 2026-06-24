@@ -2,6 +2,19 @@
 
 Local single-node Spring chain for Sika Chain development. **`sika.system` @ `sika`** is the privileged system account (`sika.null`, `sika.prods`). Token: **SIKA** + **CGHS** on `sika.token`, plus satellite contracts.
 
+## cleos CLI (wallet + on-chain testing)
+
+Primary CLI for transfers, account creation, stake, vote, REX, and msig. See **[docs/cleos-dev.md](docs/cleos-dev.md)**.
+
+```bash
+bash scripts/start-all.sh              # nodeos + keosd
+bash scripts/setup-wallet.sh           # import sika + dev keys
+bash scripts/cleos.sh get info         # wrapper (auto-unlock)
+bash scripts/test-cleos.sh              # full cleos feature matrix
+VERIFY_REX=1 bash scripts/test-cleos.sh
+bash scripts/create-account-cleos.sh myacct
+```
+
 ## Quick start (Phase 3)
 
 Run in **your local terminal** (keeps nodeos alive):
@@ -44,10 +57,10 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `test-wallet-gh-v1.sh` | Ghana v1 rollout surface (isolated :3099, `gh-v1` gating) |
 | `verify-gh-v1.sh` | Env template + gh-v1 Playwright gate |
 | `check-launch-ready.sh` | Offline + live sika/gh-v1 readiness (`LIVE=1` adds Playwright; `FULL=1` adds wallet-live) |
-| `verify-predeploy.sh` | Pre-deploy gate: launch-ready + GTM stack URLs (`GH_V1=1` / `FULL=1` for Playwright) |
-
-See **[docs/testnet-deploy.md](docs/testnet-deploy.md)** for testnet / production node outline.
-| `preview-gh-v1.sh` | Sync env + copy `.env.sikachaindev.gh-v1` → Sika app for local gh-v1 preview |
+| `cleos.sh` | cleos wrapper — auto-unlock keosd, RPC/wallet defaults (see **docs/cleos-dev.md**) |
+| `test-cleos.sh` | Feature matrix via cleos (transfers, tables, msig; `VERIFY_REX=1`) |
+| `create-account-cleos.sh` | New account via `cleos system newaccount` + buyrambytes |
+| `setup-wallet.sh` | Create/unlock default keosd wallet; import dev/BP keys |
 | `export-anchor-chain.mjs` | Regenerate `anchor-chain.json` + `anchor-chain.testnet.example.json` from `chain.json` |
 | `smoke-wallet.sh` | Wallet UI RPC probes for `sikadev` (balances, stake, REX, NFTs) |
 | `wait-for-rpc.sh` | Block until nodeos RPC is up (default 360s; replay-safe) |

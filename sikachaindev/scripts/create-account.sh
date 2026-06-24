@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 # Create a dev account on SikaChainDev (sika.system @ privileged system account).
+#
+# Default: cleos + keosd (create-account-cleos.sh).
+# Set CREATE_USE_NODE=1 to use the WharfKit tx builder (create-account.mjs).
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 
@@ -7,6 +10,10 @@ if [[ $# -lt 1 ]]; then
   echo "Usage: $0 <account-name> [public-key]"
   echo "  Creates account authorized by ${SIKA_SYSTEM_ACCOUNT}. Generates a key if public-key omitted."
   exit 1
+fi
+
+if [[ "${CREATE_USE_NODE:-0}" != "1" ]]; then
+  exec bash "$(dirname "$0")/create-account-cleos.sh" "$@"
 fi
 
 ACCOUNT="$1"

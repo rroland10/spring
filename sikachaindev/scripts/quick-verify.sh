@@ -30,5 +30,10 @@ elif [[ "${VERIFY_MULTINODE:-0}" == "1" ]]; then
   echo "SKIP (multinode cluster not running — start with start-6bp-cluster.sh)"
 fi
 
+if [[ "${VERIFY_CLEOS:-0}" == "1" ]]; then
+  echo ""
+  bash "${SCRIPT_DIR}/test-cleos.sh"
+fi
+
 echo ""
 echo "=== quick-verify complete — all checks passed ==="
