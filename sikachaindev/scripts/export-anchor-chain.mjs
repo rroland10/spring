@@ -23,11 +23,17 @@ const out =
 
 const chain = JSON.parse(readFileSync(join(ROOT, "chain.json"), "utf8"));
 
+const testnetChainId = process.env.TESTNET_CHAIN_ID ?? process.env.EXPECT_CHAIN_ID ?? "REPLACE_WITH_CHAIN_ID";
+const testnetRpc =
+  process.env.TESTNET_RPC_URL ?? process.env.NODE_URL ?? "https://rpc.testnet.sikachain.gh";
+const testnetHyperion = process.env.TESTNET_HYPERION_URL ?? process.env.HYPERION_URL;
+
 const anchor = testnetExample
   ? {
-      name: "SikaChain Testnet",
-      chainId: "REPLACE_WITH_CHAIN_ID",
-      nodeUrl: "https://rpc.testnet.sikachain.gh",
+      name: process.env.TESTNET_CHAIN_NAME ?? "SikaChain Testnet",
+      chainId: testnetChainId,
+      nodeUrl: testnetRpc,
+      ...(testnetHyperion ? { hyperionUrl: testnetHyperion.replace(/\/$/, "") } : {}),
       symbol: "SIKA",
       keyPrefix: "PUB_K1",
       testnet: true,

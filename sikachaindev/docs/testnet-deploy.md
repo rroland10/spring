@@ -8,7 +8,7 @@ This doc maps dev scripts to production steps. It does not provision cloud infra
 
 | Component | Source | Notes |
 |-----------|--------|-------|
-| **nodeos / cleos / keosd** | [rroland10/spring](https://github.com/rroland10/spring) tag `sikachain-dev-sika-v1` or newer | `-DSIKACHAIN=ON` (default) — genesis creates **`sika`**, not `eosio` |
+| **nodeos / cleos / keosd** | [rroland10/spring](https://github.com/rroland10/spring) tag `sikachain-dev-sika-v2` or newer | `-DSIKACHAIN=ON` (default) — genesis creates **`sika`**, not `eosio`; `cleos get account` uses **`sika.token`** |
 | **System contracts** | `sikachain sys contract` | `SIKACHAIN=1 ./build.sh` |
 | **eosio.boot** | Spring `unittests/contracts/eosio.boot/` or `build-system-contracts.sh` | Protocol feature activation |
 | **sika.msig** | `deploy-msig.sh` pattern | Standard msig WASM @ **`sika.msig`**, privileged |
@@ -98,6 +98,24 @@ Update SikaChain `chain-constants.ts` / env with testnet RPC and Hyperion URLs (
 ## 6. Pre-deploy verification
 
 From a machine that can reach testnet RPC:
+
+```bash
+NODE_URL=https://rpc.testnet.sikachain.gh \
+  EXPECT_CHAIN_ID=<your-chain-id> \
+  HYPERION_URL=https://hyperion.testnet.sikachain.gh \
+  bash scripts/verify-testnet.sh
+```
+
+Publish Anchor import JSON after URLs are known:
+
+```bash
+TESTNET_CHAIN_ID=<chain-id> \
+  TESTNET_RPC_URL=https://rpc.testnet.sikachain.gh \
+  TESTNET_HYPERION_URL=https://hyperion.testnet.sikachain.gh \
+  node scripts/export-anchor-chain.mjs --testnet-example
+```
+
+Legacy one-liner (templates only):
 
 ```bash
 NODE_URL=https://rpc.testnet.sikachain.gh \

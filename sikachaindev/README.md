@@ -62,6 +62,7 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `create-account-cleos.sh` | New account via `cleos system newaccount` + buyrambytes |
 | `setup-wallet.sh` | Create/unlock default keosd wallet; import dev/BP keys |
 | `export-anchor-chain.mjs` | Regenerate `anchor-chain.json` + `anchor-chain.testnet.example.json` from `chain.json` |
+| `verify-testnet.sh` | Remote smoke: `sika` + `sika.token` + Hyperion (`NODE_URL`, `EXPECT_CHAIN_ID`) |
 | `smoke-wallet.sh` | Wallet UI RPC probes for `sikadev` (balances, stake, REX, NFTs) |
 | `wait-for-rpc.sh` | Block until nodeos RPC is up (default 360s; replay-safe) |
 | `stop-ecosystem.sh` | Stop chain + Node apps (`--hyperion` to stop indexer containers) |
