@@ -31,6 +31,24 @@ cleos_cmd() {
   "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" "$@"
 }
 
+blocks_log_first_block() {
+  local data_dir="$1"
+  local log="${data_dir}/blocks/blocks.log"
+  [[ -f "${log}" ]] || { echo 0; return 0; }
+  python3 - "${log}" <<'PY'
+import struct, sys
+with open(sys.argv[1], "rb") as f:
+    ver = struct.unpack("<I", f.read(4))[0]
+    version = ver & 0x7FFFFFFF
+    print(1 if version == 1 else struct.unpack("<I", f.read(4))[0])
+PY
+}
+
+blocks_log_replayable() {
+  local data_dir="$1"
+  [[ "$(blocks_log_first_block "${data_dir}")" == "1" ]]
+}
+
 if [[ ! -f "${PRODUCERS_JSON}" ]]; then
   echo "error: missing ${PRODUCERS_JSON}"
   exit 1
@@ -98,15 +116,20 @@ sync_node_data() {
   fi
 
   if [[ -f "${dest_log}" ]] && [[ -f "${src_log}" ]]; then
-    local src_size dest_size
+    local src_size dest_size first_block
     src_size="$(stat -f%z "${src_log}" 2>/dev/null || echo 0)"
     dest_size="$(stat -f%z "${dest_log}" 2>/dev/null || echo 0)"
+    first_block="$(blocks_log_first_block "${dest}")"
+    if [[ "${first_block}" != "1" ]]; then
+      echo "  node${idx}: blocks.log starts at ${first_block} (need block 1 for replay) — re-cloning"
+      rm -rf "${dest}"
     # Skip re-clone when destination looks like a current copy of source chain data.
-    if [[ "${dest_size}" -gt 1000000 ]] && [[ "${dest_size}" -ge $(( src_size * 85 / 100 )) ]]; then
+    elif [[ "${dest_size}" -gt 1000000 ]] && [[ "${dest_size}" -ge $(( src_size * 85 / 100 )) ]]; then
       return 0
+    else
+      echo "  stale/incomplete clone at node${idx} (${dest_size} vs ${src_size} bytes) — re-cloning"
+      rm -rf "${dest}"
     fi
-    echo "  stale/incomplete clone at node${idx} (${dest_size} vs ${src_size} bytes) — re-cloning"
-    rm -rf "${dest}"
   fi
 
   if [[ -f "${dest_log}" ]]; then
@@ -128,10 +151,12 @@ sync_node_data() {
     --exclude multinode/ \
     --exclude state-history/ \
     --exclude nodeos.pid --exclude nodeos.log --exclude 'nodeos*.log' \
-    --exclude .clean_shutdown --exclude '*.log' \
+    --exclude '*.log' \
     "${clone_src}/" "${dest}/"
-  # Force replay on first start — cloned state may be dirty after abrupt single-node stop.
-  rm -f "${dest}/.clean_shutdown"
+  # Preserve .clean_shutdown from a graceful single-node stop; only force replay when explicitly requested.
+  if [[ "${BP_FORCE_REPLAY:-0}" == "1" ]] && blocks_log_replayable "${dest}"; then
+    rm -f "${dest}/.clean_shutdown"
+  fi
 }
 
 write_config() {
@@ -212,8 +237,18 @@ start_node() {
     --genesis-json "${GENESIS}"
   )
   if [[ -f "${data_dir}/blocks/blocks.log" ]] && [[ ! -f "${data_dir}/.clean_shutdown" ]]; then
-    args+=(--replay-blockchain)
-    echo "  node${idx}: replay required (unclean state)"
+    if blocks_log_replayable "${data_dir}"; then
+      args+=(--replay-blockchain)
+      echo "  node${idx}: replay required (unclean state)"
+    else
+      echo "  node${idx}: non-replayable blocks.log — re-cloning from source"
+      rm -rf "${data_dir}"
+      sync_node_data "${idx}"
+      if [[ ! -f "${data_dir}/.clean_shutdown" ]] && blocks_log_replayable "${data_dir}"; then
+        args+=(--replay-blockchain)
+        echo "  node${idx}: replay after refresh"
+      fi
+    fi
   fi
 
   local pid

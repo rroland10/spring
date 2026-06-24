@@ -259,7 +259,7 @@ name to_default_token_contract(const asset& a) {
    if (a.symbol_name() == a_symbol_str) {
       return core_vaulta_name ;
    }
-   return eosio_token_name;
+   return eosio::chain::config::default_token_contract_name;
 }
 
 name to_default_contract(const asset& a) {

@@ -3,7 +3,7 @@
 #
 # Usage:
 #   export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
-#   bash scripts/quick-verify.sh
+#   VERIFY_CLEOS=0 bash scripts/quick-verify.sh   # skip cleos matrix (default: run)
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -30,7 +30,7 @@ elif [[ "${VERIFY_MULTINODE:-0}" == "1" ]]; then
   echo "SKIP (multinode cluster not running — start with start-6bp-cluster.sh)"
 fi
 
-if [[ "${VERIFY_CLEOS:-0}" == "1" ]]; then
+if [[ "${VERIFY_CLEOS:-1}" != "0" ]]; then
   echo ""
   bash "${SCRIPT_DIR}/test-cleos.sh"
 fi

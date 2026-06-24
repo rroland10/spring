@@ -5,6 +5,7 @@
 #   bash scripts/verify-predeploy.sh              # launch-ready + GTM stack health
 #   GH_V1=1 bash scripts/verify-predeploy.sh      # + verify-gh-v1 Playwright
 #   FULL=1 bash scripts/verify-predeploy.sh       # + GH_V1=1 test-wallet-live (slow)
+#   CLEOS=0 bash scripts/verify-predeploy.sh      # skip cleos feature matrix
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -19,6 +20,11 @@ echo "  GH_V1=${GH_V1}  FULL=${FULL}"
 echo ""
 
 bash "${SCRIPT_DIR}/check-launch-ready.sh"
+
+if [[ "${CLEOS:-1}" != "0" ]]; then
+  echo ""
+  bash "${SCRIPT_DIR}/test-cleos.sh"
+fi
 
 echo ""
 echo "=== SikaChain marketing + wallet URLs ==="

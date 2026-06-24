@@ -70,7 +70,7 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `smoke-dev-accounts.sh` | RPC smoke for all dev accounts in `chain.json` |
 | `verify-peer-transfer.sh` | On-chain `sikadev` → `sikauser1` transfer smoke (`PEER_SYMBOL=CGHS` for stablecoin) |
 | `verify-stack.sh` | Full gate: `verify-all` + feature matrix + Playwright (`VERIFY_UI=1` default) |
-| `quick-verify.sh` | Fast read-only: smoke-phase3 + feature matrix (no txs, no Playwright) |
+| `quick-verify.sh` | Daily gate: smoke-phase3 + Hyperion + 6-BP rotation + `test-cleos` (`VERIFY_CLEOS=0` to skip txs) |
 
 Browser RPC reads require CORS on nodeos — `config/config.ini` sets `access-control-allow-origin = *`. Restart nodeos after changing config (`bash scripts/stop-node.sh && bash scripts/start-node.sh --daemon`).
 
@@ -148,7 +148,7 @@ Accra-first wallet surface (`NEXT_PUBLIC_WALLET_ROLLOUT=gh-v1`). See **[docs/gh-
 
 ```bash
 bash scripts/check-launch-ready.sh        # templates + on-chain phase 3 (if RPC up)
-bash scripts/verify-predeploy.sh        # launch-ready + site/app/Hyperion URLs
+bash scripts/verify-predeploy.sh        # launch-ready + test-cleos + stack URLs (CLEOS=0 to skip)
 GH_V1=1 bash scripts/verify-predeploy.sh # + gh-v1 Playwright
 FULL=1 bash scripts/verify-predeploy.sh  # + full wallet-live (slow)
 

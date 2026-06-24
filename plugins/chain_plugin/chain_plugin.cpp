@@ -2520,7 +2520,7 @@ read_only::get_account_return_t read_only::get_account( const get_account_params
    
    if( abi_def abi; abi_serializer::to_abi(code_account.abi, abi) ) {
 
-      const auto token_code = "eosio.token"_n;
+      const auto token_code = config::default_token_contract_name;
 
       auto core_symbol = extract_core_symbol();
 

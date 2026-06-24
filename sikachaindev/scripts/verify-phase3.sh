@@ -64,8 +64,14 @@ check "sika.msig privileged" bash -c "
 "
 
 check "SIKA token live" bash -c "
-  \"${CLEOS}\" --url \"${NODE_URL}\" get currency stats sika.token SIKA 2>/dev/null \
-    | python3 -c \"import json,sys; d=json.load(sys.stdin); s=d.get('SIKA',{}).get('supply','0').split()[0]; sys.exit(0 if float(s)>0 else 1)\"
+  for _ in 1 2 3 4 5; do
+    out=\"\$(\"${CLEOS}\" --url \"${NODE_URL}\" get currency stats sika.token SIKA 2>/dev/null || true)\"
+    if [[ -n \"\${out}\" ]] && echo \"\${out}\" | python3 -c \"import json,sys; d=json.load(sys.stdin); s=d.get('SIKA',{}).get('supply','0').split()[0]; sys.exit(0 if float(s)>0 else 1)\"; then
+      exit 0
+    fi
+    sleep 1
+  done
+  exit 1
 "
 
 if [[ "${FAIL}" -eq 0 ]]; then

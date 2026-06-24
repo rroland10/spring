@@ -19,7 +19,7 @@ bash scripts/cleos.sh get account sika
 bash scripts/cleos.sh get currency balance sika.token sikadev SIKA
 ```
 
-Note: `cleos get account` may warn about legacy `eosio.token` core symbol — use `get currency balance` and `get table` for reads, or query RPC directly (`curl …/get_account`).
+Note: After upgrading Spring, restart nodeos so `cleos get account` resolves **`sika.token`** (not legacy `eosio.token`).
 
 Or export aliases:
 
@@ -51,9 +51,9 @@ bash scripts/create-account-cleos.sh myaccount
 bash scripts/create-account-cleos.sh myaccount PUB_K1_...
 ```
 
-Uses **cleos wallet** for key generation/import. The on-chain `newaccount` + `buyrambytes` bundle uses `create-account.mjs` because Spring's `cleos system newaccount` still queries legacy `eosio.token` and RAM must be allocated in the same transaction.
+Uses **cleos wallet** for key generation/import. The on-chain `newaccount` + `transfer` + `buyrambytes` bundle uses `create-account.mjs` because RAM must be allocated in the same transaction (cleos `system newaccount` is split-action and still requires explicit stake flags on SikaChain).
 
-After creation, all actions use cleos normally:
+After creation, all actions use cleos normally — including **`cleos get account`** once Spring is rebuilt with `default_token_contract_name` (`sika.token`):
 
 ```bash
 bash scripts/cleos.sh get currency balance sika.token myaccount SIKA
@@ -135,7 +135,19 @@ CREATE_ACCOUNT=1 bash scripts/test-cleos.sh
 VERIFY_VOTE=1 bash scripts/test-cleos.sh
 ```
 
-Included in `quick-verify.sh` when `VERIFY_CLEOS=1`.
+Included in `quick-verify.sh` and `verify-predeploy.sh` by default (`VERIFY_CLEOS=0` or `CLEOS=0` to skip).
+
+## Multinode (6-BP cluster)
+
+When switching from single-node to the 6-BP cluster, `start-bp-cluster.sh` clones chain data from `data/` into `data/multinode/node*/`. If a clone has a **truncated blocks.log** (first block ≠ 1), replay fails — the script auto-detects this and re-clones.
+
+```bash
+ENABLE_SHIP=1 bash scripts/start-6bp-cluster.sh
+bash scripts/stop-bp-cluster.sh    # graceful stop + .clean_shutdown markers
+BP_CLUSTER_REFRESH=1 bash scripts/start-6bp-cluster.sh   # force full re-clone
+```
+
+After upgrading Spring (`cleos` / `nodeos`), restart producers so RPC serves `sika.token` for `get account`.
 
 ## Environment
 

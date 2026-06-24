@@ -47,14 +47,8 @@ run "wallet keys present" bash -c "bash '${SCRIPT_DIR}/cleos.sh' wallet keys | g
 echo ""
 echo "--- Chain queries ---"
 run "cleos get info" cleos_cmd get info
-run "cleos get account ${SYS}" bash -c "
-  curl -sf '${NODE_URL}/v1/chain/get_account' -H 'Content-Type: application/json' \
-    -d '{\"account_name\":\"${SYS}\"}' | grep -q account_name
-"
-run "cleos get account ${DEV}" bash -c "
-  curl -sf '${NODE_URL}/v1/chain/get_account' -H 'Content-Type: application/json' \
-    -d '{\"account_name\":\"${DEV}\"}' | grep -q account_name
-"
+run "cleos get account ${SYS}" cleos_cmd get account "${SYS}"
+run "cleos get account ${DEV}" cleos_cmd get account "${DEV}"
 run "SIKA currency stats" cleos_cmd get currency stats "${TOKEN}" SIKA
 run "CGHS currency stats" cleos_cmd get currency stats "${TOKEN}" CGHS
 run "SIKA balance ${DEV}" bash -c "
