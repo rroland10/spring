@@ -77,6 +77,9 @@ run "transfer CGHS ${DEV}→sikauser2" bash -c \
 run "listproducers" cleos_cmd system listproducers -l 6
 
 if [[ "${VERIFY_VOTE:-0}" == "1" ]]; then
+  run "deposit (voter init)" bash -c "
+    bash '${SCRIPT_DIR}/cleos.sh' push action '${SYS}' deposit '[\"${DEV}\",\"10.0000 SIKA\"]' -p '${DEV}@active' -x 3600
+  "
   run "voteproducer prods" bash -c "
     bash '${SCRIPT_DIR}/cleos.sh' system voteproducer prods '${DEV}' sikabpa sikabpb sikabpc -p '${DEV}@active' -x 3600
   "

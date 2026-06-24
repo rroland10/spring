@@ -83,7 +83,8 @@ Fund dev accounts: `bash scripts/create-dev-accounts.sh`
 bash scripts/cleos.sh system delegatebw sikadev sikadev "10.0000 SIKA" "10.0000 SIKA" false \
   -p sikadev@active
 
-# Vote for block producers
+# Vote for block producers (deposit initializes voter row on SikaChain)
+bash scripts/cleos.sh push action sika deposit '["sikadev","10.0000 SIKA"]' -p sikadev@active
 bash scripts/cleos.sh system voteproducer prods sikadev sikabpa sikabpb sikabpc \
   -p sikadev@active -r 1h
 
@@ -133,6 +134,7 @@ bash scripts/test-cleos.sh
 VERIFY_REX=1 bash scripts/test-cleos.sh
 CREATE_ACCOUNT=1 bash scripts/test-cleos.sh
 VERIFY_VOTE=1 bash scripts/test-cleos.sh
+bash scripts/test-app-cleos-full.sh   # all app features (vote + REX + MSIG + NFT + RAM)
 ```
 
 Included in `quick-verify.sh` and `verify-predeploy.sh` by default (`VERIFY_CLEOS=0` or `CLEOS=0` to skip).
