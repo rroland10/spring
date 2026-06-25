@@ -2,7 +2,7 @@
 # Fast Phase 3 smoke — no on-chain transactions (unlike verify-dev).
 #
 # Usage:
-#   export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
+#   export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika
 #   bash scripts/smoke-phase3.sh
 set -euo pipefail
 
@@ -10,6 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/env.sh"
 
 export SIKACHAIN_DEV="${SIKACHAIN_DEV:-1}"
+export SIKA_PROTOCOL_ACCOUNT="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
 
 echo "=== Phase 3 smoke (read-only) ==="

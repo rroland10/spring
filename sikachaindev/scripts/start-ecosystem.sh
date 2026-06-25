@@ -2,7 +2,7 @@
 # Start full SikaChainDev ecosystem: chain + Hyperion + wallet + site + API.
 #
 # Usage:
-#   export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
+#   export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika
 #   bash scripts/start-ecosystem.sh          # bootstrap if needed + all services
 #   bash scripts/start-ecosystem.sh --quick  # chain + apps only (skip bootstrap)
 #   bash scripts/start-ecosystem.sh --verify # run verify-dev after startup
@@ -16,6 +16,7 @@ DATA_DIR="${ROOT}/data"
 mkdir -p "${DATA_DIR}"
 
 export SIKACHAIN_DEV="${SIKACHAIN_DEV:-1}"
+export SIKA_PROTOCOL_ACCOUNT="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
 export ENABLE_SHIP="${ENABLE_SHIP:-1}"
 
@@ -42,7 +43,7 @@ start_bg() {
 }
 
 echo "=== SikaChainDev ecosystem ==="
-echo "  Phase 3: SIKACHAIN_DEV=${SIKACHAIN_DEV}  system=${SIKA_SYSTEM_ACCOUNT}"
+echo "  Phase 3: SIKACHAIN_DEV=${SIKACHAIN_DEV}  protocol=${SIKA_PROTOCOL_ACCOUNT}  system=${SIKA_SYSTEM_ACCOUNT}"
 echo ""
 
 QUICK=0

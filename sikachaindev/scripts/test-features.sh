@@ -2,7 +2,7 @@
 # Feature test matrix for SikaChainDev Phase 3 — chain, settlement, wallet UI, Hyperion, apps.
 #
 # Usage:
-#   export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
+#   export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika
 #   bash scripts/test-features.sh              # read-only + UI probes
 #   ON_CHAIN=1 bash scripts/test-features.sh   # include verify-dev (settlement/msig/NFT txs)
 #   WALLET_UI=1 bash scripts/test-features.sh  # Playwright wallet UI (+ MSIG + import when on-chain)
@@ -11,6 +11,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/env.sh"
 
+PROTO="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 SYS="${SIKA_SYSTEM_ACCOUNT:-sika}"
 TOKEN="${SIKA_TOKEN_ACCOUNT:-sika.token}"
 DEV="${1:-sikadev}"
@@ -90,7 +91,7 @@ run "nodeos RPC CORS" bash -c "
 run "producer in 6-BP set" bash -c "
   head=\$(curl -sf '${NODE_URL}/v1/chain/get_info' \
     | python3 -c \"import json,sys; print(json.load(sys.stdin).get('head_block_producer',''))\")
-  python3 - <<'PY' \"\${head}\" \"${SYS}\"
+  python3 - <<'PY' \"\${head}\" \"${PROTO}\"
 import sys
 allowed = {sys.argv[2], 'sikabpa','sikabpb','sikabpc','sikabpd','sikabpe','sikabpf'}
 sys.exit(0 if sys.argv[1] in allowed else 1)

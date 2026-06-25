@@ -30,11 +30,22 @@ fi
 
 PROBE_ACCOUNT="${HYPERION_PROBE_ACCOUNT:-${SIKA_SYSTEM_ACCOUNT}}"
 
-if curl -sf "${HYPERION_URL}/v2/history/get_actions?account=${PROBE_ACCOUNT}&limit=1" \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); sys.exit(0 if 'actions' in d else 1)" 2>/dev/null; then
+get_actions_body="$(curl -sf "${HYPERION_URL}/v2/history/get_actions?account=${PROBE_ACCOUNT}&limit=1" 2>/dev/null || true)"
+if [[ -n "${get_actions_body}" ]] \
+  && echo "${get_actions_body}" | python3 -c "import json,sys; d=json.load(sys.stdin); sys.exit(0 if 'actions' in d else 1)" 2>/dev/null; then
   echo "  ok  get_actions (${PROBE_ACCOUNT})"
 else
   echo "  FAIL get_actions"
+  if echo "${get_actions_body}" | grep -qiE 'elasticsearch|ECONNREFUSED.*9200'; then
+    echo "  hint: Hyperion API is up but Elasticsearch is down."
+    echo "        bash scripts/start-hyperion-deps.sh"
+    echo "        bash scripts/start-hyperion.sh   # reconfigure + restart indexer"
+  elif ! curl -sf http://127.0.0.1:9200/_cluster/health >/dev/null 2>&1; then
+    echo "  hint: Elasticsearch not reachable on :9200 — start Hyperion deps first."
+  fi
+  if ! bash "${SCRIPT_DIR}/check-ship.sh" >/dev/null 2>&1; then
+    echo "  hint: SHIP not enabled — ENABLE_SHIP=1 bash scripts/restart-ship.sh"
+  fi
   FAIL=1
 fi
 

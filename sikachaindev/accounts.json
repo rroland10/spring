@@ -1,5 +1,6 @@
 {
-  "description": "SikaChainDev protocol account names — keep in sync with contracts/include/sika.accounts.hpp (Phase 3: sika)",
+  "description": "SikaChainDev account names — sync with contracts/include/sika.accounts.hpp (protocol sikaio + system sika)",
+  "protocol": "sikaio",
   "system": "sika",
   "systemDisplayName": "SikaChain System",
   "token": "sika.token",

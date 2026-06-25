@@ -99,13 +99,13 @@ bash scripts/cleanup-msig-proposals.sh   # optional — clear stale dev proposal
 Full stack gate (Spring + contracts + Playwright):
 
 ```bash
-export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
+export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika
 VERIFY_UI=1 VERIFY_DEV=1 bash scripts/verify-stack.sh
 ```
 
 ## 4. Chain prerequisites (mainnet / testnet)
 
-- [ ] Spring nodeos built with `SIKACHAIN=ON` (privileged account **`sika`**, not `eosio`)
+- [ ] Spring nodeos built with `SIKACHAIN=ON` (protocol **`sikaio`** + system **`sika`**, not legacy `eosio`)
 - [ ] `sika.system` + satellites deployed on **`sika`**
 - [ ] `sika.msig` deployed and **privileged**
 - [ ] `sika.token` with **SIKA** + **CGHS**

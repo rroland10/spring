@@ -54,7 +54,9 @@ cleos_wallet_ready() {
   cleos_unlock
 }
 
-# Privileged system account — matches config.hpp (sika / sika.null / sika.prods).
+# Privileged protocol account (was eosio) — matches config.hpp (sikaio / sikaio.null / sikaio.prods).
+export SIKA_PROTOCOL_ACCOUNT="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
+# System contract host (sika.system, governance actions).
 export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
 export SIKACHAIN_DEV="${SIKACHAIN_DEV:-1}"
 export SIKA_ACCOUNTS_JSON="${ROOT}/accounts.phase3.json"
@@ -67,7 +69,7 @@ export SIKA_CHAIN_WEB_DIR="${SIKA_CHAIN_WEB_DIR:-/Users/randallroland/Desktop/Pr
 export MSIG_ACCOUNT="${MSIG_ACCOUNT:-$(python3 -c "import json; print(json.load(open('${CHAIN_JSON}')).get('msigContract','sika.msig'))" 2>/dev/null || echo sika.msig)}"
 export SIKA_TOKEN_ACCOUNT="${SIKA_TOKEN_ACCOUNT:-sika.token}"
 
-# Unique msig proposal name (12-char eosio limit; chars a-z and 1-5 only).
+# Unique msig proposal name (12-char Antelope account-name limit; chars a-z and 1-5 only).
 msig_proposal_name() {
   local prefix="${1:-prop}"
   local suffix

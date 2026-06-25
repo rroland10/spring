@@ -12,8 +12,19 @@ if [[ ! -f "${CACHE}" ]]; then
 fi
 
 if grep -q '^SIKACHAIN:BOOL=ON' "${CACHE}" 2>/dev/null; then
-  echo "SIKACHAIN=ON — privileged system account sika (sika.null, sika.prods)"
-  exit 0
+  echo "SIKACHAIN=ON — protocol account sikaio (sikaio.null, sikaio.prods); system contract @ sika"
+  NODEOS="${BUILD}/programs/nodeos/nodeos"
+  if [[ -x "${NODEOS}" ]] && LC_ALL=C grep -a -q 'sikaio' "${NODEOS}" 2>/dev/null; then
+    echo "nodeos binary includes sikaio (rebuilt after protocol rename)"
+    exit 0
+  fi
+  if [[ -x "${NODEOS}" ]]; then
+    echo "WARN: nodeos exists but predates sikaio rename — rebuild:"
+    echo "  bash scripts/build-sikachain-spring.sh"
+    exit 1
+  fi
+  echo "nodeos not built yet — run: bash scripts/build-sikachain-spring.sh"
+  exit 1
 fi
 
 echo "SIKACHAIN=OFF in CMake cache — rebuild Spring (config.hpp uses sika unconditionally)"

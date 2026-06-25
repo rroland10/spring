@@ -2,7 +2,8 @@
 # Deploy SikaChain system contracts to SikaChainDev (local Spring node).
 #
 # Account layout (see ../accounts.json):
-#   sika        — privileged Spring account (Phase 3); hosts sika.system WASM
+#   sikaio      — protocol privileged account (was eosio); genesis block producer
+#   sika        — system contract host (sika.system WASM)
 #   sika.token  — SIKA + cGHS token contract
 #   sika.rex    — REX pool custody
 #   sika.*      — governance / issuer satellite contracts
@@ -19,6 +20,7 @@ EOSIO_BOOT_FALLBACK="${ROOT}/../unittests/contracts/eosio.boot"
 HTTP_PORT="${HTTP_PORT:-$(python3 -c "import os,urllib.parse; u=os.environ.get('NODE_URL','http://127.0.0.1:8888'); print(urllib.parse.urlparse(u).port or 8888)")}"
 PUB="$(python3 -c "import json; print(json.load(open('${ROOT}/chain.json'))['publicKey'])")"
 
+SIKA_PROTOCOL="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 SIKA_SYSTEM="${SIKA_SYSTEM_ACCOUNT:-sika}"
 SIKA_TOKEN="${SIKA_TOKEN_ACCOUNT:-sika.token}"
 SIKA_REX="${SIKA_REX_ACCOUNT:-sika.rex}"
@@ -167,7 +169,7 @@ print(d['ram_quota'], d['ram_usage'])
   if [[ "${quota}" -lt "${min_quota}" ]]; then
     need_buy=$(( min_quota - quota + 65536 ))
     echo "  buying RAM for ${acct} (quota ${quota} → target ${min_quota}, +${need_buy} bytes)..."
-    # eosio cannot be RAM payer (buyram transfers SIKA payer → eosio contract).
+    # sikaio cannot be RAM payer (buyram transfers SIKA payer → sika system contract).
     guard_sika="$(cleos_cmd get currency balance "${SIKA_TOKEN}" sika.guard SIKA 2>/dev/null | awk '{print $1}' | tr -d ',' || echo "0")"
     top_up=$(( need_buy / 1024 * 20 + 2000 ))
     if python3 -c "import sys; sys.exit(0 if float('${guard_sika:-0}') >= ${top_up} else 1)" 2>/dev/null; then
@@ -260,7 +262,7 @@ bootstrap_treas_settlement() {
   fi
 
   if [[ "${TIER2_VESTING_ENABLE:-0}" == "1" ]]; then
-    push_action_or_skip "eosio setvesting (Tier-2 vest scaffold)" \
+    push_action_or_skip "sika setvesting (Tier-2 vest scaffold)" \
       cleos_tx push action "${SIKA_SYSTEM}" setvesting \
       "[\"${SIKA_SYSTEM}\",1,31536000,8000]" \
       -p "${SIKA_SYSTEM}@active" -x 3600
@@ -326,11 +328,11 @@ for acct in "${SYSTEM_ACCOUNTS[@]}"; do
   if account_exists "${acct}"; then
     echo "  (exists) ${acct}"
   else
-    if ! cleos_tx create account "${SIKA_SYSTEM}" "${acct}" "${PUB}" -x 3600; then
+    if ! cleos_tx create account "${SIKA_PROTOCOL}" "${acct}" "${PUB}" -x 3600; then
       account_exists "${acct}" || {
         echo "  create failed for ${acct} — retrying once..." >&2
         sleep 1
-        cleos_tx create account "${SIKA_SYSTEM}" "${acct}" "${PUB}" -x 3600 || true
+        cleos_tx create account "${SIKA_PROTOCOL}" "${acct}" "${PUB}" -x 3600 || true
       }
     fi
     wait_for_account "${acct}"

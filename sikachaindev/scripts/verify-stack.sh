@@ -2,7 +2,7 @@
 # Full SikaChainDev stack verification — build gate, on-chain txs, apps, Playwright.
 #
 # Usage:
-#   export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
+#   export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika
 #   bash scripts/verify-stack.sh                    # verify-all + feature matrix + UI
 #   VERIFY_UI=0 bash scripts/verify-stack.sh        # skip Playwright (faster)
 #   VERIFY_DEV=0 bash scripts/verify-stack.sh        # skip on-chain verify-dev txs
@@ -12,6 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/env.sh"
 
 export SIKACHAIN_DEV="${SIKACHAIN_DEV:-1}"
+export SIKA_PROTOCOL_ACCOUNT="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
 
 VERIFY_UI="${VERIFY_UI:-1}"

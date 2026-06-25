@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Propose a token transfer via sika.msig (cleos multisig hardcodes eosio.msig).
+ * Propose a token transfer via sika.msig (SikaChain cleos multisig uses sika.msig).
  *
  * Usage:
  *   node msig-propose-transfer.mjs <proposer> <proposal_name> <to> <quantity> [memo]

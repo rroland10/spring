@@ -4,7 +4,7 @@
 # Prerequisites:
 #   - nodeos built from sikachain-dev-sika-v2+ with -DSIKACHAIN=ON
 #   - Fresh genesis (new keys) — see docs/testnet-bootstrap.md
-#   - Genesis `sika` active key in keosd (or cleos wallet)
+#   - Genesis `sikaio` / `sika` active keys in keosd (or cleos wallet)
 #   - Contracts built: SIKACHAIN=1 ./build.sh (sikachain sys contract)
 #
 # Usage (from ops machine with wallet access):
@@ -48,12 +48,13 @@ if [[ -z "${SIKA_SYSTEM_PRIVATE_KEY:-}" && -f "${ROOT}/config/testnet/generated/
 fi
 
 export SIKACHAIN_DEV=1
+export SIKA_PROTOCOL_ACCOUNT=sikaio
 export SIKA_SYSTEM_ACCOUNT=sika
 
 echo ""
 echo "--- Wallet ---"
 bash "${SCRIPT_DIR}/setup-wallet.sh" 2>/dev/null || {
-  echo "  (setup-wallet skipped — ensure sika@active key is imported)"
+  echo "  (setup-wallet skipped — ensure sikaio@sika active keys are imported)"
 }
 
 echo ""

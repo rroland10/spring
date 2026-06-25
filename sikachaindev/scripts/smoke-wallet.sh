@@ -2,7 +2,7 @@
 # Wallet UI RPC smoke — probes tables/endpoints the Sika app reads (Phase 3 / sika system).
 #
 # Usage:
-#   export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
+#   export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika
 #   bash scripts/smoke-wallet.sh [account]
 set -euo pipefail
 

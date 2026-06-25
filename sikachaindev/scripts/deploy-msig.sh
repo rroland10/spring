@@ -61,6 +61,22 @@ print(d['ram_quota'], d['ram_usage'])
   fi
 }
 
+mkdir -p "${BUILD_OUT}"
+
+if [[ -f "${BUILD_OUT}/${MSIG_ACCOUNT}.wasm" && -f "${BUILD_OUT}/${MSIG_ACCOUNT}.abi" ]] \
+  && [[ "${MSIG_FORCE_BUILD:-0}" != "1" ]]; then
+  echo "=== Using cached multisig WASM (${MSIG_ACCOUNT}) ==="
+  ls -la "${BUILD_OUT}/${MSIG_ACCOUNT}."{wasm,abi}
+elif [[ "${MSIG_SKIP_BUILD:-0}" == "1" ]]; then
+  echo "error: MSIG_SKIP_BUILD=1 but ${BUILD_OUT}/${MSIG_ACCOUNT}.wasm missing" >&2
+  exit 1
+elif [[ -n "${MSIG_FETCH_URL:-}" ]] && command -v "${CLEOS}" >/dev/null 2>&1; then
+  echo "=== Fetch multisig WASM from ${MSIG_FETCH_URL} ==="
+  mkdir -p "${BUILD_OUT}"
+  "${CLEOS}" --url "${MSIG_FETCH_URL}" get code eosio.msig \
+    -c "${BUILD_OUT}/${MSIG_ACCOUNT}.wasm" \
+    -a "${BUILD_OUT}/${MSIG_ACCOUNT}.abi"
+else
 echo "=== Build multisig WASM (${MSIG_ACCOUNT}) ==="
 rm -rf "${BUILD_OUT}"
 mkdir -p "${BUILD_OUT}"
@@ -86,6 +102,7 @@ docker run --rm --platform linux/amd64 \
 
 mv "${BUILD_OUT}/eosio.msig.wasm" "${BUILD_OUT}/${MSIG_ACCOUNT}.wasm"
 mv "${BUILD_OUT}/eosio.msig.abi" "${BUILD_OUT}/${MSIG_ACCOUNT}.abi"
+fi
 
 if [[ ! -f "${BUILD_OUT}/${MSIG_ACCOUNT}.wasm" ]]; then
   echo "error: ${MSIG_ACCOUNT} build failed"

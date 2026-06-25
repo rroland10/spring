@@ -37,15 +37,16 @@ const anchor = testnetExample
       symbol: "SIKA",
       keyPrefix: "PUB_K1",
       testnet: true,
+      protocolAccount: "sikaio",
       systemContract: "sika",
       tokenContract: "sika.token",
       tokenSymbol: "SIKA",
       stablecoinSymbol: "CGHS",
-      producer: "sika",
+      producer: "sikaio",
       logo: "https://sikachain.com/images/sikachain.svg",
       appName: "Sika",
       notes:
-        "Testnet Anchor import. Privileged system account is sika (not eosio). Replace chainId and nodeUrl before publishing.",
+        "Testnet Anchor import. Protocol account is sikaio; system contract is sika (not legacy eosio). Replace chainId and nodeUrl before publishing.",
     }
   : {
       name: chain.chainName ?? "SikaChain",
@@ -54,15 +55,16 @@ const anchor = testnetExample
       symbol: chain.symbol ?? "SIKA",
       keyPrefix: chain.keyFormat ?? "PUB_K1",
       testnet: true,
+      protocolAccount: chain.protocolAccount ?? "sikaio",
       systemContract: chain.systemContract ?? "sika",
       tokenContract: chain.tokenContract ?? "sika.token",
       tokenSymbol: chain.symbol ?? "SIKA",
       stablecoinSymbol: "CGHS",
-      producer: chain.producer ?? chain.systemContract ?? "sika",
+      producer: chain.producer ?? chain.protocolAccount ?? "sikaio",
       logo: "https://sikachain.com/images/sikachain.svg",
       appName: chain.wharfkit?.appName ?? "Sika",
       notes:
-        "Import in Anchor: Settings → Blockchains → Add. Privileged system account is sika (not eosio).",
+        "Import in Anchor: Settings → Blockchains → Add. Protocol account is sikaio; system contract is sika (not legacy eosio).",
     };
 
 writeFileSync(out, JSON.stringify(anchor, null, 2) + "\n", "utf8");

@@ -28,7 +28,7 @@ endif()
 # Options
 option(ENABLE_WERROR "Enable `-Werror` compilation flag." Off)
 option(ENABLE_WEXTRA "Enable `-Wextra` compilation flag." Off)
-option(SIKACHAIN "SikaChain build (privileged system account sika; always on in config.hpp)" On)
+option(SIKACHAIN "SikaChain build (protocol sikaio + system sika; always on in config.hpp)" On)
 
 
 set( CLI_CLIENT_EXECUTABLE_NAME cleos )

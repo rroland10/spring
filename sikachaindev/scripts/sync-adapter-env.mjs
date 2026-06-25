@@ -17,6 +17,8 @@ const ADAPTER_DIR =
 const chain = JSON.parse(readFileSync(join(ROOT, "chain.json"), "utf8"));
 const systemAccount =
   process.env.SIKA_SYSTEM_ACCOUNT ?? chain.systemContract ?? "sika";
+const protocolAccount =
+  process.env.SIKA_PROTOCOL_ACCOUNT ?? chain.protocolAccount ?? "sikaio";
 
 const envPath = join(ADAPTER_DIR, ".env");
 const examplePath = join(ADAPTER_DIR, ".env.example");
@@ -41,6 +43,7 @@ if (chain.hyperionUrl?.trim()) {
   lines.set("SIKA_INDEXER_URL", `SIKA_INDEXER_URL=${chain.hyperionUrl.trim()}`);
 }
 lines.set("SIKA_TOKEN_CONTRACT", `SIKA_TOKEN_CONTRACT=${chain.tokenContract ?? "sika.token"}`);
+lines.set("SIKA_PROTOCOL_ACCOUNT", `SIKA_PROTOCOL_ACCOUNT=${protocolAccount}`);
 lines.set("SIKA_SYSTEM_ACCOUNT", `SIKA_SYSTEM_ACCOUNT=${systemAccount}`);
 if (!lines.has("DATABASE_URL")) {
   lines.set(
@@ -62,6 +65,7 @@ const body = [
   lines.has("DATABASE_URL") ? lines.get("DATABASE_URL") : "# DATABASE_URL=postgresql://...",
   "",
   lines.get("SIKA_TOKEN_CONTRACT"),
+  lines.get("SIKA_PROTOCOL_ACCOUNT"),
   lines.get("SIKA_SYSTEM_ACCOUNT"),
   "",
 ].join("\n");

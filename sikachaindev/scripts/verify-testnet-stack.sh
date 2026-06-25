@@ -25,6 +25,7 @@ if [[ -f "${README}" ]]; then
   export SIKA_SYSTEM_PRIVATE_KEY="${SIKA_SYSTEM_PRIVATE_KEY:-${GENESIS_PVT}}"
 fi
 
+export SIKA_PROTOCOL_ACCOUNT="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
 export SKIP_BP_VOTE=1
 
@@ -75,8 +76,8 @@ import json,sys
 d=json.load(sys.stdin)
 print(','.join(p['producer_name'] for p in d.get('active',{}).get('producers',[])))
 ")"
-if [[ "${active}" == "sika" ]]; then
-  echo "  ok  single-node schedule (producer=sika)"
+if [[ "${active}" == "sikaio" ]]; then
+  echo "  ok  single-node schedule (producer=sikaio)"
 else
   echo "  WARN active schedule: ${active} (single-node may stall LIB)" >&2
 fi

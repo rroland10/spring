@@ -13,12 +13,15 @@ if ! command -v docker >/dev/null 2>&1; then
   exit 1
 fi
 
-# Stop broken native pm2 processes if present
+# shellcheck source=lib/docker-ready.sh
+source "${SCRIPT_DIR}/lib/docker-ready.sh"
+docker_ready || exit 1
+
+echo "=== Hyperion (Docker) for SikaChainDev ==="
 if command -v pm2 >/dev/null 2>&1; then
   pm2 delete sikachaindev-indexer sikachaindev-api 2>/dev/null || true
 fi
 
-echo "=== Hyperion (Docker) for SikaChainDev ==="
 bash "${SCRIPT_DIR}/start-hyperion-deps.sh"
 
 if ! curl -sf http://127.0.0.1:8888/v1/chain/get_info >/dev/null 2>&1; then
@@ -34,7 +37,7 @@ node "${SCRIPT_DIR}/configure-hyperion-dev.mjs" --docker
 
 echo ""
 echo "Building and starting Hyperion containers (first run may take several minutes)..."
-docker compose -f "${COMPOSE_DEPS}" -f "${COMPOSE_APP}" up -d --build hyperion-indexer hyperion-api
+docker_compose_up -f "${COMPOSE_DEPS}" -f "${COMPOSE_APP}" --build hyperion-indexer hyperion-api
 
 echo ""
 echo "Waiting for Hyperion API on :7001..."

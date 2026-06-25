@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Write runtime nodeos config for 6-BP lite mode: produce as the first voted BP
-# (sikabpa) with stale production. Keeps the genesis `sika` key as a secondary
+# (sikabpa) with stale production. Keeps the genesis `sikaio` key as a secondary
 # signature provider so blocks can still advance during schedule handoff.
 set -euo pipefail
 
@@ -31,4 +31,4 @@ mkdir -p "${RUNTIME_CONFIG}"
       "${ROOT}/config/config.ini"
   echo "signature-provider = ${sika_pub}=KEY:${sika_pvt}"
 } > "${RUNTIME_CONFIG}/config.ini"
-echo "lite producer config: ${name} (+ genesis ${SIKA_SYSTEM_ACCOUNT} fallback key)"
+echo "lite producer config: ${name} (+ genesis ${SIKA_PROTOCOL_ACCOUNT:-sikaio} fallback key)"

@@ -8,13 +8,13 @@ Step-by-step guide to stand up a **new** public testnet (not a copy of SikaChain
 
 | Item | Source |
 |------|--------|
-| nodeos / cleos / keosd | [rroland10/spring](https://github.com/rroland10/spring) tag **`sikachain-dev-sika-v4`** |
+| nodeos / cleos / keosd | [rroland10/spring](https://github.com/rroland10/spring) tag **`sikachain-dev-sika-v5`** (`sikaio` protocol + `sika` system genesis) |
 | System contracts | `sikachain sys contract` — `SIKACHAIN=1 ./build.sh` |
 | eosio.boot | `bash scripts/build-system-contracts.sh` or Spring `unittests/contracts/eosio.boot/` |
 
 ```bash
 git clone https://github.com/rroland10/spring.git
-cd spring && git checkout sikachain-dev-sika-v4
+cd spring && git checkout sikachain-dev-sika-v5
 bash sikachaindev/scripts/build-sikachain-spring.sh
 ```
 
@@ -57,7 +57,7 @@ Record **chain ID** (needed for wallet + Anchor):
 curl -s https://rpc.testnet.sikachain.gh/v1/chain/get_info | jq -r .chain_id
 ```
 
-Spring with `SIKACHAIN=ON` creates privileged account **`sika`** at genesis (not `eosio`).
+Spring with `SIKACHAIN=ON` creates protocol account **`sikaio`** and system host **`sika`** at genesis (not legacy `eosio`).
 
 ## Phase 1b — Local Docker dry-run (optional)
 
@@ -70,9 +70,9 @@ RESET=1 RPC_HOST_PORT=18890 bash scripts/bootstrap-docker-testnet.sh
 
 This script:
 
-1. Starts GHCR `sikachain-dev-sika-v4` nodeos as genesis `sika`
+1. Starts GHCR `sikachain-dev-sika-v5` (or newer) nodeos as genesis **`sikaio`**
 2. Runs `bootstrap-testnet.sh` (contracts + 6 BPs registered, **no votes**)
-3. Keeps producing as **`sika`** — votes would activate a multi-BP Savanna schedule and stall a single container
+3. Keeps producing as **`sikaio`** — votes would activate a multi-BP Savanna schedule and stall a single container
 
 For schedule activation + rotation: `SKIP_BP_VOTE=0 SKIP_SCHEDULE=0` and multinode (`start-6bp-cluster.sh`).
 
@@ -120,7 +120,7 @@ CORS: set `access-control-allow-origin` to your wallet origin (`https://app.sika
 
 ## Phase 3 — Contract bootstrap
 
-From an ops machine with the genesis **`sika`** key in keosd:
+From an ops machine with the genesis **`sikaio`** key in keosd:
 
 ```bash
 export NODE_URL=https://rpc.testnet.sikachain.gh   # or http://127.0.0.1:8888 on BP1
@@ -201,7 +201,7 @@ Wallet smoke: [gh-v1-launch.md](gh-v1-launch.md) section 5 (PWA, Anchor, cGHS se
 ## Checklist
 
 - [ ] New genesis key; chain ID recorded
-- [ ] `sika` privileged; no `eosio` account
+- [ ] `sikaio` + `sika` privileged; no legacy `eosio` account
 - [ ] SIKA + CGHS created on `sika.token`
 - [ ] `sika.msig` privileged
 - [ ] ≥6 producers registered and voted

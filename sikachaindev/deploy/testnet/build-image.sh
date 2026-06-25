@@ -25,7 +25,6 @@ done
 NODEOS="${ROOT}/build/programs/nodeos/nodeos"
 if [[ ! -x "${NODEOS}" ]]; then
   echo "error: ${NODEOS} not found — build Spring first:"
-  echo "  git checkout sikachain-dev-sika-v2"
   echo "  bash sikachaindev/scripts/build-sikachain-spring.sh"
   exit 1
 fi

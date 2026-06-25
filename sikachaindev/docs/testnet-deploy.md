@@ -1,6 +1,6 @@
 # SikaChain testnet deploy outline
 
-Ghana v1 wallet launch needs a **public testnet** (or mainnet) with the same protocol shape as SikaChainDev: privileged account **`sika`**, `sika.*` contracts, Savanna finality, SHIP → Hyperion, HTTPS RPC.
+Ghana v1 wallet launch needs a **public testnet** (or mainnet) with the same protocol shape as SikaChainDev: protocol account **`sikaio`**, system host **`sika`**, `sika.*` contracts, Savanna finality, SHIP → Hyperion, HTTPS RPC.
 
 **Step-by-step bootstrap:** [testnet-bootstrap.md](testnet-bootstrap.md)  
 **Docker / Fly.io:** [testnet-fly.md](testnet-fly.md)  
@@ -13,7 +13,7 @@ This doc maps dev scripts to production steps. It does not provision cloud infra
 
 | Component | Source | Notes |
 |-----------|--------|-------|
-| **nodeos / cleos / keosd** | [rroland10/spring](https://github.com/rroland10/spring) tag `sikachain-dev-sika-v2` or newer | `-DSIKACHAIN=ON` (default) — genesis creates **`sika`**, not `eosio`; `cleos get account` uses **`sika.token`** |
+| **nodeos / cleos / keosd** | [rroland10/spring](https://github.com/rroland10/spring) tag `sikachain-dev-sika-v2` or newer | `-DSIKACHAIN=ON` (default) — genesis creates **`sikaio`** (protocol) + **`sika`** (system); `cleos get account` uses **`sika.token`** |
 | **System contracts** | `sikachain sys contract` | `SIKACHAIN=1 ./build.sh` |
 | **eosio.boot** | Spring `unittests/contracts/eosio.boot/` or `build-system-contracts.sh` | Protocol feature activation |
 | **sika.msig** | `deploy-msig.sh` pattern | Standard msig WASM @ **`sika.msig`**, privileged |
@@ -31,7 +31,7 @@ bash scripts/run-contract-tests.sh   # 45 WASM tests @ sika
 
 Use **bios boot** (Option 2 in sys contract README), not native chain:
 
-1. Generate genesis with **`sika`** as privileged producer account.
+1. Generate genesis with **`sikaio`** as privileged protocol producer account and **`sika`** as system contract host.
 2. Start initial node(s) with Savanna / IF mode enabled.
 3. Deploy in order (see `deploy-sika-system.sh`):
    - `sika.token` → create **SIKA** + **CGHS**
@@ -169,7 +169,7 @@ See [gh-v1-launch.md](gh-v1-launch.md) section 5:
 
 Wallet: set `NEXT_PUBLIC_WALLET_ROLLOUT=full` and redeploy — no code change.
 
-Chain upgrades: publish WASM via msig / governance; never rename privileged account off **`sika`** without a coordinated hard fork.
+Chain upgrades: publish WASM via msig / governance; never rename protocol account off **`sikaio`** or system host off **`sika`** without a coordinated hard fork.
 
 ## Related
 

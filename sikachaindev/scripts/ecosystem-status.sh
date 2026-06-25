@@ -43,5 +43,6 @@ echo "  Verify:     scripts/quick-verify.sh  |  scripts/test-cleos.sh  |  script
 echo "  Ghana v1:   GH_V1=1 scripts/verify-predeploy.sh  |  scripts/preview-gh-v1.sh"
 echo "  Testnet:    docs/testnet-deploy.md"
 echo "  Msig:       scripts/deploy-msig.sh  |  scripts/verify-msig.sh"
+echo "  Hyperion:   scripts/docker-diagnose.sh  |  scripts/hyperion-recover.sh"
 echo "  Tests:      scripts/run-contract-tests.sh"
 echo "  Deploy:     scripts/deploy-sika-system.sh (fresh reset only)"

@@ -10,9 +10,10 @@
     "tokenContract": "sika.token",
     "rexContract": "sika.rex",
     "msigContract": "sika.msig",
+    "protocolAccount": "sikaio",
     "systemContract": "sika",
     "systemContractDisplayName": "SikaChain System",
-    "producer": "sika",
+    "producer": "sikaio",
     "hyperionUrl": "http://127.0.0.1:7001"
   },
   "projects": {
@@ -66,7 +67,7 @@
   },
   "stack": {
     "layer1": "Spring nodeos (SikaChainDev)",
-    "layer2": "sika.system @ sika (privileged, -DSIKACHAIN=ON) + sika.token / sika.rex / sika.msig / sika.* satellites",
+    "layer2": "sika.system @ sika + protocol sikaio (-DSIKACHAIN=ON) + sika.token / sika.rex / sika.msig / sika.* satellites",
     "layer3": "WharfKit adapter API (relay + tx verification)",
     "layer4": "Sika app (Next.js wallet UI)",
     "layer5": "SikaChain web (GTM site — genesis, explorer, apply)",

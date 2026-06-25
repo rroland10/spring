@@ -1,5 +1,6 @@
 {
-  "description": "Phase 3 — Spring built with -DSIKACHAIN=ON (privileged account sika)",
+  "description": "Phase 3 — Spring built with -DSIKACHAIN=ON (protocol sikaio + system sika)",
+  "protocol": "sikaio",
   "system": "sika",
   "systemDisplayName": "SikaChain System",
   "token": "sika.token",

@@ -33,6 +33,21 @@ SHIP endpoint: `ws://127.0.0.1:8080` (Hyperion connects here).
 
 ## Run Hyperion
 
+### Wrong nodeos on :8888
+
+If RPC responds but health shows producer `sika` (not `sikaio`) or Phase 3 checks fail, another clone may own the port (e.g. `SpringReloaded/sikachaindev`):
+
+```bash
+lsof -iTCP:8888 -sTCP:LISTEN   # note PID / path
+# stop the other clone, then from AntelopeOS/spring/sikachaindev:
+bash scripts/stop-all.sh
+rm -rf data/state-history   # if SHIP replay crashed
+ENABLE_SHIP=1 bash scripts/start-all.sh
+bash scripts/wait-for-rpc.sh
+```
+
+`check-health.sh` warns when the listening `nodeos` binary is not under this `sikachaindev` tree.
+
 ### Backing services (Docker)
 
 ```bash
@@ -66,6 +81,28 @@ Hyperion’s native module `@eosrio/node-abieos` is **Linux x86-64 only**. Use D
 ```bash
 bash scripts/start-hyperion.sh
 ```
+
+**Recover** after Docker restart or `get_actions` 500 (Elasticsearch down):
+
+```bash
+bash scripts/hyperion-recover.sh
+```
+
+This ensures SHIP, starts deps, reconfigures Hyperion, and waits for `get_actions`.
+
+### SHIP crash on replay (`state_history_write_exception`)
+
+If nodeos exits during replay with a state history error, clear SHIP artifacts and restart:
+
+```bash
+bash scripts/stop-all.sh
+rm -rf data/state-history
+ENABLE_SHIP=1 bash scripts/start-all.sh
+bash scripts/wait-for-rpc.sh
+bash scripts/check-ship.sh
+```
+
+Then run `bash scripts/hyperion-recover.sh` when Docker is healthy.
 
 This builds `linux/amd64` containers, binds nodeos RPC/SHIP on `0.0.0.0` when `ENABLE_SHIP=1`, and sets `http-validate-host = false` so Docker can reach RPC via `host.docker.internal`.
 

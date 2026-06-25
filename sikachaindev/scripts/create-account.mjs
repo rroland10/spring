@@ -47,10 +47,16 @@ const systemAbi = ABI.from(
 )
 
 const chainJson = JSON.parse(readFileSync(join(__dirname, '../chain.json'), 'utf8'))
+const protocolAccount =
+  process.env.SIKA_PROTOCOL_ACCOUNT || chainJson.protocolAccount || 'sikaio'
 const systemAccount = process.env.SIKA_SYSTEM_ACCOUNT || chainJson.systemContract || 'sika'
-const systemPrivateKey =
-  process.env.SIKA_SYSTEM_PRIVATE_KEY || chainJson.privateKey
-const privateKey = PrivateKey.from(systemPrivateKey)
+const devPrivateKey = process.env.SIKA_DEV_PRIVATE_KEY || chainJson.privateKey
+const protocolPrivateKey = PrivateKey.from(
+  process.env.SIKA_PROTOCOL_PRIVATE_KEY || devPrivateKey,
+)
+const systemPrivateKey = PrivateKey.from(
+  process.env.SIKA_SYSTEM_PRIVATE_KEY || devPrivateKey,
+)
 const pubK1 = PublicKey.from(publicKey).toString()
 const client = new APIClient({url: rpc})
 
@@ -81,9 +87,9 @@ const actions = [
     {
       account: systemAccount,
       name: 'newaccount',
-      authorization: [{actor: systemAccount, permission: 'active'}],
+      authorization: [{actor: protocolAccount, permission: 'active'}],
       data: {
-        creator: systemAccount,
+        creator: protocolAccount,
         name: account,
         owner: auth,
         active: auth,
@@ -128,13 +134,16 @@ const tx = Transaction.from({
 })
 
 const digest = tx.signingDigest(info.chain_id)
-const signatures = [privateKey.signDigest(digest)]
+const signingKeys = new Map()
+signingKeys.set(protocolPrivateKey.toPublic().toString(), protocolPrivateKey)
+signingKeys.set(systemPrivateKey.toPublic().toString(), systemPrivateKey)
 if (ramPayer !== systemAccount) {
   const ramPayerKey = PrivateKey.from(
-    process.env.RAM_PAYER_PRIVATE_KEY || chainJson.privateKey,
+    process.env.RAM_PAYER_PRIVATE_KEY || devPrivateKey,
   )
-  signatures.push(ramPayerKey.signDigest(digest))
+  signingKeys.set(ramPayerKey.toPublic().toString(), ramPayerKey)
 }
+const signatures = [...signingKeys.values()].map((key) => key.signDigest(digest))
 const signed = SignedTransaction.from({...tx, signatures})
 
 const result = await client.v1.chain.send_transaction(signed)

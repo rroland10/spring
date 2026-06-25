@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-shot Phase 3 bootstrap: SIKACHAIN=ON Spring + privileged account `sika`.
+# One-shot Phase 3 bootstrap: SIKACHAIN=ON Spring + protocol `sikaio` + system `sika`.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -7,10 +7,11 @@ ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 APP_DIR="${SIKA_APP_DIR:-/Users/randallroland/Desktop/Projects/Sika app}"
 
 export SIKACHAIN_DEV=1
+export SIKA_PROTOCOL_ACCOUNT=sikaio
 export SIKA_SYSTEM_ACCOUNT=sika
 
 echo "=== SikaChainDev Phase 3 bootstrap ==="
-echo "System account: sika (requires Spring built with -DSIKACHAIN=ON)"
+echo "Protocol account: sikaio | System contract: sika (requires Spring -DSIKACHAIN=ON)"
 echo ""
 
 if [[ ! -x "${ROOT}/../build/programs/nodeos/nodeos" ]]; then

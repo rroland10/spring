@@ -1,6 +1,6 @@
 # cleos + keosd on SikaChainDev
 
-Use **cleos** as the primary CLI for wallet, account creation, transfers, staking, voting, REX, and multisig on the local chain. All commands target **`sika`** as the privileged system account (not `eosio`).
+Use **cleos** as the primary CLI for wallet, account creation, transfers, staking, voting, REX, and multisig on the local chain. Governance actions target **`sika`** (system contract). Protocol/native account is **`sikaio`** (not legacy `eosio`).
 
 ## Quick start
 
@@ -39,7 +39,7 @@ cleos get info
 | List keys | `cleos wallet keys` |
 | New keypair | `cleos create key --to-console` |
 
-`setup-wallet.sh` creates the **default** wallet, imports the genesis **`sika`** key, all `chain.json` dev accounts, and 6-BP producer keys.
+`setup-wallet.sh` creates the **default** wallet, imports the genesis **`sikaio`** key (shared dev key in `chain.json`), all dev accounts, and 6-BP producer keys.
 
 ## Account creation
 
@@ -104,7 +104,7 @@ VERIFY_REX=1 bash scripts/verify-rex-unstake.sh
 
 ## Multisig (`sika.msig`)
 
-Spring **`cleos multisig`** hardcodes `eosio.msig`. On SikaChain use **`cleos push action sika.msig …`** or the helper scripts:
+Spring **`cleos multisig`** targets **`sika.msig`** on SikaChain builds. You can also use **`cleos push action sika.msig …`** or the helper scripts:
 
 ```bash
 bash scripts/verify-msig.sh              # sika proposer

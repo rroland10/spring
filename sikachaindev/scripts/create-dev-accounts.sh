@@ -9,7 +9,7 @@
 # Keys live in chain.json. Run bootstrap-dev.sh first if the chain is fresh.
 #
 # Usage:
-#   export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
+#   export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika
 #   bash scripts/create-dev-accounts.sh
 #   bash scripts/create-dev-accounts.sh sikauser1   # single account
 set -euo pipefail

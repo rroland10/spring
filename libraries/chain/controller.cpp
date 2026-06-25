@@ -1290,7 +1290,7 @@ struct controller_impl {
       try {
          auto get_getpeerkeys_transaction = [&]() {
             auto perms = vector<permission_level>{};
-            action act(perms, config::system_account_name, "getpeerkeys"_n, {});
+            action act(perms, config::protocol_account_name, "getpeerkeys"_n, {});
             signed_transaction trx;
 
             trx.actions.emplace_back(std::move(act));
@@ -1379,15 +1379,15 @@ struct controller_impl {
    set_apply_handler( account_name(#receiver), account_name(#contract), action_name(#action), \
                       &BOOST_PP_CAT(apply_, BOOST_PP_CAT(contract, BOOST_PP_CAT(_,action) ) ) )
 
-   // Native handlers must bind to config::system_account_name (sika).
-   set_apply_handler( config::system_account_name, config::system_account_name, "newaccount"_n, &apply_eosio_newaccount );
-   set_apply_handler( config::system_account_name, config::system_account_name, "setcode"_n, &apply_eosio_setcode );
-   set_apply_handler( config::system_account_name, config::system_account_name, "setabi"_n, &apply_eosio_setabi );
-   set_apply_handler( config::system_account_name, config::system_account_name, "updateauth"_n, &apply_eosio_updateauth );
-   set_apply_handler( config::system_account_name, config::system_account_name, "deleteauth"_n, &apply_eosio_deleteauth );
-   set_apply_handler( config::system_account_name, config::system_account_name, "linkauth"_n, &apply_eosio_linkauth );
-   set_apply_handler( config::system_account_name, config::system_account_name, "unlinkauth"_n, &apply_eosio_unlinkauth );
-   set_apply_handler( config::system_account_name, config::system_account_name, "canceldelay"_n, &apply_eosio_canceldelay );
+   // Native handlers bind to protocol_account_name (sikaio; was eosio).
+   set_apply_handler( config::protocol_account_name, config::protocol_account_name, "newaccount"_n, &apply_eosio_newaccount );
+   set_apply_handler( config::protocol_account_name, config::protocol_account_name, "setcode"_n, &apply_eosio_setcode );
+   set_apply_handler( config::protocol_account_name, config::protocol_account_name, "setabi"_n, &apply_eosio_setabi );
+   set_apply_handler( config::protocol_account_name, config::protocol_account_name, "updateauth"_n, &apply_eosio_updateauth );
+   set_apply_handler( config::protocol_account_name, config::protocol_account_name, "deleteauth"_n, &apply_eosio_deleteauth );
+   set_apply_handler( config::protocol_account_name, config::protocol_account_name, "linkauth"_n, &apply_eosio_linkauth );
+   set_apply_handler( config::protocol_account_name, config::protocol_account_name, "unlinkauth"_n, &apply_eosio_unlinkauth );
+   set_apply_handler( config::protocol_account_name, config::protocol_account_name, "canceldelay"_n, &apply_eosio_canceldelay );
    }
 
    void open_fork_db() {
@@ -1686,8 +1686,8 @@ struct controller_impl {
       ilog( "Initializing new blockchain with genesis state" );
 
       // genesis state starts in legacy mode
-      producer_authority_schedule initial_schedule = { 0, { producer_authority{config::system_account_name, block_signing_authority_v0{ 1, {{genesis.initial_key, 1}} } } } };
-      legacy::producer_schedule_type initial_legacy_schedule{ 0, {{config::system_account_name, genesis.initial_key}} };
+      producer_authority_schedule initial_schedule = { 0, { producer_authority{config::protocol_account_name, block_signing_authority_v0{ 1, {{genesis.initial_key, 1}} } } } };
+      legacy::producer_schedule_type initial_legacy_schedule{ 0, {{config::protocol_account_name, genesis.initial_key}} };
 
       block_header_state_legacy genheader;
       genheader.active_schedule                = initial_schedule;
@@ -2579,8 +2579,8 @@ struct controller_impl {
          a.name = name;
          a.creation_date = initial_timestamp;
 
-         if( name == config::system_account_name ) {
-            // The initial eosio ABI value affects consensus; see  https://github.com/EOSIO/eos/issues/7794
+         if( name == config::protocol_account_name ) {
+            // The initial protocol-account ABI value affects consensus; see  https://github.com/EOSIO/eos/issues/7794
             // TODO: This doesn't charge RAM; a fix requires a consensus upgrade.
             a.abi.assign(eosio_abi_bin, sizeof(eosio_abi_bin));
          }
@@ -2647,11 +2647,12 @@ struct controller_impl {
       resource_limits.initialize_database();
 
       authority system_auth(genesis.initial_key);
+      create_native_account( genesis.initial_timestamp, config::protocol_account_name, system_auth, system_auth, true );
       create_native_account( genesis.initial_timestamp, config::system_account_name, system_auth, system_auth, true );
 
       auto empty_authority = authority(1, {}, {});
       auto active_producers_authority = authority(1, {}, {});
-      active_producers_authority.accounts.push_back({{config::system_account_name, config::active_name}, 1});
+      active_producers_authority.accounts.push_back({{config::protocol_account_name, config::active_name}, 1});
 
       create_native_account( genesis.initial_timestamp, config::null_account_name, empty_authority, empty_authority );
       create_native_account( genesis.initial_timestamp, config::producers_account_name, empty_authority, active_producers_authority );

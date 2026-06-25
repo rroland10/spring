@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Smoke a hosted SikaChain testnet (privileged sika + sika.token + Hyperion).
+# Smoke a hosted SikaChain testnet (protocol sikaio + system sika + sika.token + Hyperion).
 #
 # Usage:
 #   NODE_URL=https://rpc.testnet.sikachain.gh bash scripts/verify-testnet.sh
@@ -20,6 +20,7 @@ if [[ -z "${NODE_URL:-}" ]]; then
 fi
 
 export SIKACHAIN_DEV="${SIKACHAIN_DEV:-1}"
+export SIKA_PROTOCOL_ACCOUNT="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
 export WALLET_URL="${WALLET_URL:-}" # cleos wallet not required unless VERIFY_CLEOS=1
 
@@ -54,12 +55,17 @@ check() {
   fi
 }
 
-check "sika account exists" bash -c "
+check "sikaio account exists (protocol)" bash -c "
+  curl -sf '${NODE_URL}/v1/chain/get_account' -H 'Content-Type: application/json' \
+    -d '{\"account_name\":\"sikaio\"}' | grep -q '\"privileged\":true'
+"
+
+check "sika account exists (system contract)" bash -c "
   curl -sf '${NODE_URL}/v1/chain/get_account' -H 'Content-Type: application/json' \
     -d '{\"account_name\":\"sika\"}' | grep -q '\"privileged\":true'
 "
 
-check "eosio account absent" bash -c "
+check "eosio account absent (legacy)" bash -c "
   ! curl -sf '${NODE_URL}/v1/chain/get_account' -H 'Content-Type: application/json' \
     -d '{\"account_name\":\"eosio\"}' | grep -q account_name
 "

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Local docker testnet: start nodeos as genesis `sika`, bootstrap contracts + BPs.
+# Local docker testnet: start nodeos as genesis `sikaio`, bootstrap contracts + BPs.
 #
 # Usage:
 #   RPC_HOST_PORT=18890 bash sikachaindev/scripts/bootstrap-docker-testnet.sh
@@ -50,14 +50,14 @@ fi
 
 P2P_PORT="${P2P_HOST_PORT:-$((RPC_PORT == 8888 ? 9876 : RPC_PORT + 100))}"
 SHIP_PORT="${SHIP_HOST_PORT:-$((RPC_PORT == 8888 ? 8080 : RPC_PORT - 800))}"
-# Write bootstrap-phase .env (produce as sika until BPs exist)
+# Write bootstrap-phase .env (produce as sikaio until BPs exist)
 cat > "${DEPLOY}/.env.bootstrap" <<EOF
-SIKA_NODEOS_IMAGE=ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v4
+SIKA_NODEOS_IMAGE=ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v5
 SIKA_GENESIS_HOST=${GENESIS}
 RPC_HOST_PORT=${RPC_PORT}
 P2P_HOST_PORT=${P2P_PORT}
 SHIP_HOST_PORT=${SHIP_PORT}
-PRODUCER_NAME=sika
+PRODUCER_NAME=sikaio
 SIGNATURE_PROVIDER=${SIGNATURE_PROVIDER}
 P2P_ADVERTISE=127.0.0.1:${P2P_PORT}
 P2P_PEERS=
@@ -65,7 +65,7 @@ CORS_ORIGIN=*
 AGENT_NAME=sikachain-testnet-genesis
 EOF
 
-echo "--- Start nodeos (producer=sika) ---"
+echo "--- Start nodeos (producer=sikaio) ---"
 cd "${DEPLOY}"
 RPC_HOST_PORT="${RPC_PORT}" \
   P2P_HOST_PORT="$(grep P2P_HOST_PORT .env.bootstrap | cut -d= -f2)" \

@@ -2,7 +2,7 @@
 # Fast daily verification — read-only chain smoke + feature matrix (no on-chain txs, no Playwright).
 #
 # Usage:
-#   export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
+#   export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika
 #   VERIFY_CLEOS=0 bash scripts/quick-verify.sh   # skip cleos matrix (default: run)
 set -euo pipefail
 
@@ -10,6 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/env.sh"
 
 export SIKACHAIN_DEV="${SIKACHAIN_DEV:-1}"
+export SIKA_PROTOCOL_ACCOUNT="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
 
 echo "=== quick-verify (read-only) ==="

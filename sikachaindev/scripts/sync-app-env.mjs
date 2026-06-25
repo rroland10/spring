@@ -29,6 +29,11 @@ function envBlock({ systemAccount, accountsMeta, label, devWallet = false, walle
 NEXT_PUBLIC_DEV_WALLET=1
 NEXT_PUBLIC_E2E_MOCK_ACTOR=sikadev
 NEXT_PUBLIC_E2E_MOCK_PRIVATE_KEY=${chain.accounts?.sikadev?.privateKey ?? ""}
+
+# Dev swap: SIKA ↔ CGHS via token hub (local stand-in for bridge token)
+NEXT_PUBLIC_BRIDGE_TOKEN_CONTRACT=${chain.tokenContract ?? "sika.token"}
+NEXT_PUBLIC_BRIDGE_TOKEN_SYMBOL=CGHS
+NEXT_PUBLIC_BRIDGE_TOKEN_PRECISION=4
 `
     : "";
 
@@ -53,6 +58,7 @@ NEXT_PUBLIC_EOS_READ_RPC_URLS=${chain.url ?? "http://127.0.0.1:8888"}
 NEXT_PUBLIC_EOS_CHAIN_ID=${chain.chainId}
 NEXT_PUBLIC_EOS_NAME=${chain.chainName ?? "SikaChainDev"}
 NEXT_PUBLIC_CONTRACT_ACCOUNT=${systemAccount}
+NEXT_PUBLIC_PROTOCOL_ACCOUNT=${chain.protocolAccount ?? "sikaio"}
 NEXT_PUBLIC_TABLE_ACCOUNT=${systemAccount}
 NEXT_PUBLIC_SYSTEM_CONTRACT_DISPLAY_NAME=${accountsMeta.systemDisplayName ?? chain.systemContractDisplayName ?? "SikaChain System"}
 NEXT_PUBLIC_TOKEN_CONTRACT=${chain.tokenContract ?? accountsMeta.token}
@@ -94,7 +100,7 @@ writeFileSync(
   envBlock({
     systemAccount: accountsPhase3.system ?? "sika",
     accountsMeta: accountsPhase3,
-    label: "SikaChain Dev Phase 3 — Spring -DSIKACHAIN=ON (privileged account sika)",
+    label: "SikaChain Dev Phase 3 — Spring -DSIKACHAIN=ON (protocol sikaio + system sika)",
     devWallet: true,
   }),
   "utf8",
@@ -131,6 +137,7 @@ NEXT_PUBLIC_CHAIN_ID=REPLACE_WITH_CHAIN_ID
 NEXT_PUBLIC_CHAIN_NAME=SikaChain
 
 NEXT_PUBLIC_CONTRACT_ACCOUNT=sika
+NEXT_PUBLIC_PROTOCOL_ACCOUNT=sikaio
 NEXT_PUBLIC_TABLE_ACCOUNT=sika
 NEXT_PUBLIC_SYSTEM_CONTRACT_DISPLAY_NAME=SikaChain System
 NEXT_PUBLIC_TOKEN_CONTRACT=sika.token

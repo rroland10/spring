@@ -66,7 +66,7 @@ fi
 export SIKA_GENESIS_HOST="${GENESIS_HOST}"
 
 echo "=== testnet docker up ==="
-  echo "  image: ${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v4}"
+  echo "  image: ${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v5}"
 echo "  genesis: ${GENESIS_HOST}"
 echo "  producer: ${PRODUCER_NAME:-sikabpa}"
 echo "  RPC: http://127.0.0.1:${RPC_HOST_PORT:-8888}"

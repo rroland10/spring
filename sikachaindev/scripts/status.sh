@@ -35,11 +35,14 @@ print(f\"  issuer:       {s.get('issuer', 'n/a')}\")
   python3 -c "
 import json, os
 c = json.load(open('${ROOT}/chain.json'))
+proto = os.environ.get('SIKA_PROTOCOL_ACCOUNT', c.get('protocolAccount', 'sikaio'))
 sys_acct = os.environ.get('SIKA_SYSTEM_ACCOUNT', c.get('systemContract', 'sika'))
-key = c['accounts'].get(sys_acct, c['accounts'].get('sika', {}))
-print(f\"  {sys_acct:12} {key.get('publicKey', 'n/a')}\")
+proto_key = c['accounts'].get(proto, {})
+sys_key = c['accounts'].get(sys_acct, c['accounts'].get('sika', {}))
+print(f\"  {proto:12} {proto_key.get('publicKey', 'n/a')}\")
+print(f\"  {sys_acct:12} {sys_key.get('publicKey', 'n/a')}\")
 for name, acct in sorted(c.get('accounts', {}).items()):
-    if acct.get('privateKey') and name not in (sys_acct, 'sika'):
+    if acct.get('privateKey') and name not in (proto, sys_acct):
         print(f\"  {name + ':':12} {acct.get('publicKey', 'n/a')}\")
 " 2>/dev/null || true
 

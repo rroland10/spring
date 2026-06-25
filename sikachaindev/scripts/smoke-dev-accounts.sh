@@ -11,7 +11,7 @@ while IFS= read -r name; do
 done < <(python3 -c "
 import json
 c = json.load(open('${ROOT}/chain.json'))
-skip = {'eosio', 'sika', c.get('systemContract', 'sika')}
+skip = {'eosio', 'sikaio', 'sika', c.get('systemContract', 'sika')}
 for name in sorted(c.get('accounts', {})):
     if c['accounts'][name].get('privateKey') and name not in skip:
         print(name)

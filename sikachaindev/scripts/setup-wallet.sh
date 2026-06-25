@@ -54,7 +54,7 @@ cleos = os.environ["CLEOS_BIN"]
 node_url = os.environ["NODE_URL"]
 wallet_url = os.environ["WALLET_URL"]
 c = json.load(open(os.path.join(root, "chain.json")))
-skip = {"eosio", "sika", c.get("systemContract", "sika")}
+skip = {"eosio", "sikaio", "sika", c.get("systemContract", "sika")}
 
 keys_out = subprocess.run(
     [cleos, "--url", node_url, "--wallet-url", wallet_url, "wallet", "keys"],
@@ -131,4 +131,4 @@ fi
 
 echo ""
 echo "Wallet ready. Example:"
-echo "  cleos --url ${NODE_URL} --wallet-url ${WALLET_URL} create account ${SIKA_SYSTEM_ACCOUNT} myaccount PUB_K1_..."
+echo "  cleos --url ${NODE_URL} --wallet-url ${WALLET_URL} create account ${SIKA_PROTOCOL_ACCOUNT:-sikaio} myaccount PUB_K1_..."

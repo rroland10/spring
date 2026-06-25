@@ -2505,7 +2505,7 @@ read_only::get_account_return_t read_only::get_account( const get_account_params
    }
 
    // add eosio.any linked authorizations
-   result.eosio_any_linked_actions = get_linked_actions(chain::config::eosio_any_name);
+   result.eosio_any_linked_actions = get_linked_actions(chain::config::sikaio_any_name);
 
    const auto& code_account = db.db().get<account_object,by_name>( config::system_account_name );
    struct http_params_t {

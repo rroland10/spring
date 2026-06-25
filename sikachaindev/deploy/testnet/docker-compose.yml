@@ -6,7 +6,7 @@
 
 services:
   nodeos:
-    image: ${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v4}
+    image: ${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v5}
     pull_policy: always
     build:
       context: ../../..

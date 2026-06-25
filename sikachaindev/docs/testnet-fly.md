@@ -21,7 +21,7 @@ sikachaindev/deploy/testnet/
 Push a tag or run workflow manually:
 
 ```bash
-git tag sikachain-dev-sika-v4 && git push fork sikachain-dev-sika-v4
+git tag sikachain-dev-sika-v5 && git push fork sikachain-dev-sika-v5
 # or: Actions → "SikaChain testnet nodeos image" → Run workflow
 ```
 
@@ -44,7 +44,7 @@ RPC_HOST_PORT=18890 bash sikachaindev/deploy/testnet/up.sh
 Fly `fly.toml` image line:
 
 ```toml
-# image = "ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v4"
+# image = "ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v5"
 ```
 
 ### Option B — Local / CI build
@@ -54,7 +54,7 @@ The Docker image **copies** `build/programs/nodeos/nodeos` — it does not compi
 On **Linux** or CI:
 
 ```bash
-git checkout sikachain-dev-sika-v4
+git checkout sikachain-dev-sika-v5
 bash sikachaindev/scripts/build-sikachain-spring.sh
 bash sikachaindev/deploy/testnet/build-image.sh
 ```
@@ -114,7 +114,7 @@ Public RPC URL after deploy: `https://<app>.fly.dev` (or custom domain via `fly 
 
 ## 5. After nodeos is up
 
-From ops machine with genesis `sika` key:
+From ops machine with genesis `sikaio` key:
 
 ```bash
 export NODE_URL=https://<your-rpc>

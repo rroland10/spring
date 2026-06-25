@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify Phase 3 chain: privileged system account `sika` hosts sika.system WASM.
+# Verify Phase 3 chain: protocol `sikaio` + system `sika` hosts sika.system WASM.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -24,15 +24,23 @@ if [[ "${SIKACHAIN_DEV:-}" != "1" ]]; then
   exit 0
 fi
 
+EXPECTED_PROTOCOL="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 EXPECTED_SYSTEM="${SIKA_SYSTEM_ACCOUNT:-sika}"
 
-check "Spring SIKACHAIN build (sika account exists)" bash -c "
+check "Spring SIKACHAIN build (sikaio protocol account)" bash -c "
   curl -sf \"${NODE_URL}/v1/chain/get_account\" \
     -H 'Content-Type: application/json' \
-    -d '{\"account_name\":\"${EXPECTED_SYSTEM}\"}' | grep -q '\"account_name\"'
+    -d '{\"account_name\":\"${EXPECTED_PROTOCOL}\"}' | grep -q '\"account_name\"'
 "
 
-check "system account privileged" bash -c "
+check "protocol account privileged" bash -c "
+  curl -sf \"${NODE_URL}/v1/chain/get_account\" \
+    -H 'Content-Type: application/json' \
+    -d '{\"account_name\":\"${EXPECTED_PROTOCOL}\"}' \
+    | python3 -c \"import json,sys; d=json.load(sys.stdin); sys.exit(0 if d.get('privileged') else 1)\"
+"
+
+check "system account ${EXPECTED_SYSTEM} exists" bash -c "
   curl -sf \"${NODE_URL}/v1/chain/get_account\" \
     -H 'Content-Type: application/json' \
     -d '{\"account_name\":\"${EXPECTED_SYSTEM}\"}' \
@@ -49,7 +57,7 @@ check "sika.system WASM on ${EXPECTED_SYSTEM}" bash -c "
 check "producer in dev BP set" bash -c "
   head=\$(curl -sf \"${NODE_URL}/v1/chain/get_info\" \
     | python3 -c \"import json,sys; print(json.load(sys.stdin).get('head_block_producer',''))\")
-  python3 - <<'PY' \"\${head}\" \"${EXPECTED_SYSTEM}\"
+  python3 - <<'PY' \"\${head}\" \"${EXPECTED_PROTOCOL}\"
 import sys
 allowed = {sys.argv[2], 'sikabpa','sikabpb','sikabpc','sikabpd','sikabpe','sikabpf'}
 sys.exit(0 if sys.argv[1] in allowed else 1)

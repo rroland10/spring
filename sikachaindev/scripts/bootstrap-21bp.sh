@@ -20,7 +20,7 @@ SYMBOL="${SIKA_SYMBOL:-SIKA}"
 STAKE_NET="${BP_STAKE_NET:-5000.0000 ${SYMBOL}}"
 STAKE_CPU="${BP_STAKE_CPU:-5000.0000 ${SYMBOL}}"
 RAM_BYTES="${BP_RAM_BYTES:-8192}"
-VOTER="${BP_VOTER:-}"  # default: each staked producer votes (eosio cannot self-stake SIKA)
+VOTER="${BP_VOTER:-}"  # default: each staked producer votes (sikaio cannot self-stake SIKA)
 
 cleos_cmd() {
   "${CLEOS}" --url "${NODE_URL}" --wallet-url "${WALLET_URL}" "$@"

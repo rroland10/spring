@@ -47,7 +47,13 @@ if [[ "${VERIFY_ATOMICASSETS:-0}" == "1" ]]; then
 fi
 
 if [[ -n "$(python3 -c "import json; print(json.load(open('${ROOT}/chain.json')).get('hyperionUrl','') or '')" 2>/dev/null)" ]]; then
-  run "Hyperion indexer" bash "${SCRIPT_DIR}/check-hyperion.sh"
+  if [[ "${VERIFY_HYPERION:-0}" == "1" ]]; then
+    run "Hyperion indexer" bash "${SCRIPT_DIR}/check-hyperion.sh"
+  else
+    echo ""
+    echo "=== Hyperion indexer ==="
+    echo "SKIP (set VERIFY_HYPERION=1; recover: bash scripts/hyperion-recover.sh)"
+  fi
 fi
 
 echo ""

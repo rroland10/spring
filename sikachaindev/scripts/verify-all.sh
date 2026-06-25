@@ -2,7 +2,7 @@
 # Full Phase 3 verification gate: Spring build, smoke, contract tests, optional on-chain verify-dev.
 #
 # Usage:
-#   export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika
+#   export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika
 #   bash scripts/verify-all.sh              # fast gate (smoke + unit tests)
 #   VERIFY_DEV=1 bash scripts/verify-all.sh # include verify-dev (on-chain txs)
 set -euo pipefail
@@ -11,6 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/env.sh"
 
 export SIKACHAIN_DEV="${SIKACHAIN_DEV:-1}"
+export SIKA_PROTOCOL_ACCOUNT="${SIKA_PROTOCOL_ACCOUNT:-sikaio}"
 export SIKA_SYSTEM_ACCOUNT="${SIKA_SYSTEM_ACCOUNT:-sika}"
 
 FAIL=0
@@ -28,7 +29,7 @@ run() {
 }
 
 echo "=== verify-all (Phase 3) ==="
-echo "  RPC: ${NODE_URL}  system: ${SIKA_SYSTEM_ACCOUNT}"
+echo "  RPC: ${NODE_URL}  protocol: ${SIKA_PROTOCOL_ACCOUNT}  system: ${SIKA_SYSTEM_ACCOUNT}"
 
 run "Spring SIKACHAIN build" bash "${SCRIPT_DIR}/check-spring-sikachain.sh"
 run "Phase 3 smoke" bash "${SCRIPT_DIR}/smoke-phase3.sh"

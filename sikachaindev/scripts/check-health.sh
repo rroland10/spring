@@ -22,6 +22,16 @@ echo "=== SikaChainDev health ==="
 
 set +e
 check "nodeos RPC" bash -c "curl -sf \"${NODE_URL}/v1/chain/get_info\" >/dev/null"
+check "nodeos from this sikachaindev tree" bash -c "
+  pid=\$(lsof -t -iTCP:8888 -sTCP:LISTEN 2>/dev/null | head -1)
+  [[ -n \"\${pid}\" ]] || exit 0
+  cmd=\$(ps -p \"\${pid}\" -o command= 2>/dev/null || true)
+  echo \"\${cmd}\" | grep -q '${ROOT}' || {
+    echo '  hint: another nodeos owns :8888 (e.g. SpringReloaded clone) — stop it, then:' >&2
+    echo '    bash scripts/stop-all.sh && ENABLE_SHIP=1 bash scripts/start-all.sh' >&2
+    exit 1
+  }
+"
 check "keosd wallet" bash -c "curl -sf \"${WALLET_URL}/v1/wallet/list_wallets\" >/dev/null"
 check "SIKA token funded" bash -c "
   \"${CLEOS}\" --url \"${NODE_URL}\" get currency stats sika.token SIKA 2>/dev/null \
@@ -70,6 +80,12 @@ if [[ "${WALLET_READY:-0}" == "1" ]]; then
 fi
 
 if [[ "${SIKACHAIN_DEV:-}" == "1" ]]; then
+  check "Phase 3 protocol (${SIKA_PROTOCOL_ACCOUNT:-sikaio}) privileged" bash -c "
+    curl -sf \"${NODE_URL}/v1/chain/get_account\" \
+      -H 'Content-Type: application/json' \
+      -d '{\"account_name\":\"${SIKA_PROTOCOL_ACCOUNT:-sikaio}\"}' \
+      | python3 -c \"import json,sys; d=json.load(sys.stdin); sys.exit(0 if d.get('privileged') else 1)\"
+  "
   check "Phase 3 system (${SIKA_SYSTEM_ACCOUNT}) privileged" bash -c "
     curl -sf \"${NODE_URL}/v1/chain/get_account\" \
       -H 'Content-Type: application/json' \
@@ -80,7 +96,7 @@ if [[ "${SIKACHAIN_DEV:-}" == "1" ]]; then
     head=\$(curl -sf \"${NODE_URL}/v1/chain/get_info\" | python3 -c \"import json,sys; print(json.load(sys.stdin).get('head_block_producer',''))\")
     python3 - <<'PY' \"\${head}\"
 import sys
-allowed = {'sika','sikabpa','sikabpb','sikabpc','sikabpd','sikabpe','sikabpf'}
+allowed = {'sikaio','sikabpa','sikabpb','sikabpc','sikabpd','sikabpe','sikabpf'}
 sys.exit(0 if sys.argv[1] in allowed else 1)
 PY
   "

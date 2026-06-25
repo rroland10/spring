@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Rebuild Spring nodeos/cleos/keosd (privileged system account = sika in config.hpp).
+# Rebuild Spring nodeos/cleos/keosd (protocol account = sikaio, system host = sika in config.hpp).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -13,7 +13,6 @@ echo "Building nodeos, cleos, keosd, sika_unit_tests..."
 cmake --build "${BUILD}" --target nodeos cleos keosd sika_unit_tests -j"${JOBS}"
 
 echo ""
-echo "Done. Reset chain if upgrading from eosio genesis:"
+echo "Done. Reset chain if upgrading from legacy eosio/sika-only genesis:"
 echo "  cd \"sikachain sys contract/contracts\" && SIKACHAIN=1 ./build.sh"
-echo "  SIKA_RESET_CONFIRM=yes bash scripts/reset-chain.sh -y"
-echo "  bash scripts/bootstrap-dev.sh"
+echo "  bash scripts/bootstrap-phase3.sh --reset"

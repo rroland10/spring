@@ -12,7 +12,7 @@ if [[ "${SIKACHAIN_DEV:-}" == "1" ]]; then
   RUNTIME_CONFIG="${DATA_DIR}/runtime-config"
   mkdir -p "${RUNTIME_CONFIG}"
   if [[ ! -f "${RUNTIME_CONFIG}/config.ini" ]] || [[ "${RESET_RUNTIME_CONFIG:-}" == "1" ]]; then
-    sed "s/^producer-name = .*/producer-name = ${SIKA_SYSTEM_ACCOUNT}/" \
+    sed "s/^producer-name = .*/producer-name = ${SIKA_PROTOCOL_ACCOUNT:-sikaio}/" \
       "${CONFIG_DIR}/config.ini" > "${RUNTIME_CONFIG}/config.ini"
   fi
   CONFIG_DIR="${RUNTIME_CONFIG}"

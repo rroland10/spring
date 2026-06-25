@@ -1,6 +1,6 @@
 # BP Compensation & Multi-Country Settlement v0.2
 
-Status tracker for SikaChainDev. On-chain host: **`sika`** (Phase 3, `-DSIKACHAIN=ON`) or **`eosio`** (legacy); both run sika.system WASM. Settlement: `sika.treas`.
+Status tracker for SikaChainDev. On-chain host: **`sika`** (Phase 3, `-DSIKACHAIN=ON`) or legacy **`eosio`**; protocol account **`sikaio`**. Both run sika.system WASM. Settlement: `sika.treas`.
 
 ## Architecture
 

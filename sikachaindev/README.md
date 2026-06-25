@@ -1,6 +1,6 @@
 # SikaChainDev
 
-Local single-node Spring chain for Sika Chain development. **`sika.system` @ `sika`** is the privileged system account (`sika.null`, `sika.prods`). Token: **SIKA** + **CGHS** on `sika.token`, plus satellite contracts.
+Local single-node Spring chain for Sika Chain development. **Protocol account `sikaio`** (was `eosio`; `sikaio.null`, `sikaio.prods`). **`sika.system` @ `sika`** hosts governance WASM. Token: **SIKA** + **CGHS** on `sika.token`, plus satellite contracts.
 
 ## cleos CLI (wallet + on-chain testing)
 
@@ -8,7 +8,7 @@ Primary CLI for transfers, account creation, stake, vote, REX, and msig. See **[
 
 ```bash
 bash scripts/start-all.sh              # nodeos + keosd
-bash scripts/setup-wallet.sh           # import sika + dev keys
+bash scripts/setup-wallet.sh           # import sikaio + sika + dev keys
 bash scripts/cleos.sh get info         # wrapper (auto-unlock)
 bash scripts/test-cleos.sh              # full cleos feature matrix
 bash scripts/test-app-cleos-full.sh     # all app features (vote+REX+MSIG+NFT+RAM+vesting opt)
@@ -21,7 +21,7 @@ bash scripts/create-account-cleos.sh myacct
 Run in **your local terminal** (keeps nodeos alive):
 
 ```bash
-export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika ENABLE_SHIP=1
+export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika ENABLE_SHIP=1
 cd sikachaindev
 bash scripts/launch-ecosystem.sh --verify   # detached — survives terminal close
 # or interactively:
@@ -68,7 +68,7 @@ Starts nodeos/keosd, deploys contracts if needed, funds `sikadev` with SIKA and 
 | `verify-testnet-stack.sh` | Full local docker gate (verify + cleos + features + client export) |
 | `verify-predeploy-remote.sh` | Templates + `verify-testnet` + optional hosted app/site URLs |
 | `bootstrap-testnet.sh` | Deploy contracts + BPs on fresh testnet genesis (not dev chain id) |
-| `bootstrap-docker-testnet.sh` | One-shot docker testnet on `:18890` (contracts + BPs, producer `sika`) |
+| `bootstrap-docker-testnet.sh` | One-shot docker testnet on `:18890` (contracts + BPs, producer `sikaio`) |
 | `export-testnet-env.mjs` | Generate wallet production env from `TESTNET_*` vars |
 | `export-testnet-client-config.sh` | Anchor JSON + app env from live testnet RPC |
 | `deploy/testnet/` | Docker + Fly.io nodeos templates — [docs/testnet-fly.md](docs/testnet-fly.md) |
@@ -137,6 +137,8 @@ Governance multisig is deployed as **`sika.msig`** (standard Spring `eosio.msig`
 
 ```bash
 bash scripts/deploy-msig.sh
+# Without Docker CDT: cache WASM once, or fetch from a public chain:
+#   MSIG_FETCH_URL=https://jungle4.greymass.com bash scripts/deploy-msig.sh
 bash scripts/verify-msig.sh
 bash scripts/verify-msig-business.sh
 bash scripts/cleanup-msig-proposals.sh   # cancel stale dev proposals (optional)
@@ -145,7 +147,7 @@ bash scripts/test-wallet-msig.sh         # Playwright propose → approve → ex
 bash scripts/test-wallet-live.sh         # UI + MSIG + business import gate
 ```
 
-The Sika app Business → Msigs pages use `NEXT_PUBLIC_MSIG_CONTRACT=sika.msig`. Spring **`cleos multisig`** still hardcodes `eosio.msig` — use the app, WharfKit, `cleos push action sika.msig …`, or `scripts/msig-propose-transfer.mjs`.
+The Sika app Business → Msigs pages use `NEXT_PUBLIC_MSIG_CONTRACT=sika.msig`. Spring **`cleos multisig`** targets **`sika.msig`** on SikaChain builds — or use the app, WharfKit, `cleos push action sika.msig …`, or `scripts/msig-propose-transfer.mjs`.
 
 Full dev verification:
 
@@ -212,7 +214,7 @@ Create and fund all dev accounts:
 bash scripts/create-dev-accounts.sh
 ```
 
-Legacy mode (`SIKACHAIN_DEV=0`) is deprecated — Spring genesis always creates **`sika`** as the privileged account.
+Legacy mode (`SIKACHAIN_DEV=0`) is deprecated — Spring genesis creates **`sikaio`** (protocol) and **`sika`** (system).
 
 Import `sikadev` in **Anchor** for local signing:
 
@@ -300,7 +302,7 @@ After starting chain, site, and app: `cd` to the SikaChain repo and run `npm run
 
 ## 21 block producers (testing)
 
-Default dev chain runs a **single node** (`sika` producer on `:8888`). For vote-page / producer-ranking tests you can register a full top-21 set without running 21 processes:
+Default dev chain runs a **single node** (`sikaio` producer on `:8888`). For vote-page / producer-ranking tests you can register a full top-21 set without running 21 processes:
 
 ```bash
 # Chain must be up (bootstrap-dev.sh or start-all.sh)
@@ -310,7 +312,7 @@ cleos system listproducers -l 21
 
 Producer accounts `sikabpa` … `sikabpu` and dev keys live in `config/producers-21.json`. Each producer self-stakes SIKA (the system account funds them; it cannot self-stake on `sika.token`). All 21 vote for the full producer set so the schedule fills.
 
-The single node runs as **`sikabpa`** with `enable-stale-production` (plus a genesis `sika` fallback key for schedule handoff). After `sika.system` promotes voted BPs via `set_proposed_producers`, blocks keep advancing on one node — sufficient for Sika app **Vote** UI and explorer producer tables.
+The single node runs as **`sikabpa`** with `enable-stale-production` (plus a genesis `sikaio` fallback key for schedule handoff). After `sika.system` promotes voted BPs via `set_proposed_producers`, blocks keep advancing on one node — sufficient for Sika app **Vote** UI and explorer producer tables.
 
 `sika.system` must include `update_elected_producers` (see `sika.system/src/voting_schedule.cpp`). Upgrade a running chain with:
 
@@ -353,9 +355,9 @@ VERIFY_REX=1 VERIFY_TIER2=1 VERIFY_DEV=1 bash scripts/verify-all.sh
 VERIFY_REX=1 VERIFY_TIER2=1 VERIFY_DEV=1 VERIFY_UI=1 VERIFY_WEB=1 bash scripts/verify-stack.sh
 ```
 
-## Phase 3 — privileged account `sika`
+## Phase 3 — protocol `sikaio` + system `sika`
 
-With Spring built `-DSIKACHAIN=ON`, the genesis privileged account is **`sika`** (not `eosio`). Contracts must be built with `SIKACHAIN=1`.
+With Spring built `-DSIKACHAIN=ON`, genesis creates protocol account **`sikaio`** (was `eosio`) and privileged system host **`sika`**. Contracts must be built with `SIKACHAIN=1`.
 
 ```bash
 bash scripts/check-spring-sikachain.sh   # confirm SIKACHAIN=ON
@@ -366,10 +368,10 @@ bash scripts/verify-phase3.sh
 Daily dev (existing chain):
 
 ```bash
-export SIKACHAIN_DEV=1 SIKA_SYSTEM_ACCOUNT=sika ENABLE_SHIP=1
+export SIKACHAIN_DEV=1 SIKA_PROTOCOL_ACCOUNT=sikaio SIKA_SYSTEM_ACCOUNT=sika ENABLE_SHIP=1
 bash scripts/start-ecosystem.sh --quick
 VERIFY_ATOMICASSETS=1 bash scripts/verify-dev.sh
 bash scripts/run-contract-tests.sh     # 45 in-process WASM tests
 ```
 
-Without `-DSIKACHAIN=ON`, nodeos creates `eosio` at genesis — use legacy `accounts.json` and `.env.sikachaindev` (not `.phase3`).
+Without `-DSIKACHAIN=ON`, nodeos creates legacy `eosio` at genesis — use legacy `accounts.json` and `.env.sikachaindev` (not `.phase3`).
