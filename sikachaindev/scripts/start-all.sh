@@ -11,6 +11,24 @@ WALLET_DIR="${ROOT}/wallet"
 mkdir -p "${DATA_DIR}" "${WALLET_DIR}"
 
 start_keosd() {
+  # SpringReloaded keosd on :8899 serves a different wallet dir — break signing.
+  local kpid kcmd
+  kpid="$(lsof -t -iTCP:8899 -sTCP:LISTEN 2>/dev/null | head -1 || true)"
+  if [[ -n "${kpid}" ]]; then
+    kcmd="$(ps -p "${kpid}" -o command= 2>/dev/null || true)"
+    if ! echo "${kcmd}" | grep -q "${ROOT}/wallet"; then
+      echo "error: port 8899 is in use by foreign keosd (pid ${kpid})" >&2
+      echo "  ${kcmd}" >&2
+      if [[ "${STOP_FOREIGN_NODEOS:-1}" == "1" ]]; then
+        echo "Stopping foreign keosd (set STOP_FOREIGN_NODEOS=0 to disable)..." >&2
+        kill -9 "${kpid}" 2>/dev/null || true
+        sleep 1
+      else
+        exit 1
+      fi
+    fi
+  fi
+
   if curl -sf "${WALLET_URL}/v1/wallet/list_wallets" >/dev/null 2>&1; then
     echo "keosd already running at ${WALLET_URL}"
     return
