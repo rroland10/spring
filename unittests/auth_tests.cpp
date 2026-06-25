@@ -364,12 +364,12 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( create_account, TESTER, validating_testers ) { tr
                          fc_exception_message_is("account names can only be 12 chars long"));
 
 
-   // Creating account with eosio. prefix with privileged account
-   chain.create_account(name("eosio.test1"));
+   // Creating account with sikaio. prefix with privileged account
+   chain.create_account(name("sikaio.test1"));
 
-   // Creating account with eosio. prefix with non-privileged account, should fail
-   BOOST_CHECK_EXCEPTION(chain.create_account(name("eosio.test2"), name("joe")), action_validate_exception,
-                         fc_exception_message_is("only privileged accounts can have names that start with 'eosio.'"));
+   // Creating account with sikaio. prefix with non-privileged account, should fail
+   BOOST_CHECK_EXCEPTION(chain.create_account(name("sikaio.test2"), name("joe")), action_validate_exception,
+                         fc_exception_message_is("only privileged accounts can have names that start with 'sikaio.'"));
 
 } FC_LOG_AND_RETHROW() }
 
