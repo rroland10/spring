@@ -28,6 +28,7 @@ endif()
 # Options
 option(ENABLE_WERROR "Enable `-Werror` compilation flag." Off)
 option(ENABLE_WEXTRA "Enable `-Wextra` compilation flag." Off)
+option(SIKACHAIN "SikaChain build (protocol sikaio + system sika; always on in config.hpp)" On)
 
 
 set( CLI_CLIENT_EXECUTABLE_NAME cleos )
@@ -163,7 +164,7 @@ if ("${EOSIO_ROOT_KEY}" STREQUAL "")
    set(EOSIO_ROOT_KEY "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV")
 endif()
 
-message( STATUS "Using '${EOSIO_ROOT_KEY}' as public key for 'eosio' account" )
+message( STATUS "Using '${EOSIO_ROOT_KEY}' as public key for 'sika' system account" )
 
 option(ENABLE_TCMALLOC "use tcmalloc (requires gperftools)" OFF)
 if( ENABLE_TCMALLOC )

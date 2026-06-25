@@ -300,32 +300,32 @@
         {
             "name": "approve",
             "type": "approve",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Approve multi-sig proposal\nsummary: '{{level.actor}} approves proposal {{proposal_name}} from {{proposer}}'\n---\n\n**{{level.actor}}** records approval for proposal **{{proposal_name}}** submitted by **{{proposer}}**."
         },
         {
             "name": "cancel",
             "type": "cancel",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Cancel multi-sig proposal\nsummary: '{{canceler}} cancels proposal {{proposal_name}} from {{proposer}}'\n---\n\n**{{canceler}}** cancels proposal **{{proposal_name}}** before it executes."
         },
         {
             "name": "exec",
             "type": "exec",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Execute multi-sig proposal\nsummary: '{{executer}} executes proposal {{proposal_name}} from {{proposer}}'\n---\n\n**{{executer}}** executes proposal **{{proposal_name}}** once required approvals are collected."
         },
         {
             "name": "invalidate",
             "type": "invalidate",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Invalidate prior approvals\nsummary: '{{account}} invalidates all prior multi-sig approvals'\n---\n\n**{{account}}** marks their prior multi-sig approvals as stale; new approvals are required after this action."
         },
         {
             "name": "propose",
             "type": "propose",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Propose multi-sig transaction\nsummary: '{{proposer}} proposes {{proposal_name}} for group approval'\n---\n\n**{{proposer}}** submits proposal **{{proposal_name}}** for the listed approvers to sign before execution."
         },
         {
             "name": "unapprove",
             "type": "unapprove",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Withdraw multi-sig approval\nsummary: '{{level.actor}} withdraws approval for {{proposal_name}}'\n---\n\n**{{level.actor}}** removes their prior approval for proposal **{{proposal_name}}**."
         }
     ],
     "tables": [

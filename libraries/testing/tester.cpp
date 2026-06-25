@@ -701,10 +701,10 @@ namespace eosio::testing {
       if( include_code ) {
          FC_ASSERT( owner_auth.threshold <= std::numeric_limits<weight_type>::max(), "threshold is too high" );
          FC_ASSERT( active_auth.threshold <= std::numeric_limits<weight_type>::max(), "threshold is too high" );
-         owner_auth.accounts.push_back( permission_level_weight{ {a, config::eosio_code_name},
+         owner_auth.accounts.push_back( permission_level_weight{ {a, config::sikaio_code_name},
                                                                  static_cast<weight_type>(owner_auth.threshold) } );
          sort_permissions(owner_auth);
-         active_auth.accounts.push_back( permission_level_weight{ {a, config::eosio_code_name},
+         active_auth.accounts.push_back( permission_level_weight{ {a, config::sikaio_code_name},
                                                                   static_cast<weight_type>(active_auth.threshold) } );
          sort_permissions(active_auth);
       }
@@ -718,7 +718,7 @@ namespace eosio::testing {
                                 });
 
       set_transaction_headers(trx);
-      trx.sign( get_private_key( creator, "active" ), control->get_chain_id()  );
+      trx.sign( active_signing_key( creator, "active" ), control->get_chain_id()  );
       return push_transaction( trx );
    }
 
@@ -835,7 +835,7 @@ namespace eosio::testing {
       trx.actions.emplace_back( get_action( code, acttype, auths, data ) );
       set_transaction_headers( trx, expiration, delay_sec );
       for (const auto& auth : auths) {
-         trx.sign( get_private_key( auth.actor, auth.permission.to_string() ), control->get_chain_id() );
+         trx.sign( active_signing_key( auth.actor, auth.permission.to_string() ), control->get_chain_id() );
       }
 
       return push_transaction( trx );
@@ -884,7 +884,7 @@ namespace eosio::testing {
                                         {get_private_key(from, role)});
         } else {
             return push_reqauth(from, vector<permission_level>{{from, config::owner_name}},
-                                        {get_private_key(from, role), get_private_key( config::system_account_name, "active" )} );
+                                        {get_private_key(from, role), active_signing_key( config::system_account_name, "active" )} );
         }
     }
 
@@ -992,7 +992,7 @@ namespace eosio::testing {
       trx.actions.emplace_back( vector<permission_level>{{account, config::active_name}},
                                 linkauth(account, code, type, req));
       set_transaction_headers(trx);
-      trx.sign( get_private_key( account, "active" ), control->get_chain_id()  );
+      trx.sign( active_signing_key( account, "active" ), control->get_chain_id()  );
 
       push_transaction( trx );
    }
@@ -1004,7 +1004,7 @@ namespace eosio::testing {
       trx.actions.emplace_back( vector<permission_level>{{account, config::active_name}},
                                 unlinkauth(account, code, type ));
       set_transaction_headers(trx);
-      trx.sign( get_private_key( account, "active" ), control->get_chain_id()  );
+      trx.sign( active_signing_key( account, "active" ), control->get_chain_id()  );
 
       push_transaction( trx );
    }
@@ -1086,7 +1086,7 @@ namespace eosio::testing {
       if( signer ) {
          trx.sign( *signer, control->get_chain_id()  );
       } else {
-         trx.sign( get_private_key( account, "active" ), control->get_chain_id()  );
+         trx.sign( active_signing_key( account, "active" ), control->get_chain_id()  );
       }
       push_transaction( trx );
    } FC_CAPTURE_AND_RETHROW( (account) )
@@ -1105,7 +1105,7 @@ namespace eosio::testing {
       if( signer ) {
          trx.sign( *signer, control->get_chain_id()  );
       } else {
-         trx.sign( get_private_key( account, "active" ), control->get_chain_id()  );
+         trx.sign( active_signing_key( account, "active" ), control->get_chain_id()  );
       }
       push_transaction( trx );
    }

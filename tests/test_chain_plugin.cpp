@@ -133,10 +133,10 @@ public:
       {
          FC_ASSERT( owner_auth.threshold <= std::numeric_limits<weight_type>::max(), "threshold is too high" );
          FC_ASSERT( active_auth.threshold <= std::numeric_limits<weight_type>::max(), "threshold is too high" );
-         owner_auth.accounts.push_back( permission_level_weight{ {a, config::eosio_code_name},
+         owner_auth.accounts.push_back( permission_level_weight{ {a, config::sikaio_code_name},
                                                                  static_cast<weight_type>(owner_auth.threshold) } );
          sort_permissions(owner_auth);
-         active_auth.accounts.push_back( permission_level_weight{ {a, config::eosio_code_name},
+         active_auth.accounts.push_back( permission_level_weight{ {a, config::sikaio_code_name},
                                                                   static_cast<weight_type>(active_auth.threshold) } );
          sort_permissions(active_auth);
       }
@@ -325,7 +325,7 @@ public:
                 ("permission", name(config::active_name).to_string())
                 ("parent", name(config::owner_name).to_string())
                 ("auth",  authority(1, {key_weight{get_public_key( config::system_account_name, "active" ), 1}}, {
-                                            permission_level_weight{{config::system_account_name, config::eosio_code_name}, 1},
+                                            permission_level_weight{{config::system_account_name, config::sikaio_code_name}, 1},
                                             permission_level_weight{{config::producers_account_name,  config::active_name}, 1}
                                     }
                 ))

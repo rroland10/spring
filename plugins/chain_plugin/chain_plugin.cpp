@@ -2505,7 +2505,7 @@ read_only::get_account_return_t read_only::get_account( const get_account_params
    }
 
    // add eosio.any linked authorizations
-   result.eosio_any_linked_actions = get_linked_actions(chain::config::eosio_any_name);
+   result.eosio_any_linked_actions = get_linked_actions(chain::config::sikaio_any_name);
 
    const auto& code_account = db.db().get<account_object,by_name>( config::system_account_name );
    struct http_params_t {
@@ -2520,7 +2520,7 @@ read_only::get_account_return_t read_only::get_account( const get_account_params
    
    if( abi_def abi; abi_serializer::to_abi(code_account.abi, abi) ) {
 
-      const auto token_code = "eosio.token"_n;
+      const auto token_code = config::default_token_contract_name;
 
       auto core_symbol = extract_core_symbol();
 
@@ -2655,9 +2655,10 @@ namespace detail {
 chain::symbol read_only::extract_core_symbol()const {
    symbol core_symbol(0);
 
-   // The following code makes assumptions about the contract deployed on eosio account (i.e. the system contract) and how it stores its data.
+   // The following code makes assumptions about the contract deployed on the system account and how it stores its data.
    const auto& d = db.db();
-   const auto* t_id = d.find<chain::table_id_object, chain::by_code_scope_table>(boost::make_tuple( "eosio"_n, "eosio"_n, "rammarket"_n ));
+   const auto* t_id = d.find<chain::table_id_object, chain::by_code_scope_table>(
+      boost::make_tuple( config::system_account_name, config::system_account_name, "rammarket"_n ) );
    if( t_id != nullptr ) {
       const auto &idx = d.get_index<key_value_index, by_scope_primary>();
       auto it = idx.find(boost::make_tuple( t_id->id, eosio::chain::string_to_symbol_c(4,"RAMCORE") ));

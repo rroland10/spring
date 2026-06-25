@@ -272,7 +272,7 @@ namespace eosio::testing {
          {
             vector<transaction_trace_ptr> traces;
             traces.reserve(names.size());
-            for( auto n : names ) traces.emplace_back( create_account( n, config::system_account_name, multisig, include_code ) );
+            for( auto n : names ) traces.emplace_back( create_account( n, config::protocol_account_name, multisig, include_code ) );
             return traces;
          }
 
@@ -481,9 +481,19 @@ namespace eosio::testing {
          static genesis_state default_genesis() {
             genesis_state genesis;
             genesis.initial_timestamp = fc::time_point::from_iso_string("2020-01-01T00:00:00.000");
-            genesis.initial_key = get_public_key( config::system_account_name, "active" );
+            // Genesis producer is protocol_account_name (sikaio); native sika/sikaio share initial_key.
+            genesis.initial_key = get_public_key( config::protocol_account_name, "active" );
 
             return genesis;
+         }
+
+         /** Active signing key for on-chain actions (sika shares protocol genesis key). */
+         static private_key_type active_signing_key( name account, string role = "active" ) {
+            if( account == config::system_account_name
+                && config::system_account_name != config::protocol_account_name ) {
+               return get_private_key( config::protocol_account_name, role );
+            }
+            return get_private_key( account, role );
          }
 
          static std::pair<controller::config, genesis_state> default_config(const fc::temp_directory& tempdir, std::optional<uint32_t> genesis_max_inline_action_size = std::optional<uint32_t>{}) {
