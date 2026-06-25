@@ -41,6 +41,7 @@
     },
     "systemContracts": {
       "path": "/Users/randallroland/Desktop/Projects/sikachain sys contract",
+      "repo": "https://github.com/rroland10/sikachain-sys-contract",
       "role": "C++ system contracts (sika.system, sika.token, sika.rep, …)",
       "build": "./build.sh",
       "deployOrder": ["sika.token", "sika.system", "sika.guard", "sika.rep", "sika.rules", "sika.issue", "sika.treas", "sika.msig"]
