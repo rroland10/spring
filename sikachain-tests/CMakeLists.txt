@@ -1,6 +1,15 @@
 # SikaChain contract tests — built as part of Spring (make sika_unit_tests).
 set(SIKA_CONTRACTS_DIR "${CMAKE_SOURCE_DIR}/../../sikachain sys contract/contracts")
-set(SIKA_TESTS_DIR "${CMAKE_SOURCE_DIR}/../../sika chain testing script")
+
+if(DEFINED ENV{SIKA_TESTS_DIR} AND EXISTS "$ENV{SIKA_TESTS_DIR}/sika_tester.hpp")
+   set(SIKA_TESTS_DIR "$ENV{SIKA_TESTS_DIR}")
+elseif(EXISTS "${CMAKE_SOURCE_DIR}/../../sika chain testing script/sika_tester.hpp")
+   set(SIKA_TESTS_DIR "${CMAKE_SOURCE_DIR}/../../sika chain testing script")
+elseif(EXISTS "${CMAKE_SOURCE_DIR}/../../sika-chain-contract-tests/sika_tester.hpp")
+   set(SIKA_TESTS_DIR "${CMAKE_SOURCE_DIR}/../../sika-chain-contract-tests")
+else()
+   set(SIKA_TESTS_DIR "${CMAKE_SOURCE_DIR}/../../sika chain testing script")
+endif()
 
 if(NOT EXISTS "${SIKA_TESTS_DIR}/sika_tester.hpp")
    message(STATUS "SikaChain tests skipped — sources not at ${SIKA_TESTS_DIR}")

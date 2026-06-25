@@ -47,7 +47,8 @@
     },
     "contractTests": {
       "path": "/Users/randallroland/Desktop/Projects/sika chain testing script",
-      "role": "Spring BOOST.Test suite for contract WASM",
+      "repo": "https://github.com/rroland10/sika-chain-contract-tests",
+      "role": "Spring BOOST.Test suite for contract WASM (45 tests)",
       "build": "SPRING_BUILD_PATH=../AntelopeOS/spring/build ./build.sh --with-tests (from sys contract dir)"
     },
     "testingApi": {
