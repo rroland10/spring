@@ -84,6 +84,34 @@ mkdir -p "${DATA_DIR}"
 LOG_FILE="${DATA_DIR}/nodeos.log"
 PID_FILE="${DATA_DIR}/nodeos.pid"
 
+# Another clone (e.g. SpringReloaded) or docker testnet on :8888 breaks SikaChainDev.
+claim_dev_rpc_port() {
+  local pid cmd
+  pid="$(lsof -t -iTCP:8888 -sTCP:LISTEN 2>/dev/null | head -1 || true)"
+  [[ -z "${pid}" ]] && return 0
+
+  if [[ -f "${PID_FILE}" ]] && [[ "$(cat "${PID_FILE}")" == "${pid}" ]]; then
+    return 0
+  fi
+
+  cmd="$(ps -p "${pid}" -o command= 2>/dev/null || true)"
+  if echo "${cmd}" | grep -q "${ROOT}"; then
+    echo "${pid}" > "${PID_FILE}"
+    return 0
+  fi
+
+  echo "error: port 8888 is in use by another nodeos (pid ${pid})" >&2
+  echo "  ${cmd}" >&2
+  if [[ "${STOP_FOREIGN_NODEOS:-1}" == "1" ]]; then
+    echo "Stopping foreign nodeos (set STOP_FOREIGN_NODEOS=0 to disable)..." >&2
+    kill -9 "${pid}" 2>/dev/null || true
+    sleep 1
+    return 0
+  fi
+  echo "  Fix: kill the process above, or STOP_FOREIGN_NODEOS=1 bash scripts/start-all.sh" >&2
+  exit 1
+}
+
 NODEOS_ARGS=(
   --config-dir "${CONFIG_DIR}"
   --data-dir "${DATA_DIR}"
@@ -95,6 +123,7 @@ if [[ "${1:-}" == "--daemon" ]] || [[ "${DAEMON:-}" == "1" ]]; then
     echo "nodeos already running (pid $(cat "${PID_FILE}"))"
     exit 0
   fi
+  claim_dev_rpc_port
   # Unclean shutdown leaves a dirty DB; replay on next start.
   if [[ -f "${DATA_DIR}/blocks/blocks.log" ]] && [[ ! -f "${DATA_DIR}/.clean_shutdown" ]]; then
     NODEOS_ARGS+=(--replay-blockchain)

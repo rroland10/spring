@@ -94,6 +94,11 @@ if [[ "${SIKACHAIN_DEV:-}" == "1" ]]; then
   "
   check "producer in 6-BP set" bash -c "
     head=\$(curl -sf \"${NODE_URL}/v1/chain/get_info\" | python3 -c \"import json,sys; print(json.load(sys.stdin).get('head_block_producer',''))\")
+    if [[ \"\${head}\" == 'sika' ]]; then
+      echo '  hint: producer is legacy sika — wrong nodeos tree (SpringReloaded?) on :8888' >&2
+      echo '    STOP_FOREIGN_NODEOS=1 bash scripts/start-all.sh' >&2
+      exit 1
+    fi
     python3 - <<'PY' \"\${head}\"
 import sys
 allowed = {'sikaio','sikabpa','sikabpb','sikabpc','sikabpd','sikabpe','sikabpf'}
