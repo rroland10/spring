@@ -1,0 +1,55 @@
+# Hyperion indexer + API for local docker testnet only.
+# Reuses backing services from hyperion/docker-compose.yml (network: hyperion).
+#
+# Prereq: bash scripts/start-hyperion-deps.sh && bash scripts/start-hyperion.sh
+# Configure: bash scripts/setup-hyperion-testnet-local.sh
+
+services:
+  hyperion-testnet-indexer:
+    platform: linux/amd64
+    build:
+      context: ../../hyperion
+      dockerfile: Dockerfile.hyperion-dev
+    container_name: sikachaintestnet-hyperion-indexer
+    working_dir: /hyperion
+    command: >
+      node --max-old-space-size=4096
+      ./build/indexer/launcher.js
+    environment:
+      CONFIG_JSON: /hyperion/config/chains/sikachaintestnet.config.json
+      CHAIN_NAME: sikachaintestnet
+    volumes:
+      - ../../hyperion/hyperion-history-api/config:/hyperion/config:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - hyperion
+    restart: unless-stopped
+
+  hyperion-testnet-api:
+    platform: linux/amd64
+    build:
+      context: ../../hyperion
+      dockerfile: Dockerfile.hyperion-dev
+    container_name: sikachaintestnet-hyperion-api
+    working_dir: /hyperion
+    command: >
+      node --max-old-space-size=2048
+      ./build/api/server.js
+    environment:
+      CONFIG_JSON: /hyperion/config/chains/sikachaintestnet.config.json
+      CHAIN_NAME: sikachaintestnet
+    ports:
+      - "${HYPERION_PORT:-7002}:7002"
+    volumes:
+      - ../../hyperion/hyperion-history-api/config:/hyperion/config:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - hyperion
+    restart: unless-stopped
+
+networks:
+  hyperion:
+    external: true
+    name: hyperion

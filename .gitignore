@@ -21,6 +21,7 @@ moc_*
 .cache
 
 genesis.json
+!sikachaindev/config/genesis.json
 hardfork.hpp
 
 libraries/utilities/git_revision.cpp
@@ -93,3 +94,6 @@ package-lock.json
 
 snapshots
 !unittests/snapshots
+
+# Optional local eosio.system sources + build output (not required for deploy)
+.system-contracts/

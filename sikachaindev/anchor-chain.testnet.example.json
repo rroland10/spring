@@ -1,0 +1,17 @@
+{
+  "name": "SikaChain Testnet",
+  "chainId": "REPLACE_WITH_CHAIN_ID",
+  "nodeUrl": "http://127.0.0.1:8888",
+  "symbol": "SIKA",
+  "keyPrefix": "PUB_K1",
+  "testnet": true,
+  "protocolAccount": "sikaio",
+  "systemContract": "sika",
+  "tokenContract": "sika.token",
+  "tokenSymbol": "SIKA",
+  "stablecoinSymbol": "CGHS",
+  "producer": "sikaio",
+  "logo": "https://sikachain.com/images/sikachain.svg",
+  "appName": "Sika",
+  "notes": "Testnet Anchor import. Protocol account is sikaio; system contract is sika (not legacy eosio). Replace chainId and nodeUrl before publishing."
+}

@@ -1,0 +1,17 @@
+{
+  "name": "SikaChainDev",
+  "chainId": "9b2fde923758593c09517f77ed445a3962a9c938f44405dac43b4ccfebbfa57e",
+  "nodeUrl": "http://127.0.0.1:8888",
+  "symbol": "SIKA",
+  "keyPrefix": "PUB_K1",
+  "testnet": true,
+  "protocolAccount": "sikaio",
+  "systemContract": "sika",
+  "tokenContract": "sika.token",
+  "tokenSymbol": "SIKA",
+  "stablecoinSymbol": "CGHS",
+  "producer": "sikaio",
+  "logo": "https://sikachain.com/images/sikachain.svg",
+  "appName": "Sika",
+  "notes": "Import in Anchor: Settings → Blockchains → Add. Protocol account is sikaio; system contract is sika (not legacy eosio)."
+}

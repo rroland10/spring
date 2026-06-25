@@ -1,0 +1,31 @@
+{
+  "description": "SikaChainDev account names — sync with contracts/include/sika.accounts.hpp (protocol sikaio + system sika)",
+  "protocol": "sikaio",
+  "system": "sika",
+  "systemDisplayName": "SikaChain System",
+  "token": "sika.token",
+  "rex": "sika.rex",
+  "msig": "sika.msig",
+  "msigContract": "sika.msig",
+  "atomicassets": "atomicassets",
+  "symbol": "SIKA",
+  "satellite": [
+    "sika.rep",
+    "sika.guard",
+    "sika.rules",
+    "sika.issue",
+    "sika.msig",
+    "sika.boost",
+    "sika.bppay",
+    "sika.burn",
+    "sika.treas",
+    "sika.cost",
+    "sika.usd",
+    "sika.oracle",
+    "sika.gold",
+    "sika.cocoa",
+    "sika.cngn",
+    "sika.ckes",
+    "atomicassets"
+  ]
+}

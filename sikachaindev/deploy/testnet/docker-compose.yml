@@ -1,0 +1,34 @@
+# Local / VPS testnet BP — copy .env.example → .env and fill secrets.
+#
+# Pull prebuilt image:
+#   bash sikachaindev/deploy/testnet/pull-image.sh
+#   docker compose --env-file .env up -d
+
+services:
+  nodeos:
+    image: ${SIKA_NODEOS_IMAGE:-ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v5}
+    pull_policy: always
+    build:
+      context: ../../..
+      dockerfile: sikachaindev/deploy/testnet/Dockerfile.nodeos
+    platform: linux/amd64
+    restart: unless-stopped
+    mem_limit: 8g
+    ports:
+      - "${RPC_HOST_PORT:-8888}:8888"
+      - "${P2P_HOST_PORT:-9876}:9876"
+      - "${SHIP_HOST_PORT:-8080}:8080"
+    environment:
+      PRODUCER_NAME: ${PRODUCER_NAME:-sikabpa}
+      SIGNATURE_PROVIDER: ${SIGNATURE_PROVIDER:?set SIGNATURE_PROVIDER in .env}
+      P2P_ADVERTISE: ${P2P_ADVERTISE:-127.0.0.1:9876}
+      P2P_PEERS: ${P2P_PEERS:-}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      AGENT_NAME: ${AGENT_NAME:-sikachain-testnet-bp1}
+    volumes:
+      - sikachain_data:/var/lib/sikachain/data
+      # Genesis mount required on first start (up.sh or bootstrap-docker-testnet.sh sets SIKA_GENESIS_HOST):
+      - ${SIKA_GENESIS_HOST:?set SIKA_GENESIS_HOST to host path of genesis.json}:/etc/sikachain/genesis.json:ro
+
+volumes:
+  sikachain_data:
