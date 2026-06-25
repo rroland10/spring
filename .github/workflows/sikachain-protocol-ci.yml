@@ -1,0 +1,51 @@
+name: SikaChain protocol (SIKACHAIN=ON)
+
+on:
+  pull_request:
+    paths:
+      - "libraries/chain/**"
+      - "libraries/testing/**"
+      - "programs/cleos/**"
+      - "plugins/chain_plugin/**"
+      - "unittests/**"
+      - "tests/test_chain_plugin.cpp"
+      - "CMakeLists.txt"
+  push:
+    branches:
+      - sikaio-protocol
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake ninja-build git \
+            libcurl4-openssl-dev libgmp-dev zlib1g-dev zstd \
+            llvm-11-dev
+
+      - name: Configure (SIKACHAIN=ON)
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DSIKACHAIN=ON \
+            -DCMAKE_PREFIX_PATH=/usr/lib/llvm-11 \
+            -GNinja
+
+      - name: Build unit_test + cleos
+        run: cmake --build build --target unit_test cleos -j2
+
+      - name: Run create_account unit tests
+        run: ./build/unittests/unit_test '--run_test=auth_tests/create_account*'
