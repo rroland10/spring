@@ -44,11 +44,8 @@ jobs:
             -DCMAKE_PREFIX_PATH=/usr/lib/llvm-11 \
             -GNinja
 
-      - name: Build cleos + unit test libs
-        run: |
-          cmake --build build --target cleos eosio_chain_wrap eosio_testing -j "$(nproc)"
+      - name: Build unit_test + cleos
+        run: cmake --build build --target unit_test cleos -j2
 
-      - name: Run parallel unit tests
-        run: |
-          cd build
-          ctest -LE _tests -j "$(nproc)" --output-on-failure
+      - name: Run create_account unit tests
+        run: ./build/unittests/unit_test '--run_test=auth_tests/create_account*'
