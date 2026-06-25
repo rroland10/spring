@@ -20,6 +20,8 @@ bash scripts/create-account-cleos.sh myacct
 
 **Canonical dev chain** — use this tree (`AntelopeOS/spring/sikachaindev`) on **RPC `:8888`**, wallet `:8899`, SHIP `:8080`. If you also use the legacy `SpringReloaded` clone, it now defaults to `:8889` / `:8900` so the two stacks do not fight for ports.
 
+**Release line:** SikaChain protocol builds (`sikaio` / `sika`, `-DSIKACHAIN=ON`) ship from **[github.com/rroland10/spring](https://github.com/rroland10/spring)** (fork), not AntelopeIO/spring `main`. Docker image: `ghcr.io/rroland10/sikachain-nodeos:sikachain-dev-sika-v5`.
+
 Run in **your local terminal** (keeps nodeos alive):
 
 ```bash
