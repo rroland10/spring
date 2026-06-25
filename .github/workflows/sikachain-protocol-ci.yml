@@ -2,6 +2,7 @@ name: SikaChain protocol (SIKACHAIN=ON)
 
 on:
   pull_request:
+    branches: [main]
     paths:
       - "libraries/chain/**"
       - "libraries/testing/**"
@@ -10,6 +11,7 @@ on:
       - "unittests/**"
       - "tests/test_chain_plugin.cpp"
       - "CMakeLists.txt"
+      - ".github/workflows/sikachain-protocol-ci.yml"
   push:
     branches:
       - sikaio-protocol
@@ -21,10 +23,9 @@ permissions:
 jobs:
   build-and-test:
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -45,7 +46,7 @@ jobs:
             -GNinja
 
       - name: Build unit_test + cleos
-        run: cmake --build build --target unit_test cleos -j2
+        run: cmake --build build --target unit_test cleos -j "$(nproc)"
 
       - name: Run create_account unit tests
         run: ./build/unittests/unit_test '--run_test=auth_tests/create_account*'
