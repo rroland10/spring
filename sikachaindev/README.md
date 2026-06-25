@@ -18,6 +18,8 @@ bash scripts/create-account-cleos.sh myacct
 
 ## Quick start (Phase 3)
 
+**Canonical dev chain** — use this tree (`AntelopeOS/spring/sikachaindev`) on **RPC `:8888`**, wallet `:8899`, SHIP `:8080`. If you also use the legacy `SpringReloaded` clone, it now defaults to `:8889` / `:8900` so the two stacks do not fight for ports.
+
 Run in **your local terminal** (keeps nodeos alive):
 
 ```bash
